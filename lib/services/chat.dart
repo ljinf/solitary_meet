@@ -5,7 +5,7 @@ import '../utils/request.dart';
 
 class ChatAPI {
   static Future<List<MsgModel>?> getChatHistoryMsgList({required Map params}) async {
-    loading();
+    showLoading();
     var response = await Request().post(
       '/v1/chat/msg/history/list',
       params: params,
@@ -23,7 +23,7 @@ class ChatAPI {
   }
 
   static Future<MsgModel?> sendMsg({required Map params}) async {
-    loading();
+    showLoading();
     var response = await Request().post(
       '/v1/chat/send',
       params: params,

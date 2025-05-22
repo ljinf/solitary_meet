@@ -1,5 +1,5 @@
 class RelationshipModel {
-  int? userId;
+  String? userId;
   String? email;
   String? phone;
   String? nickName; //昵称
@@ -7,6 +7,7 @@ class RelationshipModel {
   int? gender; //性别
   String? remark; //别名
   int? relationshipType;
+  int? createdAt;
 
   RelationshipModel(
       {this.userId,
@@ -16,9 +17,11 @@ class RelationshipModel {
       this.avatar,
       this.gender,
       this.remark,
-      this.relationshipType});
+      this.relationshipType,
+      this.createdAt});
 
-  factory RelationshipModel.fromJson(Map<String, dynamic> data) => RelationshipModel(
+  factory RelationshipModel.fromJson(Map<String, dynamic> data) =>
+      RelationshipModel(
         userId: data["user_id"],
         email: data["email"],
         phone: data["phone"],
@@ -27,17 +30,18 @@ class RelationshipModel {
         gender: data["gender"],
         remark: data["remark"],
         relationshipType: data["relationship_type"],
+        createdAt: data["created_at"],
       );
 
-
   Map<String, dynamic> toJson() => {
-    "user_id": userId,
-    "email": email,
-    "phone": phone,
-    "nick_name": nickName,
-    "avatar": avatar,
-    "gender": gender,
-    "remark": remark,
-    "relationship_type": relationshipType,
-  };
+        "user_id": userId,
+        "email": email,
+        "phone": phone,
+        "nick_name": nickName,
+        "avatar": avatar,
+        "gender": gender,
+        "remark": remark,
+        "relationship_type": relationshipType,
+        "created_at": createdAt,
+      };
 }

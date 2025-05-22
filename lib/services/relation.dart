@@ -1,19 +1,13 @@
 import 'package:solitary_meet/model/relationship_model.dart';
 import 'package:solitary_meet/services/services.dart';
-import '../utils/request.dart';
 
 /// 关系相关
 class RelationAPI {
   /// 好友列表
-  static Future<List<RelationshipModel>?> getFriendList({
-    required Map params,
-  }) async {
-    loading();
-    var response = await Request().post(
-      '/v1/relationship/relation/list',
-      params: params,
-    );
-    dismissLoading();
+  static Future<List<RelationshipModel>?> getFriendList(
+      {required Map params, bool loading = true}) async {
+    var response = await doRequest('/v1/relationship/relation/list',
+        params: params, loading: loading);
     if (!responseCheck(response)) {
       return null;
     }

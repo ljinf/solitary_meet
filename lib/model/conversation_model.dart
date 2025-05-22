@@ -4,7 +4,7 @@ import 'package:solitary_meet/model/login_model.dart';
 import 'package:solitary_meet/model/msg_model.dart';
 
 class ConversationModel {
-  int? conversationId;
+  String? conversationId;
   int? type; //会话类型枚举，0单聊 1群聊
   String? avatar; //头像
   int? lastReadSeq; //此会话用户已读的最后一条消息

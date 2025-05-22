@@ -8,7 +8,7 @@ class UserAPI {
   static Future<UserLoginResponseModel?> login({
     required Map params,
   }) async {
-    loading();
+    showLoading();
     var response = await Request().post(
       '/v1/login',
       params: params,
@@ -22,7 +22,7 @@ class UserAPI {
 
   /// 用户信息
   static Future<UserLoginResponseModel?> userInfo() async {
-    loading();
+    showLoading();
     var response = await Request().get(
       '/v1/user',
     );
@@ -35,7 +35,7 @@ class UserAPI {
 
   /// 仅支持email查询信息
   static Future<UserLoginResponseModel?> searchUserInfo(Map params) async {
-    loading();
+    showLoading();
     var response = await Request().post(
       '/v1/search',
       params: params,

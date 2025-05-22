@@ -2,19 +2,23 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:solitary_meet/common/values/values.dart';
+import 'package:solitary_meet/manager/friend.dart';
 import 'package:solitary_meet/model/login_model.dart';
 import 'package:solitary_meet/utils/utils.dart';
 
 /// 全局配置
 class Global {
   /// 用户配置
-  static UserLoginResponseModel? userProfile = UserLoginResponseModel(token: null);
+  static UserLoginResponseModel? userProfile =
+      UserLoginResponseModel(token: null);
 
   /// 是否第一次打开
   static bool isFirstOpen = false;
 
   /// 是否 release
   static bool get isRelease => const bool.fromEnvironment("dart.vm.product");
+
+  static late FriendManager friendManager;
 
   /// init
   static Future init() async {
@@ -50,16 +54,24 @@ class Global {
       userProfile = UserLoginResponseModel.fromJson(profileJSON);
     }
 
+    initManagers();
+
     // android 状态栏为透明的沉浸
     if (Platform.isAndroid) {
-      SystemUiOverlayStyle systemUiOverlayStyle = const SystemUiOverlayStyle(statusBarColor: Colors.transparent);
+      SystemUiOverlayStyle systemUiOverlayStyle =
+          const SystemUiOverlayStyle(statusBarColor: Colors.transparent);
       SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
     }
+  }
+
+  static Future initManagers() async {
+    friendManager = FriendManager();
   }
 
   // 持久化 用户信息
   static Future<bool> saveProfile(UserLoginResponseModel userResponse) {
     userProfile = userResponse;
-    return LocalStorage().setJSON(STORAGE_USER_PROFILE_KEY, userResponse.toJson());
+    return LocalStorage()
+        .setJSON(STORAGE_USER_PROFILE_KEY, userResponse.toJson());
   }
 }

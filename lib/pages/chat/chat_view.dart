@@ -17,7 +17,7 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   var controller = Get.find<ChatController>();
 
-  int curUid = Global.userProfile?.userId ?? 0;
+  String curUid = Global.userProfile?.userId ?? "";
   String uAvatar = Global.userProfile?.avatar ?? "";
 
   @override
@@ -42,7 +42,9 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       if (isKeyboardOpen) {
         var scrollController = controller.scrollController;
         // 减少对其他不可scroll包裹页面的键盘唤起
-        var maxScrollExtent = (scrollController.hasClients ?? false) ? scrollController.position.maxScrollExtent : null;
+        var maxScrollExtent = (scrollController.hasClients ?? false)
+            ? scrollController.position.maxScrollExtent
+            : null;
         if (maxScrollExtent != null) {
           scrollController.jumpTo(scrollController.position.maxScrollExtent);
         }
@@ -124,8 +126,11 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                   height: 30,
                   child: TextButton(
                     style: ButtonStyle(
-                        padding: const MaterialStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.all(2)),
-                        backgroundColor: ButtonStyleButton.allOrNull<Color>(Colors.blue)),
+                        padding:
+                            const MaterialStatePropertyAll<EdgeInsetsGeometry>(
+                                EdgeInsets.all(2)),
+                        backgroundColor:
+                            ButtonStyleButton.allOrNull<Color>(Colors.blue)),
                     onPressed: () {
                       controller.sendMsg();
                     },

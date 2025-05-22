@@ -6,7 +6,7 @@ import '../utils/request.dart';
 
 class ConversationAPI {
   static Future<List<ConversationModel>?> getConversationList({required Map params}) async {
-    loading();
+    showLoading();
     var response = await Request().post(
       '/v1/chat/conversation/list',
       params: params,

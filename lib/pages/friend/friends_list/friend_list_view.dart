@@ -1,4 +1,3 @@
-import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:solitary_meet/components/components.dart';
@@ -20,10 +19,8 @@ class _FriendListPageState extends State<FriendListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: defaultBackgroundColor,
-      appBar: BrnAppBar(
-        //默认显示返回按钮
-        automaticallyImplyLeading: true,
-        themeData: BrnAppBarConfig.dark(),
+      appBar: AppBar(
+        centerTitle: true,
         title: const Text('好友列表'),
       ),
       body: Obx(() => ListView.builder(

@@ -31,7 +31,7 @@ class ConversationController extends GetxController implements MessageCallBack {
     getConversationList();
   }
 
-  void toChatPage(int conversationId, int userId, String avatar, String title) {
+  void toChatPage(String conversationId, String userId, String avatar, String title) {
     Get.toNamed(AppRoutes.Chat,
         arguments: {"conversation_id": conversationId, "user_id": userId, "avatar": avatar, "title": title});
   }

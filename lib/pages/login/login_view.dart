@@ -3,8 +3,30 @@ import 'package:flutter/material.dart';
 import 'package:solitary_meet/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 
-class LoginPage extends GetView<LoginController> {
-  const LoginPage({Key? key}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  var controller = Get.find<LoginController>();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +40,9 @@ class LoginPage extends GetView<LoginController> {
         ),
         Container(
           padding: const EdgeInsets.only(bottom: 5.0),
-          decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey, width: 0.15))),
+          decoration: const BoxDecoration(
+              border:
+                  Border(bottom: BorderSide(color: Colors.grey, width: 0.15))),
           child: Row(
             children: <Widget>[
               Container(
@@ -35,7 +59,8 @@ class LoginPage extends GetView<LoginController> {
                 controller: controller.emailController,
                 maxLines: 1,
                 style: const TextStyle(textBaseline: TextBaseline.alphabetic),
-                decoration: const InputDecoration(hintText: "请填写邮箱", border: InputBorder.none),
+                decoration: const InputDecoration(
+                    hintText: "请填写邮箱", border: InputBorder.none),
                 onChanged: (text) {},
               ))
             ],
@@ -43,7 +68,9 @@ class LoginPage extends GetView<LoginController> {
         ),
         Container(
           padding: const EdgeInsets.only(bottom: 5.0),
-          decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey, width: 0.15))),
+          decoration: const BoxDecoration(
+              border:
+                  Border(bottom: BorderSide(color: Colors.grey, width: 0.15))),
           child: Row(
             children: <Widget>[
               Container(
@@ -61,7 +88,8 @@ class LoginPage extends GetView<LoginController> {
                 maxLines: 1,
                 obscureText: true,
                 style: const TextStyle(textBaseline: TextBaseline.alphabetic),
-                decoration: const InputDecoration(hintText: "请填写密码", border: InputBorder.none),
+                decoration: const InputDecoration(
+                    hintText: "请填写密码", border: InputBorder.none),
                 onChanged: (text) {},
               ))
             ],

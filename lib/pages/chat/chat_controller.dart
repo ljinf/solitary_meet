@@ -13,13 +13,14 @@ class ChatController extends GetxController implements MessageCallBack {
   var msgList = <MsgModel>[].obs;
 
 //当前用户id
-  int curUid = Global.userProfile?.userId ?? 0;
-  late int convId, friendId; //对方的id
+  String curUid = Global.userProfile?.userId ?? "";
+  late String convId, friendId; //对方的id
   late String title, avatar;
   int seq = 0, pageSize = 30;
 
   ScrollController scrollController = ScrollController();
-  RefreshController refreshController = RefreshController(initialRefresh: false);
+  RefreshController refreshController =
+      RefreshController(initialRefresh: false);
   TextEditingController textController = TextEditingController();
   FocusNode focusNode = FocusNode(); // 初始化一个FocusNode控件
 
@@ -36,7 +37,7 @@ class ChatController extends GetxController implements MessageCallBack {
   @override
   void onReady() {
     super.onReady();
-    ConnManager.addListener(convId, this);
+    // ConnManager.addListener(convId, this);
     focusNode.addListener(_focusNodeListener);
   }
 
@@ -46,13 +47,13 @@ class ChatController extends GetxController implements MessageCallBack {
     scrollController.dispose();
     refreshController.dispose();
     textController.dispose();
-    ConnManager.remListener(convId);
+    // ConnManager.remListener(convId);
     focusNode.removeListener(_focusNodeListener);
   }
 
   void loadHistoryMsg() async {
-    var resp =
-        await ChatAPI.getChatHistoryMsgList(params: {"conversation_id": convId, "seq": seq, "page_size": pageSize});
+    var resp = await ChatAPI.getChatHistoryMsgList(
+        params: {"conversation_id": convId, "seq": seq, "page_size": pageSize});
     if (resp != null && resp.isNotEmpty) {
       msgList.addAll(resp);
       seq = msgList[0].seq!;

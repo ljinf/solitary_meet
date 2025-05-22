@@ -63,6 +63,9 @@ dependencies:
   bruno: ^3.4.3
   extended_text: ^11.1.0
   web_socket_channel: ^2.4.0
+  # 数据库 https://pub.flutter-io.cn/packages/sqflite
+  sqflite: ^2.3.3
+  path: ^1.9.0
 
 dev_dependencies:
   flutter_test:
@@ -90,6 +93,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/icons/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

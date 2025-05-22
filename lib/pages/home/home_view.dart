@@ -1,110 +1,113 @@
-import 'package:bruno/bruno.dart';
 import 'package:flutter/material.dart';
-import 'package:solitary_meet/pages/conversation/conversation_controller.dart';
-import 'package:solitary_meet/pages/home/home_controller.dart';
-import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
+import '../../common/colors/colors.dart';
+import '../../common/values/font.dart';
+import '../../common/values/image.dart';
+import '../conversation/conversation_view.dart';
 
-class HomePage extends GetView<HomeController> {
-  HomePage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
-  double iconSize = 20;
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  // var bottomNavigationTitles = ['广场', '心愿', '消息', '我的'];
+  var bottomNavigationTitles = ['xx', 'xx', '消息', 'xx'];
+  late PageController pageController;
+
+  var pages = <Widget>[];
+
+  int selectedIndex = 0;
+
+  @override
+  void initState() {
+    pages.add(const Center(
+      child: Text("1"),
+    ));
+    pages.add(const Center(
+      child: Text("2"),
+    ));
+    pages.add(ConversationPage());
+    pages.add(const Center(
+      child: Text("3"),
+    ));
+
+    pageController = PageController(
+      initialPage: selectedIndex,
+      // keepPage: true,
+    );
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: BrnAppBar(
-      //   themeData: BrnAppBarConfig.dark(),
-      //   //自定义leading
-      //   leading: BrnBackLeading(
-      //     child: Image.asset(
-      //       'assets/images/def_avatar.jpg',
-      //       scale: 3.0,
-      //       height: 80,
-      //       width: 80,
-      //     ),
-      //   ),
-      //   title: Row(
-      //     mainAxisSize: MainAxisSize.min,
-      //     crossAxisAlignment: CrossAxisAlignment.start,
-      //     children: <Widget>[
-      //       _buildTab(0),
-      //       const SizedBox(
-      //         width: 24,
-      //       ),
-      //       _buildTab(1),
-      //       const SizedBox(
-      //         width: 24,
-      //       ),
-      //       _buildTab(2)
-      //     ],
-      //   ),
-      //   actions: BrnIconAction(
-      //     child: const Icon(Icons.search, size: 20),
-      //     iconPressed: () {
-      //       controller.toSearchPage();
-      //     },
-      //   ),
-      // ),
       body: PageView.builder(
         itemBuilder: (BuildContext context, int index) {
-          return controller.pages[index];
+          return pages[index];
         },
-        itemCount: controller.bottomNavigationTitles.length,
-        controller: controller.pageController,
+        itemCount: bottomNavigationTitles.length,
+        controller: pageController,
         physics: const NeverScrollableScrollPhysics(),
-        onPageChanged: (index) {
-          controller.updateBottomNavigation(index);
-        },
+        onPageChanged: (index) {},
       ),
-      bottomNavigationBar: Obx(() {
-        return BrnBottomTabBar(
-          currentIndex: controller.selectedIndex.value,
-          onTap: (int index) {
-            controller.updateBottomNavigation(index);
-          },
-          fixedColor: Colors.blue,
-          badgeColor: Colors.red,
-          items: [
-            BrnBottomTabBarItem(
-                icon:
-                    Image(width: iconSize, height: iconSize, image: AssetImage("assets/images/tabbar_discover_c.webp")),
-                activeIcon:
-                    Image(width: iconSize, height: iconSize, image: AssetImage("assets/images/tabbar_discover_s.webp")),
-                title: Text(controller.bottomNavigationTitles[0])),
-            BrnBottomTabBarItem(
-                icon:
-                    Image(width: iconSize, height: iconSize, image: AssetImage("assets/images/tabbar_contacts_c.webp")),
-                activeIcon:
-                    Image(width: iconSize, height: iconSize, image: AssetImage("assets/images/tabbar_contacts_s.webp")),
-                title: Text(controller.bottomNavigationTitles[1])),
-            BrnBottomTabBarItem(
-                icon: Image(width: iconSize, height: iconSize, image: AssetImage("assets/images/tabbar_chat_c.webp")),
-                activeIcon:
-                    Image(width: iconSize, height: iconSize, image: AssetImage("assets/images/tabbar_chat_s.webp")),
-                title: Text(controller.bottomNavigationTitles[2])),
-            BrnBottomTabBarItem(
-                icon: Image(width: iconSize, height: iconSize, image: AssetImage("assets/images/tabbar_me_c.webp")),
-                activeIcon:
-                    Image(width: iconSize, height: iconSize, image: AssetImage("assets/images/tabbar_me_s.webp")),
-                title: Text(controller.bottomNavigationTitles[3])),
-          ],
-        );
-      }),
-    );
-  }
-
-  Widget _buildTab(int index) {
-    return GestureDetector(
-      onTap: () {
-        controller.updateTopNavigation(index);
-      },
-      child: Obx(() => Text(
-            controller.topNavigationTitles[index],
-            style: controller.currentTopNavigationIndex.value == index
-                ? const TextStyle(color: Colors.white)
-                : const TextStyle(color: Colors.grey),
-          )),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
+        type: BottomNavigationBarType.fixed,
+        currentIndex: selectedIndex,
+        onTap: (int index) {
+          setState(() {
+            selectedIndex = index;
+            pageController.jumpToPage(selectedIndex);
+          });
+        },
+        unselectedItemColor: AppColors.navUnselectedColor,
+        selectedItemColor: AppColors.navSelectedColor,
+        unselectedFontSize: AppFont.navFontSize,
+        selectedFontSize: AppFont.navFontSize,
+        items: [
+          BottomNavigationBarItem(
+              icon: Image.asset(
+                "assets/icons/tabbar_me_c.webp",
+                width: AppImage.navImageSize,
+                height: AppImage.navImageSize,
+              ),
+              activeIcon: Image.asset(
+                "assets/icons/tabbar_me_c.webp",
+                width: AppImage.navImageSize,
+                height: AppImage.navImageSize,
+              ),
+              label: bottomNavigationTitles[0],
+              tooltip: bottomNavigationTitles[0]),
+          BottomNavigationBarItem(
+              icon: Image.asset(
+                "assets/icons/tabbar_me_c.webp",
+                width: AppImage.navImageSize,
+                height: AppImage.navImageSize,
+              ),
+              activeIcon: Image.asset(
+                "assets/icons/tabbar_me_c.webp",
+                width: AppImage.navImageSize,
+                height: AppImage.navImageSize,
+              ),
+              label: bottomNavigationTitles[1],
+              tooltip: bottomNavigationTitles[1]),
+          BottomNavigationBarItem(
+              icon: Image.asset(
+                "assets/icons/tabbar_me_c.webp",
+                width: AppImage.navImageSize,
+                height: AppImage.navImageSize,
+              ),
+              activeIcon: Image.asset(
+                "assets/icons/tabbar_me_c.webp",
+                width: AppImage.navImageSize,
+                height: AppImage.navImageSize,
+              ),
+              label: bottomNavigationTitles[2],
+              tooltip: bottomNavigationTitles[2]),
+        ],
+      ),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:solitary_meet/global.dart';
 import 'package:solitary_meet/services/relation.dart';
 
 import '../../../model/relationship_model.dart';
@@ -20,17 +21,17 @@ class FriendListController extends GetxController {
   }
 
   void getFriendList() async {
-    var resp = await RelationAPI.getFriendList(
-        params: {"relationship_type": relationshipFriend, "page_num": 1, "page_size": 200});
-    if (resp != null) {
-      friendList.clear();
-      friendList.addAll(resp);
-    }
+    var f = Global.friendManager.friends;
+    friendList.clear();
+    friendList.addAll(f.values.toList());
   }
 
   void toProfilePage(int index) {
     var info = friendList[index];
-    Get.toNamed(AppRoutes.Profile,
-        arguments: {"userId": info.userId, "avatar": info.avatar, "nickName": info.nickName});
+    Get.toNamed(AppRoutes.Profile, arguments: {
+      "userId": info.userId,
+      "avatar": info.avatar,
+      "nickName": info.nickName
+    });
   }
 }
