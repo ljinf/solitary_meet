@@ -70,7 +70,7 @@ class ConversationManager {
       "page_num": pageNum,
       "page_size": pageSize,
       "version": version
-    });
+    }, loading: false);
 
     return result;
   }
