@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:solitary_meet/common/values/values.dart';
+import 'package:solitary_meet/manager/conversion.dart';
 import 'package:solitary_meet/manager/friend.dart';
 import 'package:solitary_meet/model/login_model.dart';
 import 'package:solitary_meet/utils/utils.dart';
@@ -19,6 +20,7 @@ class Global {
   static bool get isRelease => const bool.fromEnvironment("dart.vm.product");
 
   static late FriendManager friendManager;
+  static late ConversationManager conversationManager;
 
   /// init
   static Future init() async {
@@ -66,6 +68,13 @@ class Global {
 
   static Future initManagers() async {
     friendManager = FriendManager();
+    conversationManager = ConversationManager();
+
+    if (userProfile!.token != null) {
+      //初始化数据
+      Global.friendManager.init();
+      Global.conversationManager.init();
+    }
   }
 
   // 持久化 用户信息

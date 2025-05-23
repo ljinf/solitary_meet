@@ -4,7 +4,7 @@ import 'package:solitary_meet/services/services.dart';
 /// 关系相关
 class RelationAPI {
   /// 好友列表
-  static Future<List<RelationshipModel>?> getFriendList(
+  static Future<Map<String, dynamic>?> getFriendList(
       {required Map params, bool loading = true}) async {
     var response = await doRequest('/v1/relationship/relation/list',
         params: params, loading: loading);
@@ -16,6 +16,6 @@ class RelationAPI {
     for (var element in list) {
       resp.add(RelationshipModel.fromJson(element));
     }
-    return resp;
+    return {"list": resp, "total": response['data']['total'] ?? 0};
   }
 }

@@ -49,33 +49,38 @@ class _ConversationPageState extends State<ConversationPage> {
         header: const WaterDropHeader(),
         controller: _refreshController,
         onRefresh: _onRefresh,
-        child: ListView.builder(
-          itemBuilder: (ctx, index) {
-            String avatar = defIcon;
-            String title = "";
-            String friendId = "";
-            pageController.conList[index].userList?.forEach((user) {
-              if (user.userId != curLoginUid) {
-                friendId = user.userId!;
-                avatar = user.avatar ?? defIcon;
-                title = user.nickName ?? "";
-              }
-            });
-            return GestureDetector(
-              onTap: () => pageController.toChatPage(
-                  pageController.conList[index].conversationId!,
-                  friendId,
-                  avatar,
-                  title),
-              child: Obx(() => CustomConversation(
-                  imageUrl: avatar,
-                  title: title,
-                  content: pageController.conList[index].recentMsg!.content!,
-                  time: pageController.conList[index].recentMsg!.sendTime!)),
-            );
-          },
-          itemCount: pageController.conList.length,
-        ),
+        child: Obx(() => ListView.builder(
+              itemBuilder: (ctx, index) {
+                var friendId = '', avatar = '';
+                if (pageController.conList[index].type == 0) {
+                  var ids =
+                      pageController.conList[index].conversationId!.split("-");
+                  friendId = ids
+                      .where((id) => id != Global.userProfile!.userId)
+                      .toList()[0];
+
+                  avatar =
+                      Global.friendManager.friendAvatars[friendId] ?? defIcon;
+                }
+
+                String title =
+                    Global.friendManager.friends[friendId]?.remark ?? '';
+
+                return GestureDetector(
+                  onTap: () => pageController.toChatPage(
+                      pageController.conList[index].conversationId!,
+                      friendId,
+                      avatar,
+                      title),
+                  child: Obx(() => CustomConversation(
+                        imageUrl: avatar,
+                        title: title,
+                        recentMsg: pageController.conList[index].recentMsg,
+                      )),
+                );
+              },
+              itemCount: pageController.conList.length,
+            )),
       ),
     );
   }

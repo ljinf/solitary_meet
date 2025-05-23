@@ -5,21 +5,18 @@ import '../model/conversation_model.dart';
 import '../utils/request.dart';
 
 class ConversationAPI {
-  static Future<List<ConversationModel>?> getConversationList({required Map params}) async {
-    showLoading();
-    var response = await Request().post(
-      '/v1/chat/conversation/list',
-      params: params,
-    );
-    dismissLoading();
+  static Future<Map<String, dynamic>?> getConversationList(
+      {required Map params, bool loading = true}) async {
+    var response = await doRequest('/v1/chat/conversation/list',
+        params: params, loading: loading);
     if (!responseCheck(response)) {
       return null;
     }
     var resp = <ConversationModel>[];
-    List<dynamic> list = response['data'] as List<dynamic>;
+    List<dynamic> list = response['data']['rows'] as List<dynamic>;
     for (var element in list) {
       resp.add(ConversationModel.fromJson(element));
     }
-    return resp;
+    return {"list": resp, "total": response['data']['total'] ?? 0};
   }
 }

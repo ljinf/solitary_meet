@@ -1,5 +1,8 @@
+import 'package:solitary_meet/global.dart';
+
 class RelationshipModel {
   String? userId;
+  String? friendId; //好友ID
   String? email;
   String? phone;
   String? nickName; //昵称
@@ -11,6 +14,7 @@ class RelationshipModel {
 
   RelationshipModel(
       {this.userId,
+      this.friendId,
       this.email,
       this.phone,
       this.nickName,
@@ -22,7 +26,22 @@ class RelationshipModel {
 
   factory RelationshipModel.fromJson(Map<String, dynamic> data) =>
       RelationshipModel(
+        userId: Global.userProfile!.userId ?? '',
+        friendId: data["user_id"],
+        email: data["email"],
+        phone: data["phone"],
+        nickName: data["nick_name"],
+        avatar: data["avatar"],
+        gender: data["gender"],
+        remark: data["remark"],
+        relationshipType: data["relationship_type"],
+        createdAt: data["created_at"],
+      );
+
+  factory RelationshipModel.fromDB(Map<String, dynamic> data) =>
+      RelationshipModel(
         userId: data["user_id"],
+        friendId: data["friend_id"],
         email: data["email"],
         phone: data["phone"],
         nickName: data["nick_name"],
@@ -35,6 +54,7 @@ class RelationshipModel {
 
   Map<String, dynamic> toJson() => {
         "user_id": userId,
+        "friend_id": friendId,
         "email": email,
         "phone": phone,
         "nick_name": nickName,

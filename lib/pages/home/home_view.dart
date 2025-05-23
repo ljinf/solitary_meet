@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:solitary_meet/pages/home/home_controller.dart';
 import '../../common/colors/colors.dart';
 import '../../common/values/font.dart';
 import '../../common/values/image.dart';
@@ -12,6 +14,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  var controller = Get.find<HomeController>();
+
   // var bottomNavigationTitles = ['广场', '心愿', '消息', '我的'];
   var bottomNavigationTitles = ['xx', 'xx', '消息', 'xx'];
   late PageController pageController;

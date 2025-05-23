@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../model/msg_model.dart';
 import '../utils/conts.dart';
 import 'custom_image.dart';
 
 class CustomConversation extends StatefulWidget {
   String imageUrl;
   String title;
-  String content;
-  int time;
+  MsgModel? recentMsg; //最新消息
   bool isBorder;
 
   CustomConversation(
       {required this.imageUrl,
       required this.title,
-      required this.content,
-      required this.time,
+      this.recentMsg,
       this.isBorder = true,
       super.key});
 
@@ -22,7 +21,8 @@ class CustomConversation extends StatefulWidget {
   State<CustomConversation> createState() => _CustomConversationState();
 }
 
-class _CustomConversationState extends State<CustomConversation> with SingleTickerProviderStateMixin {
+class _CustomConversationState extends State<CustomConversation>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -38,11 +38,16 @@ class _CustomConversationState extends State<CustomConversation> with SingleTick
   }
 
   String convertDate(int timestamp) {
+    if (timestamp == 0) {
+      return '';
+    }
     String formatStr = '';
     DateTime curTime = DateTime.now();
-    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp).toLocal();
+    DateTime dateTime =
+        DateTime.fromMillisecondsSinceEpoch(timestamp).toLocal();
     if (curTime.year != dateTime.year) {
-      formatStr = DateFormat('yyyy年MM月dd').format(dateTime); //yyyy-MM-dd HH:mm:ss
+      formatStr =
+          DateFormat('yyyy年MM月dd').format(dateTime); //yyyy-MM-dd HH:mm:ss
     } else if (curTime.day == dateTime.day) {
       formatStr = DateFormat('HH:mm').format(dateTime); //yyyy-MM-dd HH:mm:ss
     } else if (curTime.day == dateTime.day + 1) {
@@ -65,7 +70,8 @@ class _CustomConversationState extends State<CustomConversation> with SingleTick
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          ImageView(widget.imageUrl, height: defaultWidth, width: defaultHeight, fit: BoxFit.cover),
+          ImageView(widget.imageUrl,
+              height: defaultWidth, width: defaultHeight, fit: BoxFit.cover),
           Expanded(
               child: Container(
             padding: const EdgeInsets.only(left: 10),
@@ -78,25 +84,30 @@ class _CustomConversationState extends State<CustomConversation> with SingleTick
                       Text(
                         widget.title,
                         style: const TextStyle(
-                            fontSize: defaultFontSize, fontWeight: FontWeight.normal, color: Colors.black),
+                            fontSize: defaultFontSize,
+                            fontWeight: FontWeight.normal,
+                            color: Colors.black),
                       ),
                       const SizedBox(height: 5.0),
-                      Container(
-                        child: Text(
-                          widget.content,
+                      if (widget.recentMsg != null)
+                        Text(
+                          widget.recentMsg!.content ?? '',
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1, // 必需设置为1来使用ellipsis
-                          style: const TextStyle(fontSize: 13, color: Colors.black45),
+                          style: const TextStyle(
+                              fontSize: 13, color: Colors.black45),
                         ),
-                      ),
                     ],
                   ),
                 ),
                 // const Space(width: mainSpace),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [Text(convertDate(widget.time * 1000))],
-                )
+                if (widget.recentMsg != null)
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(convertDate(widget.recentMsg!.sendTime ?? 0 * 1000))
+                    ],
+                  )
               ],
             ),
           ))
