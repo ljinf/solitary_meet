@@ -2,11 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:solitary_meet/db/db_helper.dart';
 import 'package:solitary_meet/global.dart';
 import 'package:solitary_meet/model/conversation_model.dart';
+import 'package:solitary_meet/model/msg_model.dart';
 import 'package:solitary_meet/services/conversation.dart';
 
 class ConversationManager {
   var maxVersion = 0; //会话版本号
   var conList = <ConversationModel>[];
+
+  //会话最新一条消息
+  var recentMsg = <String, MsgModel>{};
+
+  //会话最新的消息序列号
+  var _convSeq = <String, int>{};
 
   void init() {
     loadConversationFromDB();
@@ -19,6 +26,13 @@ class ConversationManager {
     if (result.isNotEmpty) {
       conList.addAll(result);
     }
+    for (var item in conList) {
+      var msg = await dbHelp.loadRecentMsg(item.conversationId ?? '');
+      if (msg != null) {
+        recentMsg[item.conversationId ?? ''] = msg;
+        _convSeq[item.conversationId ?? ''] = msg.seq ?? 0;
+      }
+    }
     getConversationMaxVersion();
   }
 
@@ -28,6 +42,14 @@ class ConversationManager {
         .then((result) {
       maxVersion = result;
     });
+  }
+
+  void setConvRecentMsg(String conversationId, MsgModel msg) {
+    recentMsg[conversationId] = msg;
+  }
+
+  void setConvSeq(String conversationId, int seq) {
+    _convSeq[conversationId] = seq;
   }
 
   Future<bool> syncConversationFromRemote() async {

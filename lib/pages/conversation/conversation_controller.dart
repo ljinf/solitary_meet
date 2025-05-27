@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:solitary_meet/global.dart';
+import 'package:solitary_meet/manager/sync.dart';
 import 'package:solitary_meet/model/msg_model.dart';
 import 'package:solitary_meet/router/app_pages.dart';
 import 'package:solitary_meet/services/socket.dart';
@@ -8,6 +9,7 @@ import '../../model/conversation_model.dart';
 import '../../utils/conts.dart';
 
 class ConversationController extends GetxController implements MessageCallBack {
+  var conversationManager = Global.conversationManager;
   var conList = <ConversationModel>[].obs;
 
   //收取中
@@ -15,14 +17,14 @@ class ConversationController extends GetxController implements MessageCallBack {
 
   @override
   void onInit() {
+    getConversationList();
     ConnManager.addListener(conversationPage, this);
-    syncConversation();
     super.onInit();
   }
 
   @override
   void onReady() {
-    getConversationList();
+    syncConversation();
     super.onReady();
   }
 
@@ -36,9 +38,7 @@ class ConversationController extends GetxController implements MessageCallBack {
   void syncConversation() async {
     collecting = true;
     try {
-      var more = await Global.conversationManager.syncConversationFromRemote();
-      if (more) {
-        await Global.conversationManager.loadConversationFromDB();
+      if (await SyncManager.syncConversationList()) {
         getConversationList();
       }
     } finally {
@@ -47,7 +47,6 @@ class ConversationController extends GetxController implements MessageCallBack {
   }
 
   void refreshConversationList() async {
-    conList.clear();
     getConversationList();
   }
 
@@ -64,19 +63,14 @@ class ConversationController extends GetxController implements MessageCallBack {
   @override
   void onMessage(MsgModel msg) {
     print("conversation calback");
-    /* bool exist = false;
-    ConversationModel? item;
-    for (int i = 0; i < conList.length; i++) {
-      if (conList[i].conversationId == msg.conversationId) {
-        exist = true;
-        item = conList[i];
-        item.recentMsg = msg;
-        conList.removeAt(i);
-        break;
+
+    Global.msgManager.saveMsg([msg]).then((success) {
+      if (success) {
+        Global.conversationManager
+            .setConvRecentMsg(msg.conversationId ?? '', msg);
+        Global.conversationManager
+            .setConvSeq(msg.conversationId ?? '', msg.seq ?? 0);
       }
-    }
-    if (exist) {
-      conList.insert(0, item!);
-    }*/
+    });
   }
 }

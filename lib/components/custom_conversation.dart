@@ -105,7 +105,7 @@ class _CustomConversationState extends State<CustomConversation>
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(convertDate(widget.recentMsg!.sendTime ?? 0 * 1000))
+                      Text(convertDate((widget.recentMsg!.sendTime ?? 0) * 1000))
                     ],
                   )
               ],

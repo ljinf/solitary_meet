@@ -129,6 +129,14 @@ packages:
       url: "https://mirrors.cloud.tencent.com/dart-pub/"
     source: hosted
     version: "2.0.0"
+  easy_event_bus:
+    dependency: "direct main"
+    description:
+      name: easy_event_bus
+      sha256: "6b9a8e5c6f7e03d5d6d73e1460905a3a22b35e44ddb8027bfa0e3b9e9399d667"
+      url: "https://mirrors.cloud.tencent.com/dart-pub/"
+    source: hosted
+    version: "0.8.2"
   extended_text:
     dependency: "direct main"
     description:

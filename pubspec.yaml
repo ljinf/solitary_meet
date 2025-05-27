@@ -67,6 +67,8 @@ dependencies:
   sqflite: ^2.3.3
   path: ^1.9.0
 
+  easy_event_bus: ^0.8.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

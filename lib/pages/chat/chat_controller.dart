@@ -31,13 +31,13 @@ class ChatController extends GetxController implements MessageCallBack {
     friendId = Get.arguments['user_id'];
     title = Get.arguments['title'];
     avatar = Get.arguments['avatar'];
-    loadHistoryMsg();
+    loadMsgList();
   }
 
   @override
   void onReady() {
     super.onReady();
-    // ConnManager.addListener(convId, this);
+    ConnManager.addListener(convId, this);
     focusNode.addListener(_focusNodeListener);
   }
 
@@ -47,15 +47,14 @@ class ChatController extends GetxController implements MessageCallBack {
     scrollController.dispose();
     refreshController.dispose();
     textController.dispose();
-    // ConnManager.remListener(convId);
+    ConnManager.remListener(convId);
     focusNode.removeListener(_focusNodeListener);
   }
 
-  void loadHistoryMsg() async {
-    var resp = await ChatAPI.getChatHistoryMsgList(
-        params: {"conversation_id": convId, "seq": seq, "page_size": pageSize});
-    if (resp != null && resp.isNotEmpty) {
-      msgList.addAll(resp);
+  void loadMsgList() async {
+    var result = await Global.msgManager.getMsgList(convId, seq);
+    if (result.isNotEmpty) {
+      msgList.addAll(result.reversed.toList());
       seq = msgList[0].seq!;
     }
     update(msgList);
@@ -63,7 +62,7 @@ class ChatController extends GetxController implements MessageCallBack {
   }
 
   void onRefresh() async {
-    loadHistoryMsg();
+    loadMsgList();
     // if failed,use refreshFailed()
     refreshController.refreshCompleted();
   }
@@ -110,7 +109,7 @@ class ChatController extends GetxController implements MessageCallBack {
   }
 
   void jumpToBottom() {
-    Future.delayed(const Duration(milliseconds: 300)).then((_) {
+    Future.delayed(const Duration(milliseconds: 100)).then((_) {
       scrollController.jumpTo(scrollController.position.maxScrollExtent);
     });
   }

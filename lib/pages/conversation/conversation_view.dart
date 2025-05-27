@@ -1,3 +1,4 @@
+import 'package:easy_event_bus/easy_event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -21,6 +22,14 @@ class _ConversationPageState extends State<ConversationPage> {
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+
+  @override
+  void initState() {
+    EasyEventBus.on('updateConversation', (event) {
+      pageController.getConversationList();
+    });
+    super.initState();
+  }
 
   void _onRefresh() async {}
 
@@ -75,7 +84,8 @@ class _ConversationPageState extends State<ConversationPage> {
                   child: Obx(() => CustomConversation(
                         imageUrl: avatar,
                         title: title,
-                        recentMsg: pageController.conList[index].recentMsg,
+                        recentMsg: pageController.conversationManager.recentMsg[
+                            pageController.conList[index].conversationId],
                       )),
                 );
               },

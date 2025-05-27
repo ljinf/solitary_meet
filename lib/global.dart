@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:solitary_meet/common/values/values.dart';
 import 'package:solitary_meet/manager/conversion.dart';
 import 'package:solitary_meet/manager/friend.dart';
+import 'package:solitary_meet/manager/msg.dart';
 import 'package:solitary_meet/model/login_model.dart';
 import 'package:solitary_meet/utils/utils.dart';
 
@@ -21,6 +22,7 @@ class Global {
 
   static late FriendManager friendManager;
   static late ConversationManager conversationManager;
+  static late MsgManager msgManager;
 
   /// init
   static Future init() async {
@@ -69,11 +71,13 @@ class Global {
   static Future initManagers() async {
     friendManager = FriendManager();
     conversationManager = ConversationManager();
+    msgManager = MsgManager();
 
     if (userProfile!.token != null) {
       //初始化数据
       Global.friendManager.init();
       Global.conversationManager.init();
+      msgManager.init();
     }
   }
 

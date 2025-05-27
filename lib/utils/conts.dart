@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 int appId = 1400250651;
 
-int conversationPage = 0x00000000000;
+String conversationPage = "0x00000000000";
 
 const defaultBackgroundColor = Color(0xFFeeeeee);
 
@@ -44,9 +44,11 @@ const myCode = 'http://flutterj.com/c.jpg';
 
 const download = 'http://flutterj.com/download.png';
 
-const helpUrl = 'https://kf.qq.com/touch/product/wechat_app.html?scene_id=kf338';
+const helpUrl =
+    'https://kf.qq.com/touch/product/wechat_app.html?scene_id=kf338';
 
-const defContentImg = 'https://www.runoob.com/wp-content/uploads/2015/06/image_1c58e950q14da167k1nqpu2hn5e9.png';
+const defContentImg =
+    'https://www.runoob.com/wp-content/uploads/2015/06/image_1c58e950q14da167k1nqpu2hn5e9.png';
 
 const defaultWidth = 50.0;
 

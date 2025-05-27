@@ -74,8 +74,8 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
             controller: controller.refreshController,
             child: Obx(() => ListView.builder(
                   controller: controller.scrollController,
-                  physics: const BouncingScrollPhysics(),
-                  // physics: const ClampingScrollPhysics(),
+                  // physics: const BouncingScrollPhysics(),
+                  physics: const ClampingScrollPhysics(),
                   itemBuilder: (ctx, index) {
                     String avatar = uAvatar;
                     bool isSelf = true;

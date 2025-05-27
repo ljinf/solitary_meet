@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:solitary_meet/db/db_helper.dart';
 import 'package:solitary_meet/global.dart';
 import 'package:solitary_meet/model/msg_model.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -24,7 +25,7 @@ class ConnManager {
   static ConnStatus connStatus = ConnStatus.connecting;
 
   //会话ID
-  static Map<int, MessageCallBack> listenList = {};
+  static Map<String, MessageCallBack> listenList = {};
 
   static void initSocket() async {
     connectToWebSocket();
@@ -33,7 +34,8 @@ class ConnManager {
   static void connectToWebSocket() async {
     try {
       // 连接到WebSocket服务器
-      socket = WebSocketChannel.connect(Uri.parse('$SOCKET_HOST_DEV?token=${Global.userProfile?.token}'));
+      socket = WebSocketChannel.connect(
+          Uri.parse('$SOCKET_HOST_DEV?token=${Global.userProfile?.token}'));
       // 监听消息
       StreamSubscription<dynamic> subscription = socket.stream.listen(
         (data) {
@@ -44,7 +46,7 @@ class ConnManager {
             _onMessage(utf8.decode(data));
           } else {
             // 处理文本消息（如果服务器也发送文本消息）
-            print('Received text: $data');
+            // print('Received text: $data');
             _onMessage(data);
           }
         },
@@ -83,12 +85,12 @@ class ConnManager {
     socket.sink.close();
   }
 
-  static addListener(int convId, MessageCallBack listener) {
+  static addListener(String convId, MessageCallBack listener) {
     listenList[convId] = listener;
     print('conn manager add listener $convId');
   }
 
-  static remListener(int convId) {
+  static remListener(String convId) {
     listenList.remove(convId);
     print('conn manager rem listener $convId');
   }

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:solitary_meet/db/db_helper.dart';
 import 'package:solitary_meet/manager/sync.dart';
 import 'package:solitary_meet/router/app_pages.dart';
 import 'package:solitary_meet/services/socket.dart';
@@ -16,10 +17,18 @@ class HomeController extends GetxController {
 
     //好友信息
     SyncManager.syncFriendList();
+
+    //同步会话
+    SyncManager.syncConversationList().then((res) {
+      //历史消息
+      SyncManager.syncMsgList();
+    });
   }
 
   @override
-  void onClose() {}
+  void onClose() {
+    dbHelp.close();
+  }
 
   toSearchPage() {
     Get.toNamed(AppRoutes.Search);
