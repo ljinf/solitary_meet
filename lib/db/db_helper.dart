@@ -127,13 +127,17 @@ class Dbhelper {
     }
   }
 
-  ///加载会话消息 order by `seq` desc
-  Future<List<MsgModel>> loadMsgList(String conversationId, int seq) async {
+  ///加载会话消息
+  Future<List<MsgModel>> loadMsgList(String conversationId, int seq, int limit,
+      String direction, String orderType) async {
     List<MsgModel> models = [];
+    if (orderType == '') {
+      orderType = 'DESC';
+    }
     var dbClient = await db;
     var result = await dbClient!.rawQuery(
-        "SELECT * FROM `msg_list` WHERE `conversation_id`=? and `seq`> ? and `is_del`=0 ORDER BY `seq` DESC LIMIT 50",
-        [conversationId, seq]);
+        "SELECT * FROM `msg_list` WHERE `conversation_id`=? and `seq` $direction ? and `is_del`=0 ORDER BY `seq` $orderType LIMIT ?",
+        [conversationId, seq, limit]);
     List list = result.toList();
     models.addAll(list.map((i) => MsgModel.fromJson(i)).toList());
     return models;

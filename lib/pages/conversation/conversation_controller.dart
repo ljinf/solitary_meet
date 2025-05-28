@@ -24,7 +24,6 @@ class ConversationController extends GetxController implements MessageCallBack {
 
   @override
   void onReady() {
-    syncConversation();
     super.onReady();
   }
 
@@ -70,6 +69,8 @@ class ConversationController extends GetxController implements MessageCallBack {
             .setConvRecentMsg(msg.conversationId ?? '', msg);
         Global.conversationManager
             .setConvSeq(msg.conversationId ?? '', msg.seq ?? 0);
+
+        getConversationList();
       }
     });
   }

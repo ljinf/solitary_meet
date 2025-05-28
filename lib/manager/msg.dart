@@ -19,8 +19,10 @@ class MsgManager {
   }
 
   ///获取会话消息
-  Future<List<MsgModel>> getMsgList(String conversationId, int seq) async {
-    return await dbHelp.loadMsgList(conversationId, seq);
+  Future<List<MsgModel>> getMsgList(String conversationId, int seq, int limit,
+      String direction, String orderType) async {
+    return await dbHelp.loadMsgList(
+        conversationId, seq, limit, direction, orderType);
   }
 
   ///保存消息

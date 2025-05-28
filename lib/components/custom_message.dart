@@ -12,14 +12,16 @@ class CustomMessage extends StatefulWidget {
   bool isSelf; //是否自己
   int? sendTime;
 
-  CustomMessage(this.avatar, this.content, this.contentType, this.isSelf, {this.name = "", this.sendTime = 0, Key? key})
+  CustomMessage(this.avatar, this.content, this.contentType, this.isSelf,
+      {this.name = "", this.sendTime = 0, Key? key})
       : super(key: key);
 
   @override
   State<CustomMessage> createState() => _CustomMessageState();
 }
 
-class _CustomMessageState extends State<CustomMessage> with SingleTickerProviderStateMixin {
+class _CustomMessageState extends State<CustomMessage>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   double imgSize = 42.0;
@@ -46,20 +48,24 @@ class _CustomMessageState extends State<CustomMessage> with SingleTickerProvider
 
   Widget txtView(BuildContext ctx) {
     if (widget.isSelf) {
-      return Container(
-        margin: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (widget.sendTime! > 0)
-              Container(
-                margin: const EdgeInsets.only(bottom: 2),
-                child: Text(
-                  convertDate(widget.sendTime! * 1000),
-                  style: const TextStyle(fontSize: 12, color: Colors.black45),
-                ),
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (widget.sendTime! > 0)
+            Container(
+              margin: const EdgeInsets.only(
+                bottom: 5,
+                top: 5,
               ),
-            SizedBox(
+              child: Text(
+                convertDate(widget.sendTime! * 1000),
+                style: const TextStyle(fontSize: 12, color: Colors.black45),
+              ),
+            ),
+          Container(
+            margin:
+                const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+            child: SizedBox(
               width: getDeviceWidth(ctx),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,70 +74,87 @@ class _CustomMessageState extends State<CustomMessage> with SingleTickerProvider
                   Container(
                     margin: const EdgeInsets.only(right: 6),
                     padding: const EdgeInsets.all(10),
-                    constraints: BoxConstraints(maxWidth: getDeviceWidth(ctx) * 0.65),
+                    constraints:
+                        BoxConstraints(maxWidth: getDeviceWidth(ctx) * 0.65),
                     decoration: const BoxDecoration(
                       // color: Color(0xFFd6e4f0),
                       color: Color(0xFFBDBDBD),
                       borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(6), bottomLeft: Radius.circular(6), bottomRight: Radius.circular(6)),
+                          topLeft: Radius.circular(8),
+                          bottomLeft: Radius.circular(8),
+                          bottomRight: Radius.circular(8)),
                     ),
                     child: Text(widget.content,
-                        textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: fontSize)),
+                        textAlign: TextAlign.left,
+                        style:
+                            TextStyle(color: Colors.black, fontSize: fontSize)),
                   ),
-                  ImageView(widget.avatar, height: imgSize, width: imgSize, fit: BoxFit.cover),
+                  ImageView(widget.avatar,
+                      height: imgSize, width: imgSize, fit: BoxFit.cover),
                 ],
               ),
-            )
-          ],
-        ),
+            ),
+          ),
+        ],
       );
     }
-    return Container(
-      margin: const EdgeInsets.only(left: 10, right: 46, top: 5, bottom: 5),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (widget.sendTime! > 0)
-            Container(
-              margin: const EdgeInsets.only(bottom: 2),
-              child: Text(
-                convertDate(widget.sendTime! * 1000),
-                style: const TextStyle(fontSize: 12, color: Colors.black45),
-              ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        if (widget.sendTime! > 0)
+          Container(
+            margin: const EdgeInsets.only(
+              bottom: 5,
+              top: 5,
             ),
-          SizedBox(
+            child: Text(
+              convertDate(widget.sendTime! * 1000),
+              style: const TextStyle(fontSize: 12, color: Colors.black45),
+            ),
+          ),
+        Container(
+          margin: const EdgeInsets.only(left: 10, right: 46, top: 5, bottom: 5),
+          child: SizedBox(
             width: getDeviceWidth(ctx),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                ImageView(widget.avatar, height: imgSize, width: imgSize, fit: BoxFit.cover),
+                ImageView(widget.avatar,
+                    height: imgSize, width: imgSize, fit: BoxFit.cover),
                 Container(
                   margin: const EdgeInsets.only(left: 6),
                   padding: const EdgeInsets.all(10),
-                  constraints: BoxConstraints(maxWidth: getDeviceWidth(ctx) * 0.65),
+                  constraints:
+                      BoxConstraints(maxWidth: getDeviceWidth(ctx) * 0.65),
                   decoration: const BoxDecoration(
                     color: Color(0xFFeeeeee),
                     borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(6), bottomLeft: Radius.circular(6), bottomRight: Radius.circular(6)),
+                        topRight: Radius.circular(8),
+                        bottomLeft: Radius.circular(8),
+                        bottomRight: Radius.circular(8)),
                   ),
                   child: Text(widget.content,
-                      textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: fontSize)),
+                      textAlign: TextAlign.left,
+                      style:
+                          TextStyle(color: Colors.black, fontSize: fontSize)),
                 ),
               ],
             ),
-          )
-        ],
-      ),
+          ),
+        )
+      ],
     );
   }
 
   String convertDate(int timestamp) {
     String formatStr = '';
     DateTime curTime = DateTime.now();
-    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp).toLocal();
+    DateTime dateTime =
+        DateTime.fromMillisecondsSinceEpoch(timestamp).toLocal();
     if (curTime.year != dateTime.year) {
-      formatStr = DateFormat('yyyy年MM月dd HH:mm').format(dateTime); //yyyy-MM-dd HH:mm:ss
+      formatStr =
+          DateFormat('yyyy年MM月dd HH:mm').format(dateTime); //yyyy-MM-dd HH:mm:ss
     } else if (curTime.day == dateTime.day) {
       formatStr = DateFormat('HH:mm').format(dateTime); //yyyy-MM-dd HH:mm:ss
     } else if (curTime.day == dateTime.day + 1) {

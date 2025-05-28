@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:solitary_meet/global.dart';
 import 'package:solitary_meet/model/msg_model.dart';
-import 'package:solitary_meet/services/chat.dart';
 import 'package:solitary_meet/services/socket.dart';
 
 import '../../utils/conts.dart';
@@ -16,7 +15,10 @@ class ChatController extends GetxController implements MessageCallBack {
   String curUid = Global.userProfile?.userId ?? "";
   late String convId, friendId; //对方的id
   late String title, avatar;
-  int seq = 0, pageSize = 30;
+  int seq = 0, limit = 20;
+
+  //是否首次加载，第一次加载信息不要太多，30条，方便滚动到底部
+  bool isFirstLoad = true;
 
   ScrollController scrollController = ScrollController();
   RefreshController refreshController =
@@ -31,7 +33,7 @@ class ChatController extends GetxController implements MessageCallBack {
     friendId = Get.arguments['user_id'];
     title = Get.arguments['title'];
     avatar = Get.arguments['avatar'];
-    loadMsgList();
+    loadMsgList(true);
   }
 
   @override
@@ -51,19 +53,43 @@ class ChatController extends GetxController implements MessageCallBack {
     focusNode.removeListener(_focusNodeListener);
   }
 
-  void loadMsgList() async {
-    var result = await Global.msgManager.getMsgList(convId, seq);
+  void loadMsgList(bool reversed,
+      {bool toBottom = true,
+      String direction = ">",
+      String orderType = 'DESC'}) async {
+    var result = await Global.msgManager
+        .getMsgList(convId, seq, limit, direction, orderType);
     if (result.isNotEmpty) {
-      msgList.addAll(result.reversed.toList());
+      var list = <MsgModel>[];
+      if (reversed) {
+        list = result.reversed.toList();
+      } else {
+        list = result;
+      }
+
+      switch (direction) {
+        case ">":
+          msgList.addAll(list);
+          break;
+        case "<":
+          msgList.insertAll(0, list);
+          break;
+      }
+
       seq = msgList[0].seq!;
+      update(msgList);
+      if (toBottom) {
+        jumpToBottom();
+      }
     }
-    update(msgList);
-    jumpToBottom();
+    if (isFirstLoad) {
+      isFirstLoad = false;
+      limit = 50;
+    }
   }
 
   void onRefresh() async {
-    loadMsgList();
-    // if failed,use refreshFailed()
+    loadMsgList(false, toBottom: false, direction: "<", orderType: "ASC");
     refreshController.refreshCompleted();
   }
 
@@ -77,17 +103,15 @@ class ChatController extends GetxController implements MessageCallBack {
     }
 
     var chatData = {
+      "client_id": "${DateTime.now().millisecond}",
       "conversation_id": convId,
+      "user_id": curUid,
       "target_id": friendId,
       "content": txtData,
       "content_type": contentTypeTxt,
     };
-    var resp = await ChatAPI.sendMsg(params: chatData);
-    if (resp != null) {
-      msgList.add(resp);
-    }
+    await ConnManager.sendJson(3, chatData);
     textController.clear();
-    scrollToBottom();
   }
 
   @override

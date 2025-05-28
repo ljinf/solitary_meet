@@ -1,12 +1,16 @@
+import 'dart:async';
+
 import 'package:easy_event_bus/easy_event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:solitary_meet/components/components.dart';
+import 'package:solitary_meet/common/values/font.dart';
 import 'package:solitary_meet/global.dart';
 import 'package:solitary_meet/pages/conversation/conversation_controller.dart';
 import 'package:solitary_meet/router/app_pages.dart';
+import 'package:solitary_meet/services/socket.dart';
 import 'package:solitary_meet/utils/conts.dart';
+
+import '../../components/custom_conversation.dart';
 
 class ConversationPage extends StatefulWidget {
   const ConversationPage({super.key});
@@ -20,18 +24,44 @@ class _ConversationPageState extends State<ConversationPage> {
 
   String curLoginUid = Global.userProfile?.userId ?? "";
 
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  late Timer timer;
+  var networkConnected = true;
 
   @override
   void initState() {
     EasyEventBus.on('updateConversation', (event) {
       pageController.getConversationList();
     });
+    checkNetwork();
     super.initState();
   }
 
-  void _onRefresh() async {}
+  ///检查网络
+  void checkNetwork() {
+    // 每3秒执行一次
+    timer = Timer.periodic(const Duration(seconds: 3), (Timer timer) {
+      // debugPrint("retry connect ${ConnManager.connStatus}");
+      if (ConnManager.connStatus == ConnStatus.connected) {
+        setState(() {
+          networkConnected = true;
+        });
+      } else if (ConnManager.connStatus == ConnStatus.closed) {
+        setState(() {
+          networkConnected = false;
+        });
+      }
+      if (ConnManager.connStatus == ConnStatus.closed) {
+        ConnManager.retryConnect();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // 如果需要停止定时器
+    timer.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,46 +82,78 @@ class _ConversationPageState extends State<ConversationPage> {
           ),
         ],
       ),
-      body: SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: false,
-        header: const WaterDropHeader(),
-        controller: _refreshController,
-        onRefresh: _onRefresh,
-        child: Obx(() => ListView.builder(
-              itemBuilder: (ctx, index) {
-                var friendId = '', avatar = '';
-                if (pageController.conList[index].type == 0) {
-                  var ids =
-                      pageController.conList[index].conversationId!.split("-");
-                  friendId = ids
-                      .where((id) => id != Global.userProfile!.userId)
-                      .toList()[0];
+      body: Column(
+        children: [
+          getNetworkStatusView(),
+          Expanded(child: Obx(() => ListView.builder(
+            itemBuilder: (ctx, index) {
+              var friendId = '', avatar = '';
+              if (pageController.conList[index].type == 0) {
+                var ids = pageController.conList[index].conversationId!
+                    .split("-");
+                friendId = ids
+                    .where((id) => id != Global.userProfile!.userId)
+                    .toList()[0];
 
-                  avatar =
-                      Global.friendManager.friendAvatars[friendId] ?? defIcon;
-                }
+                avatar =
+                    Global.friendManager.friendAvatars[friendId] ?? defIcon;
+              }
 
-                String title =
-                    Global.friendManager.friends[friendId]?.remark ?? '';
+              String title =
+                  Global.friendManager.friends[friendId]?.remark ?? '';
 
-                return GestureDetector(
-                  onTap: () => pageController.toChatPage(
-                      pageController.conList[index].conversationId!,
-                      friendId,
-                      avatar,
-                      title),
-                  child: Obx(() => CustomConversation(
-                        imageUrl: avatar,
-                        title: title,
-                        recentMsg: pageController.conversationManager.recentMsg[
-                            pageController.conList[index].conversationId],
-                      )),
-                );
-              },
-              itemCount: pageController.conList.length,
-            )),
+              return GestureDetector(
+                onTap: () => pageController.toChatPage(
+                    pageController.conList[index].conversationId!,
+                    friendId,
+                    avatar,
+                    title),
+                child: Obx(() => CustomConversation(
+                  imageUrl: avatar,
+                  title: title,
+                  recentMsg:
+                  pageController.conversationManager.recentMsg[
+                  pageController.conList[index].conversationId],
+                )),
+              );
+            },
+            itemCount: pageController.conList.length,
+          )))
+        ],
       ),
     );
+  }
+
+  Widget getNetworkStatusView() {
+    if (!networkConnected) {
+      return Container(
+        decoration: const BoxDecoration(
+          color: Color(0xFFe0e0e0),
+        ),
+        height: 30,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(
+              width: 15.0,
+              height: 15.0,
+              child: CircularProgressIndicator(
+                color: Colors.blue,
+                strokeWidth: 2,
+              ),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Text(
+              networkConnected ? '已连接' : '连接中...',
+              style: const TextStyle(
+                  color: Colors.black54, fontSize: AppFont.FontSize12),
+            ),
+          ],
+        ),
+      );
+    }
+    return Container();
   }
 }
