@@ -26,6 +26,11 @@ class ConversationManager {
     if (result.isNotEmpty) {
       conList.addAll(result);
     }
+    loadRecentMsg();
+    getConversationMaxVersion();
+  }
+
+  Future<void> loadRecentMsg() async {
     for (var item in conList) {
       var msg = await dbHelp.loadRecentMsg(item.conversationId ?? '');
       if (msg != null) {
@@ -33,7 +38,6 @@ class ConversationManager {
         _convSeq[item.conversationId ?? ''] = msg.seq ?? 0;
       }
     }
-    getConversationMaxVersion();
   }
 
   void getConversationMaxVersion() {

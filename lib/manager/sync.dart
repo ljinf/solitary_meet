@@ -24,6 +24,9 @@ class SyncManager {
   static Future<bool> syncMsgList() async {
     var hasmore = await Global.msgManager.syncHistoryUserMsgList();
     if (hasmore) {
+      //更新会话最近消息
+      await Global.conversationManager.loadRecentMsg();
+
       //有新的消息更新会话列表
       EasyEventBus.fire('updateConversation', '');
     }

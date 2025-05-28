@@ -1,9 +1,9 @@
 import 'package:solitary_meet/env.dart';
 
 // 开发环境
-const SERVER_HOST_DEV = 'http://192.168.1.245:8000';
+const SERVER_HOST_DEV = 'http://192.168.31.251:8000';
 
-const SOCKET_HOST_DEV = 'ws://192.168.1.245:8000/ws';
+const SOCKET_HOST_DEV = 'ws://192.168.31.251:8000/ws';
 
 // 生产环境
 // 生产环境地址禁止随意修改！！！

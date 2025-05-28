@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:easy_event_bus/easy_event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:solitary_meet/common/colors/colors.dart';
 import 'package:solitary_meet/common/values/font.dart';
 import 'package:solitary_meet/global.dart';
 import 'package:solitary_meet/pages/conversation/conversation_controller.dart';
@@ -68,6 +69,7 @@ class _ConversationPageState extends State<ConversationPage> {
     return Scaffold(
       backgroundColor: defaultBackgroundColor,
       appBar: AppBar(
+        backgroundColor: appBarColor,
         centerTitle: true,
         title: const Text("消息"),
         actions: [
