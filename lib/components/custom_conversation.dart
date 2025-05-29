@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:solitary_meet/common/colors/colors.dart';
 import 'package:solitary_meet/common/values/font.dart';
+import 'package:solitary_meet/common/values/image.dart';
 import '../model/msg_model.dart';
 import '../utils/conts.dart';
 import 'custom_image.dart';
@@ -95,7 +96,7 @@ class _CustomConversationState extends State<CustomConversation>
                         widget.title,
                         style: const TextStyle(
                             fontSize: defaultFontSize,
-                            fontWeight: FontWeight.normal,
+                            fontWeight: FontWeight.w500,
                             color: Colors.black),
                       ),
                       const SizedBox(height: 5.0),
@@ -110,6 +111,7 @@ class _CustomConversationState extends State<CustomConversation>
                     ],
                   ),
                 ),
+                const SizedBox(width: 10),
                 // const Space(width: mainSpace),
                 if (widget.recentMsg != null)
                   Column(
@@ -126,10 +128,10 @@ class _CustomConversationState extends State<CustomConversation>
                       ),
                       if ((widget.recentMsg!.seq ?? 0) > widget.readSeq)
                         Container(
-                          width: 24,
-                          height: 24,
+                          width: AppImage.ImageSize22,
+                          height: AppImage.ImageSize22,
                           decoration: BoxDecoration(
-                            color: Colors.red,
+                            color: Colors.red[400],
                             borderRadius: BorderRadius.circular(50),
                             shape: BoxShape.rectangle,
                           ),
@@ -139,7 +141,7 @@ class _CustomConversationState extends State<CustomConversation>
                               '${(widget.recentMsg!.seq ?? 0) - widget.readSeq}',
                               style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: AppFont.FontSize10),
+                                  fontSize: AppFont.FontSize12),
                             ),
                           ),
                         )

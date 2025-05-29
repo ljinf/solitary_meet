@@ -66,46 +66,46 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
       body: Column(
         children: [
           Expanded(
-            child: Obx(()=>SmartRefresher(
-              enablePullDown: true,
-              enablePullUp: false,
-              onRefresh: controller.onRefresh,
-              header: const WaterDropHeader(
-                waterDropColor: Colors.blue,
-              ),
-              controller: controller.refreshController,
-              child: ListView.builder(
-                controller: controller.scrollController,
-                physics: const ClampingScrollPhysics(),
-                itemBuilder: (ctx, index) {
-                  String avatar = uAvatar;
-                  bool isSelf = true;
+            child: Obx(() => SmartRefresher(
+                  enablePullDown: true,
+                  enablePullUp: false,
+                  onRefresh: controller.onRefresh,
+                  header: const WaterDropHeader(
+                    waterDropColor: Colors.blue,
+                  ),
+                  controller: controller.refreshController,
+                  child: ListView.builder(
+                    controller: controller.scrollController,
+                    physics: const ClampingScrollPhysics(),
+                    itemBuilder: (ctx, index) {
+                      String avatar = uAvatar;
+                      bool isSelf = true;
 
-                  if (curUid != controller.msgList[index].userId) {
-                    avatar = controller.avatar ?? "";
-                    isSelf = false;
-                  }
+                      if (curUid != controller.msgList[index].userId) {
+                        avatar = controller.avatar ?? "";
+                        isSelf = false;
+                      }
 
-                  //两分钟内不显示时间
-                  var sendTime = 0;
-                  if (index > 1) {
-                    var preTime = controller.msgList[index - 1].sendTime ?? 0;
-                    sendTime = controller.msgList[index].sendTime ?? 0;
-                    if (sendTime - preTime <= 120) {
-                      sendTime = 0;
-                    }
-                  }
-                  return CustomMessage(
-                    avatar,
-                    controller.msgList[index].content!,
-                    controller.msgList[index].contentType!,
-                    isSelf,
-                    sendTime: sendTime,
-                  );
-                },
-                itemCount: controller.msgList.length,
-              ),
-            )),
+                      var sendTime = controller.msgList[index].sendTime ?? 0;
+                      if (index > 0) {
+                        var preTime =
+                            controller.msgList[index - 1].sendTime ?? 0;
+                        //两分钟内不显示时间
+                        if (sendTime - preTime <= 120) {
+                          sendTime = 0;
+                        }
+                      }
+                      return CustomMessage(
+                        avatar,
+                        controller.msgList[index].content!,
+                        controller.msgList[index].contentType!,
+                        isSelf,
+                        sendTime: sendTime,
+                      );
+                    },
+                    itemCount: controller.msgList.length,
+                  ),
+                )),
           ),
           const Divider(height: 1.0),
           Container(

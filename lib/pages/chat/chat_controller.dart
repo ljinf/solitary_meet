@@ -120,6 +120,9 @@ class ChatController extends GetxController implements MessageCallBack {
     msgList.add(msg);
     update(msgList);
     scrollToBottom();
+
+    //更新已读seq
+    Global.conversationManager.setConvReadSeq(convId, msg.seq ?? 0);
   }
 
   void scrollToBottom() {

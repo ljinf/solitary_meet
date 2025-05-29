@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:solitary_meet/common/values/font.dart';
 import 'package:solitary_meet/components/components.dart';
 import 'package:solitary_meet/utils/conts.dart';
 import 'package:solitary_meet/utils/screen_device.dart';
@@ -25,7 +26,7 @@ class _CustomMessageState extends State<CustomMessage>
   late AnimationController _controller;
 
   double imgSize = 42.0;
-  double fontSize = 18.0;
+  double fontSize = AppFont.FontSize16;
 
   @override
   void initState() {
@@ -54,17 +55,18 @@ class _CustomMessageState extends State<CustomMessage>
           if (widget.sendTime! > 0)
             Container(
               margin: const EdgeInsets.only(
-                bottom: 5,
-                top: 5,
+                bottom: mainSpace,
+                top: mainSpace,
               ),
               child: Text(
                 convertDate(widget.sendTime! * 1000),
-                style: const TextStyle(fontSize: 12, color: Colors.black45),
+                style: const TextStyle(
+                    fontSize: AppFont.FontSize13, color: Colors.black45),
               ),
             ),
           Container(
-            margin:
-                const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+            margin: const EdgeInsets.only(
+                left: 10, right: 10, top: 0, bottom: mainSpace),
             child: SizedBox(
               width: getDeviceWidth(ctx),
               child: Row(
@@ -78,7 +80,7 @@ class _CustomMessageState extends State<CustomMessage>
                         BoxConstraints(maxWidth: getDeviceWidth(ctx) * 0.65),
                     decoration: const BoxDecoration(
                       // color: Color(0xFFd6e4f0),
-                      color: Color(0xFFBDBDBD),
+                      color: Color(0xFFe6f2ff),
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(8),
                           bottomLeft: Radius.circular(8),
@@ -107,16 +109,18 @@ class _CustomMessageState extends State<CustomMessage>
         if (widget.sendTime! > 0)
           Container(
             margin: const EdgeInsets.only(
-              bottom: 5,
-              top: 5,
+              bottom: mainSpace,
+              top: mainSpace,
             ),
             child: Text(
               convertDate(widget.sendTime! * 1000),
-              style: const TextStyle(fontSize: 12, color: Colors.black45),
+              style: const TextStyle(
+                  fontSize: AppFont.FontSize13, color: Colors.black45),
             ),
           ),
         Container(
-          margin: const EdgeInsets.only(left: 10, right: 46, top: 5, bottom: 5),
+          margin: const EdgeInsets.only(
+              left: 10, right: 46, top: 0, bottom: mainSpace),
           child: SizedBox(
             width: getDeviceWidth(ctx),
             child: Row(
@@ -134,7 +138,7 @@ class _CustomMessageState extends State<CustomMessage>
                   constraints:
                       BoxConstraints(maxWidth: getDeviceWidth(ctx) * 0.65),
                   decoration: const BoxDecoration(
-                    color: Color(0xFFeeeeee),
+                    color: Color(0xFFf2f2f2),//f5f5f5  #f6f6f6
                     borderRadius: BorderRadius.only(
                         topRight: Radius.circular(8),
                         bottomLeft: Radius.circular(8),

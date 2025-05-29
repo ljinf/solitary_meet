@@ -21,7 +21,7 @@ class ConversationManager {
 
   Future<void> loadConversationFromDB() async {
     var result =
-    await dbHelp.loadConversationList(Global.userProfile!.userId ?? '');
+        await dbHelp.loadConversationList(Global.userProfile!.userId ?? '');
     if (result.isNotEmpty) {
       for (var item in result) {
         conList[item.conversationId ?? ''] = item;
@@ -39,6 +39,15 @@ class ConversationManager {
         _convSeq[item] = msg.seq ?? 0;
       }
     }
+  }
+
+  ///获取消息序列号
+  int getRecentMsgSeq(String convId) {
+    var msg = recentMsg[convId];
+    if (msg != null) {
+      return msg.seq ?? 0;
+    }
+    return 0;
   }
 
   ///会话最大版本号
@@ -72,8 +81,7 @@ class ConversationManager {
 
   ///从服务器同步会话
   Future<bool> syncConversationFromRemote() async {
-    int pageNum = 1,
-        pageSize = 200;
+    int pageNum = 1, pageSize = 200;
     int num = 1;
     //是否新的会话
     bool hasMore = false;
@@ -106,8 +114,8 @@ class ConversationManager {
     return hasMore;
   }
 
-  Future<Map<String, dynamic>?> _doSyncConversationList(int version,
-      int pageNum, int pageSize) async {
+  Future<Map<String, dynamic>?> _doSyncConversationList(
+      int version, int pageNum, int pageSize) async {
     var result = await ConversationAPI.getConversationList(params: {
       "page_num": pageNum,
       "page_size": pageSize,

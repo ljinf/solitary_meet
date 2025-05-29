@@ -87,6 +87,7 @@ class _ConversationPageState extends State<ConversationPage> {
       backgroundColor: defaultBackgroundColor,
       appBar: AppBar(
         backgroundColor: appBarColor,
+        surfaceTintColor: appBarColor,
         centerTitle: true,
         title: const Text("消息"),
         actions: [
@@ -125,11 +126,8 @@ class _ConversationPageState extends State<ConversationPage> {
                   onTap: () {
                     pageController.updateReadSeq(
                         conList[index].conversationId ?? '',
-                        pageController
-                                .conversationManager
-                                .recentMsg[conList[index].conversationId]!
-                                .seq ??
-                            0);
+                        pageController.conversationManager.getRecentMsgSeq(
+                            conList[index].conversationId ?? ''));
 
                     pageController
                         .toChatPage(conList[index].conversationId!, friendId,
