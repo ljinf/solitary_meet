@@ -90,7 +90,10 @@ class _CustomMessageState extends State<CustomMessage>
                             TextStyle(color: Colors.black, fontSize: fontSize)),
                   ),
                   ImageView(widget.avatar,
-                      height: imgSize, width: imgSize, fit: BoxFit.cover),
+                      circular: true,
+                      height: imgSize,
+                      width: imgSize,
+                      fit: BoxFit.cover),
                 ],
               ),
             ),
@@ -121,7 +124,10 @@ class _CustomMessageState extends State<CustomMessage>
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 ImageView(widget.avatar,
-                    height: imgSize, width: imgSize, fit: BoxFit.cover),
+                    circular: true,
+                    height: imgSize,
+                    width: imgSize,
+                    fit: BoxFit.cover),
                 Container(
                   margin: const EdgeInsets.only(left: 6),
                   padding: const EdgeInsets.all(10),

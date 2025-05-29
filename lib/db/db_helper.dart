@@ -104,6 +104,17 @@ class Dbhelper {
     return version;
   }
 
+  ///更新会话已读seq
+  Future<void> setConversationReadSeq(
+      String convId, String userId, int seq) async {
+    var dbClient = await db;
+    var rows = await dbClient!.rawUpdate(
+        "UPDATE `user_conversation_list` set `last_read_seq`=? WHERE `user_id`=? and `conversation_id`=? and `last_read_seq` < ?",
+        [seq, userId, convId, seq]);
+
+    debugPrint("update user_conversation_list 影响行数$rows");
+  }
+
   ///保存会话信息
   void saveConversationToDB(List<ConversationModel> list) async {
     var dbClient = await db;

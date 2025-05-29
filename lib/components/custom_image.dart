@@ -9,7 +9,12 @@ class ImageView extends StatelessWidget {
   double? width;
   double? height;
   BoxFit? fit;
+
+  ///是否圆角
   bool isRadius;
+
+  ///是否圆形 ，默认方形
+  bool circular;
 
   ImageView(
     this.img, {
@@ -18,6 +23,7 @@ class ImageView extends StatelessWidget {
     this.width = defaultHeight,
     this.fit = BoxFit.cover,
     this.isRadius = true,
+    this.circular = false,
   });
 
   bool isNetWorkImg(String img) {
@@ -63,7 +69,8 @@ class ImageView extends StatelessWidget {
       image = Container(
         decoration: BoxDecoration(
             color: Colors.black26.withOpacity(0.1),
-            border: Border.all(color: Colors.black.withOpacity(0.2), width: 0.3)),
+            border:
+                Border.all(color: Colors.black.withOpacity(0.2), width: 0.3)),
         child: Image.asset(
           defIcon,
           width: width! - 1,
@@ -72,7 +79,14 @@ class ImageView extends StatelessWidget {
         ),
       );
     }
-    if (isRadius) {
+    if (circular) {
+      return ClipRRect(
+        borderRadius: const BorderRadius.all(
+          Radius.circular(50),
+        ),
+        child: image,
+      );
+    } else if (isRadius) {
       return ClipRRect(
         borderRadius: const BorderRadius.all(
           Radius.circular(4.0),

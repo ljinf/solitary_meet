@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:easy_event_bus/easy_event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:solitary_meet/common/colors/colors.dart';
 import 'package:solitary_meet/common/values/font.dart';
 import 'package:solitary_meet/global.dart';
 import 'package:solitary_meet/pages/conversation/conversation_controller.dart';
@@ -12,6 +11,7 @@ import 'package:solitary_meet/services/socket.dart';
 import 'package:solitary_meet/utils/conts.dart';
 
 import '../../components/custom_conversation.dart';
+import '../../model/conversation_model.dart';
 
 class ConversationPage extends StatefulWidget {
   const ConversationPage({super.key});
@@ -23,6 +23,8 @@ class ConversationPage extends StatefulWidget {
 class _ConversationPageState extends State<ConversationPage> {
   final pageController = Get.find<ConversationController>();
 
+  var conList = <ConversationModel>[];
+
   String curLoginUid = Global.userProfile?.userId ?? "";
 
   late Timer timer;
@@ -30,11 +32,26 @@ class _ConversationPageState extends State<ConversationPage> {
 
   @override
   void initState() {
+    getList();
     EasyEventBus.on('updateConversation', (event) {
-      pageController.getConversationList();
+      getList();
     });
     checkNetwork();
     super.initState();
+  }
+
+  void getList() {
+    conList.clear();
+    setState(() {
+      conList.addAll(pageController.getConversationList());
+
+      conList.sort((a, b) {
+        if ((a.recentMsg!.sendTime ?? 0) > (b.recentMsg!.sendTime ?? 0)) {
+          return 1;
+        }
+        return 0;
+      });
+    });
   }
 
   ///检查网络
@@ -87,40 +104,54 @@ class _ConversationPageState extends State<ConversationPage> {
       body: Column(
         children: [
           getNetworkStatusView(),
-          Expanded(child: Obx(() => ListView.builder(
-            itemBuilder: (ctx, index) {
-              var friendId = '', avatar = '';
-              if (pageController.conList[index].type == 0) {
-                var ids = pageController.conList[index].conversationId!
-                    .split("-");
-                friendId = ids
-                    .where((id) => id != Global.userProfile!.userId)
-                    .toList()[0];
+          Expanded(
+            child: ListView.builder(
+              itemBuilder: (ctx, index) {
+                var friendId = '', avatar = '';
+                if (conList[index].type == 0) {
+                  var ids = conList[index].conversationId!.split("-");
+                  friendId = ids
+                      .where((id) => id != Global.userProfile!.userId)
+                      .toList()[0];
 
-                avatar =
-                    Global.friendManager.friendAvatars[friendId] ?? defIcon;
-              }
+                  avatar =
+                      Global.friendManager.friendAvatars[friendId] ?? defIcon;
+                }
 
-              String title =
-                  Global.friendManager.friends[friendId]?.remark ?? '';
+                String title =
+                    Global.friendManager.friends[friendId]?.remark ?? '';
 
-              return GestureDetector(
-                onTap: () => pageController.toChatPage(
-                    pageController.conList[index].conversationId!,
-                    friendId,
-                    avatar,
-                    title),
-                child: Obx(() => CustomConversation(
-                  imageUrl: avatar,
-                  title: title,
-                  recentMsg:
-                  pageController.conversationManager.recentMsg[
-                  pageController.conList[index].conversationId],
-                )),
-              );
-            },
-            itemCount: pageController.conList.length,
-          )))
+                return GestureDetector(
+                  onTap: () {
+                    pageController.updateReadSeq(
+                        conList[index].conversationId ?? '',
+                        pageController
+                                .conversationManager
+                                .recentMsg[conList[index].conversationId]!
+                                .seq ??
+                            0);
+
+                    pageController
+                        .toChatPage(conList[index].conversationId!, friendId,
+                            avatar, title)
+                        .then((b) {
+                      getList();
+                    });
+                  },
+                  child: CustomConversation(
+                    convId: conList[index].conversationId ?? '',
+                    imageUrl: avatar,
+                    title: title,
+                    recentMsg: pageController.conversationManager
+                        .recentMsg[conList[index].conversationId],
+                    readSeq: pageController
+                        .getReadSeq(conList[index].conversationId ?? ''),
+                  ),
+                );
+              },
+              itemCount: conList.length,
+            ),
+          )
         ],
       ),
     );

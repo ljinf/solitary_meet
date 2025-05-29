@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:solitary_meet/common/colors/colors.dart';
+import 'package:solitary_meet/common/values/font.dart';
 import '../model/msg_model.dart';
 import '../utils/conts.dart';
 import 'custom_image.dart';
 
 class CustomConversation extends StatefulWidget {
+  //会话id
+  String convId;
   String imageUrl;
   String title;
   MsgModel? recentMsg; //最新消息
+  int readSeq = 0; //已读序列号
   bool isBorder;
 
   CustomConversation(
-      {required this.imageUrl,
+      {required this.convId,
+      required this.imageUrl,
       required this.title,
       this.recentMsg,
+      this.readSeq = 0,
       this.isBorder = true,
       super.key});
 
@@ -71,7 +78,10 @@ class _CustomConversationState extends State<CustomConversation>
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           ImageView(widget.imageUrl,
-              height: defaultWidth, width: defaultHeight, fit: BoxFit.cover),
+              circular: true,
+              height: defaultWidth,
+              width: defaultHeight,
+              fit: BoxFit.cover),
           Expanded(
               child: Container(
             padding: const EdgeInsets.only(left: 10),
@@ -105,7 +115,34 @@ class _CustomConversationState extends State<CustomConversation>
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(convertDate((widget.recentMsg!.sendTime ?? 0) * 1000))
+                      Text(
+                        convertDate((widget.recentMsg!.sendTime ?? 0) * 1000),
+                        style: const TextStyle(
+                            fontSize: AppFont.FontSize12,
+                            color: Colors.black45),
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      if ((widget.recentMsg!.seq ?? 0) > widget.readSeq)
+                        Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(50),
+                            shape: BoxShape.rectangle,
+                          ),
+                          // padding: const EdgeInsets.all(5),
+                          child: Center(
+                            child: Text(
+                              '${(widget.recentMsg!.seq ?? 0) - widget.readSeq}',
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: AppFont.FontSize10),
+                            ),
+                          ),
+                        )
                     ],
                   )
               ],

@@ -7,7 +7,7 @@ import 'package:solitary_meet/services/conversation.dart';
 
 class ConversationManager {
   var maxVersion = 0; //会话版本号
-  var conList = <ConversationModel>[];
+  var conList = <String, ConversationModel>{};
 
   //会话最新一条消息
   var recentMsg = <String, MsgModel>{};
@@ -20,26 +20,28 @@ class ConversationManager {
   }
 
   Future<void> loadConversationFromDB() async {
-    conList.clear();
     var result =
-        await dbHelp.loadConversationList(Global.userProfile!.userId ?? '');
+    await dbHelp.loadConversationList(Global.userProfile!.userId ?? '');
     if (result.isNotEmpty) {
-      conList.addAll(result);
+      for (var item in result) {
+        conList[item.conversationId ?? ''] = item;
+      }
     }
     loadRecentMsg();
     getConversationMaxVersion();
   }
 
   Future<void> loadRecentMsg() async {
-    for (var item in conList) {
-      var msg = await dbHelp.loadRecentMsg(item.conversationId ?? '');
+    for (var item in conList.keys) {
+      var msg = await dbHelp.loadRecentMsg(item);
       if (msg != null) {
-        recentMsg[item.conversationId ?? ''] = msg;
-        _convSeq[item.conversationId ?? ''] = msg.seq ?? 0;
+        recentMsg[item] = msg;
+        _convSeq[item] = msg.seq ?? 0;
       }
     }
   }
 
+  ///会话最大版本号
   void getConversationMaxVersion() {
     dbHelp
         .getConversationMaxVersion(Global.userProfile!.userId ?? '')
@@ -48,16 +50,30 @@ class ConversationManager {
     });
   }
 
+  ///更新会话最近消息
   void setConvRecentMsg(String conversationId, MsgModel msg) {
     recentMsg[conversationId] = msg;
   }
 
+  ///更新会话的消息序列号
   void setConvSeq(String conversationId, int seq) {
     _convSeq[conversationId] = seq;
   }
 
+  ///更新会话已读消息序列号
+  void setConvReadSeq(String conversationId, int seq) {
+    if ((conList[conversationId]!.lastReadSeq ?? 0) < seq) {
+      conList[conversationId]!.lastReadSeq = seq;
+    }
+
+    dbHelp.setConversationReadSeq(
+        conversationId, Global.userProfile!.userId ?? '', seq);
+  }
+
+  ///从服务器同步会话
   Future<bool> syncConversationFromRemote() async {
-    int pageNum = 1, pageSize = 200;
+    int pageNum = 1,
+        pageSize = 200;
     int num = 1;
     //是否新的会话
     bool hasMore = false;
@@ -90,8 +106,8 @@ class ConversationManager {
     return hasMore;
   }
 
-  Future<Map<String, dynamic>?> _doSyncConversationList(
-      int version, int pageNum, int pageSize) async {
+  Future<Map<String, dynamic>?> _doSyncConversationList(int version,
+      int pageNum, int pageSize) async {
     var result = await ConversationAPI.getConversationList(params: {
       "page_num": pageNum,
       "page_size": pageSize,
