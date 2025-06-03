@@ -106,7 +106,10 @@ class _CustomConversationState extends State<CustomConversation>
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1, // 必需设置为1来使用ellipsis
                           style: const TextStyle(
-                              fontSize: 13, color: Colors.black45),
+                              fontSize: 13,
+                              color: Colors.black45,
+                              height: 1.5,
+                              letterSpacing: 1.0),
                         ),
                     ],
                   ),

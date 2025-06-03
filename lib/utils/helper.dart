@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:path/path.dart' as path;
 
 /// 时间戳（秒）转 YYYY-MM-DD 字符串
 String parseDateTime(int timestamp, String format) {
@@ -31,3 +32,26 @@ String parseDateTime(int timestamp, String format) {
 //   }
 //   return true;
 // }
+
+/// 获取文件名（包含扩展名）
+String getFileName(String filePath) {
+  return path.basename(filePath);
+}
+
+List<double> getWidthHeight(String str) {
+  var list = <double>[];
+  List<String> wh = str.split("_");
+
+  if (wh.isNotEmpty) {
+    List<String> t = wh[0].split("X");
+
+    if (t.length > 1) {
+      //width
+      list.add(double.parse(t[0]));
+      //height
+      list.add(double.parse(t[1]));
+    }
+  }
+
+  return list;
+}

@@ -88,8 +88,11 @@ class _CustomMessageState extends State<CustomMessage>
                     ),
                     child: Text(widget.content,
                         textAlign: TextAlign.left,
-                        style:
-                            TextStyle(color: Colors.black, fontSize: fontSize)),
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: fontSize,
+                            height: 1.5,
+                            letterSpacing: 1.0)),
                   ),
                   ImageView(widget.avatar,
                       circular: true,
@@ -138,7 +141,7 @@ class _CustomMessageState extends State<CustomMessage>
                   constraints:
                       BoxConstraints(maxWidth: getDeviceWidth(ctx) * 0.65),
                   decoration: const BoxDecoration(
-                    color: Color(0xFFf2f2f2),//f5f5f5  #f6f6f6
+                    color: Color(0xFFf2f2f2), //f5f5f5  #f6f6f6
                     borderRadius: BorderRadius.only(
                         topRight: Radius.circular(8),
                         bottomLeft: Radius.circular(8),
@@ -146,8 +149,11 @@ class _CustomMessageState extends State<CustomMessage>
                   ),
                   child: Text(widget.content,
                       textAlign: TextAlign.left,
-                      style:
-                          TextStyle(color: Colors.black, fontSize: fontSize)),
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: fontSize,
+                          height: 1.5,
+                          letterSpacing: 1.0)),
                 ),
               ],
             ),

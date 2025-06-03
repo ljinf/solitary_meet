@@ -74,7 +74,7 @@ class _MomentPageState extends State<MomentPage>
     return Scaffold(
       backgroundColor: appBarColor,
       appBar: AppBar(
-        backgroundColor: Colors.grey,
+        backgroundColor: Colors.white,
       ),
       body: SmartRefresher(
         enablePullDown: true,

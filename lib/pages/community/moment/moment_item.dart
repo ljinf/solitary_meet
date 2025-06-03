@@ -7,6 +7,8 @@ import 'package:solitary_meet/utils/screen_device.dart';
 
 import '../../../common/colors/colors.dart';
 import '../../../common/values/font.dart';
+import '../../../config.dart';
+import '../../../utils/helper.dart';
 
 class MomentItemView extends StatefulWidget {
   MomentModel moment;
@@ -36,10 +38,11 @@ class _MomentItemViewState extends State<MomentItemView>
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
       width: getDeviceWidth(context),
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(10)),
-      padding: const EdgeInsets.all(6),
+      padding: const EdgeInsets.all(8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -49,37 +52,43 @@ class _MomentItemViewState extends State<MomentItemView>
             circular: true,
           ),
           const SizedBox(
-            width: 12,
+            width: 10,
           ),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const SizedBox(
+                  height: 2,
+                ),
                 Text(
                   widget.moment.userInfo!.nickName ?? '',
                   style: const TextStyle(
-                    fontSize: AppFont.defaultFontSize,
+                    fontSize: AppFont.FontSize18,
                     color: AppColors.defaultFontColor,
                     fontWeight: FontWeight.w500,
                   ),
-                ),
-                const SizedBox(
-                  height: 6,
                 ),
                 Text(
                   convertDate((widget.moment.createdAt ?? 0) * 1000),
                   style: const TextStyle(
-                    fontSize: AppFont.defaultFontSize,
-                    color: AppColors.defaultFontColor,
-                    fontWeight: FontWeight.w500,
+                    fontSize: AppFont.FontSize14,
+                    color: AppColors.primaryGreyText,
                   ),
                 ),
                 const SizedBox(
-                  height: 12,
+                  height: 10,
                 ),
                 txtView(widget.moment.content ?? ''),
                 if ((widget.moment.attachment ?? []).isNotEmpty)
-                  imgListView(context, widget.moment.attachment ?? [])
+                  Column(
+                    children: [
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      imgListView(context, widget.moment.attachment ?? [])
+                    ],
+                  ),
               ],
             ),
           )
@@ -94,36 +103,45 @@ class _MomentItemViewState extends State<MomentItemView>
       style: const TextStyle(
           fontSize: AppFont.FontSize16,
           color: AppColors.defaultFontColor,
-          height: 1.5,
-          letterSpacing: 2.0),
+          height: 1.2,
+          letterSpacing: 1.0),
     );
   }
 
   Widget imgListView(BuildContext context, List<String> list) {
+    var num = list.length;
+    if (num < 2) {
+      double width = 300, height = 400;
+      var wh = getWidthHeight(getFileName(list[0]));
+      if (wh.isNotEmpty) {
+        width = wh[0] / 5;
+        height = wh[1] / 5;
+      }
+      return ImageView(
+        "$STATIC_HOST_DEV${list[0]}",
+        width: width,
+        height: height,
+      );
+    }
+
+    //网格
     return SizedBox(
       height: 200,
-      child: Column(
-        children: [
-          const SizedBox(
-            height: 12,
-          ),
-          Expanded(child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3, // 设置每行显示的列数
+      child: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3, // 设置每行显示的列数
+        ),
+        itemCount: 10, // 设置网格项的数量
+        itemBuilder: (BuildContext context, int index) {
+          return Container(
+            alignment: Alignment.center,
+            color: Colors.green[100 * (index % 9 + 1)],
+            child: Text(
+              'Item $index',
+              style: TextStyle(fontSize: 20),
             ),
-            itemCount: 10, // 设置网格项的数量
-            itemBuilder: (BuildContext context, int index) {
-              return Container(
-                alignment: Alignment.center,
-                color: Colors.green[100 * (index % 9 + 1)],
-                child: Text(
-                  'Item $index',
-                  style: TextStyle(fontSize: 20),
-                ),
-              );
-            },
-          )),
-        ],
+          );
+        },
       ),
     );
   }
