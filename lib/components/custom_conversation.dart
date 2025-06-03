@@ -128,8 +128,8 @@ class _CustomConversationState extends State<CustomConversation>
                       ),
                       if ((widget.recentMsg!.seq ?? 0) > widget.readSeq)
                         Container(
-                          width: AppImage.ImageSize22,
-                          height: AppImage.ImageSize22,
+                          width: AppImage.ImageSize18,
+                          height: AppImage.ImageSize18,
                           decoration: BoxDecoration(
                             color: Colors.red[400],
                             borderRadius: BorderRadius.circular(50),
@@ -141,7 +141,7 @@ class _CustomConversationState extends State<CustomConversation>
                               '${(widget.recentMsg!.seq ?? 0) - widget.readSeq}',
                               style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: AppFont.FontSize12),
+                                  fontSize: AppFont.FontSize11),
                             ),
                           ),
                         )

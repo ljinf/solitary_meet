@@ -69,6 +69,8 @@ dependencies:
 
   easy_event_bus: ^0.8.2
 
+#  file_picker: ^10.1.9
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

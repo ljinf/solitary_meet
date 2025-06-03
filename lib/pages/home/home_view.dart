@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:solitary_meet/pages/community/moment/moment_list_view.dart';
 import 'package:solitary_meet/pages/home/home_controller.dart';
 import '../../common/colors/colors.dart';
 import '../../common/values/font.dart';
@@ -26,9 +27,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    pages.add(const Center(
-      child: Text("1"),
-    ));
+    pages.add(MomentPage());
     pages.add(const Center(
       child: Text("2"),
     ));
