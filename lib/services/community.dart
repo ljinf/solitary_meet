@@ -56,4 +56,36 @@ class CommunityAPI {
 
     return resp;
   }
+
+  //点赞时刻
+  static Future<String> addMomentLiked(Map<String, dynamic> params,
+      {bool loading = true}) async {
+    var result = await doRequest("/v1/community/moment/like",
+        params: params, loading: loading);
+
+    if (result != null) {
+      return result['message'];
+    }
+
+    return "";
+  }
+
+  //点赞评论
+  static Future<String> addCommentLiked(Map<String, dynamic> params,
+      {bool loading = true}) async {
+    var result = await doRequest("/v1/community/comment/like",
+        params: params, loading: loading);
+
+    if (result != null) {
+      return result['message'];
+    }
+
+    return "";
+  }
+
+  //发表评论
+  static Future<String> addComment(Map<String, dynamic> params,
+      {bool loading = true}) async {
+    return "";
+  }
 }

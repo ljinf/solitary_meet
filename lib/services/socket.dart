@@ -40,8 +40,8 @@ class ConnManager {
   static void _connectToWebSocket() async {
     connStatus = ConnStatus.connecting;
     try {
-      client = WebSocketClient(
-          '$SOCKET_HOST_DEV?token=${Global.userProfile?.token}');
+      client =
+          WebSocketClient('$SOCKET_URL?token=${Global.userProfile?.token}');
       client.onConnect(() {
         connStatus = ConnStatus.connected;
         debugPrint("connect success...");

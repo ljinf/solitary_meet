@@ -1,19 +1,26 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:solitary_meet/components/components.dart';
+import 'package:solitary_meet/components/custom_expandable_text.dart';
+import 'package:solitary_meet/components/custom_grid_view.dart';
 import 'package:solitary_meet/model/community.dart';
 import 'package:solitary_meet/utils/screen_device.dart';
 
 import '../../../common/colors/colors.dart';
 import '../../../common/values/font.dart';
+import '../../../common/values/image.dart';
 import '../../../config.dart';
 import '../../../utils/helper.dart';
 
 class MomentItemView extends StatefulWidget {
   MomentModel moment;
 
-  MomentItemView(this.moment, {super.key});
+  //点赞评论回调
+  Function(int count)? likeCallBack;
+  Function(int count)? commentCallBack;
+
+  MomentItemView(this.moment,
+      {this.likeCallBack, this.commentCallBack, super.key});
 
   @override
   State<MomentItemView> createState() => _MomentItemViewState();
@@ -37,6 +44,7 @@ class _MomentItemViewState extends State<MomentItemView>
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('total width ${getDeviceWidth(context)}');
     return Container(
       margin: const EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
       width: getDeviceWidth(context),
@@ -76,12 +84,20 @@ class _MomentItemViewState extends State<MomentItemView>
                     color: AppColors.primaryGreyText,
                   ),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                txtView(widget.moment.content ?? ''),
+
+                /// 时刻内容
+                if ((widget.moment.content ?? '') != '')
+                  Column(
+                    children: [
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      txtView(widget.moment.content ?? '')
+                    ],
+                  ),
                 if ((widget.moment.attachment ?? []).isNotEmpty)
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(
                         height: 10,
@@ -89,6 +105,74 @@ class _MomentItemViewState extends State<MomentItemView>
                       imgListView(context, widget.moment.attachment ?? [])
                     ],
                   ),
+
+                ///评论点赞
+                Column(
+                  children: [
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        //点赞
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {},
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  widget.moment.likeStatus == 1
+                                      ? 'assets/icons/heart_fill.webp'
+                                      : 'assets/icons/heart_line.webp',
+                                  width: AppImage.ImageSize20,
+                                  height: AppImage.ImageSize20,
+                                ),
+                                const SizedBox(
+                                  width: 2,
+                                ),
+                                Text(
+                                  '${(widget.moment.likeCount ?? 0) - (widget.moment.likeCancelCount ?? 0)}',
+                                  style: const TextStyle(
+                                      fontSize: AppFont.FontSize12,
+                                      color: Colors.black),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        //评论
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {},
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/icons/message_line.webp',
+                                  width: AppImage.ImageSize20,
+                                  height: AppImage.ImageSize20,
+                                  // color: Colors.black,
+                                ),
+                                const SizedBox(
+                                  width: 2,
+                                ),
+                                Text(
+                                  '${widget.moment.commentCount}',
+                                  style: const TextStyle(
+                                      fontSize: AppFont.FontSize12,
+                                      color: Colors.black),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
               ],
             ),
           )
@@ -98,8 +182,9 @@ class _MomentItemViewState extends State<MomentItemView>
   }
 
   Widget txtView(String txt) {
-    return Text(
-      txt,
+    return CustomExpandableText(
+      linkColor: Color(0xFF00a3af),
+      text: txt,
       style: const TextStyle(
           fontSize: AppFont.FontSize16,
           color: AppColors.defaultFontColor,
@@ -111,38 +196,40 @@ class _MomentItemViewState extends State<MomentItemView>
   Widget imgListView(BuildContext context, List<String> list) {
     var num = list.length;
     if (num < 2) {
-      double width = 300, height = 400;
+      //默认宽高
+      double width = getDeviceWidth(context) / 3;
+      double height = width + 100;
+      //原始宽高
       var wh = getWidthHeight(getFileName(list[0]));
       if (wh.isNotEmpty) {
-        width = wh[0] / 5;
-        height = wh[1] / 5;
+        //按比例缩小图片的尺寸
+        var resize = resizeImageProportionally(context, wh[0], wh[1]);
+        if (resize.isNotEmpty) {
+          width = resize[0];
+          height = resize[1];
+        }
       }
       return ImageView(
-        "$STATIC_HOST_DEV${list[0]}",
+        "$STATIC_ASSETS_URL${list[0]}",
         width: width,
         height: height,
       );
     }
 
-    //网格
-    return SizedBox(
-      height: 200,
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3, // 设置每行显示的列数
-        ),
-        itemCount: 10, // 设置网格项的数量
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-            alignment: Alignment.center,
-            color: Colors.green[100 * (index % 9 + 1)],
-            child: Text(
-              'Item $index',
-              style: TextStyle(fontSize: 20),
-            ),
+    return CustomGridView(
+      crossAxisCount: 3,
+      crossAxisSpacing: 6,
+      mainAxisSpacing: 6,
+      itemCount: list.length,
+      itemBuilder: (BuildContext context, int index) {
+        return LayoutBuilder(builder: (BuildContext ctx, BoxConstraints cs) {
+          return ImageView(
+            width: cs.maxWidth,
+            height: cs.maxWidth,
+            "$STATIC_ASSETS_URL${list[index]}",
           );
-        },
-      ),
+        });
+      },
     );
   }
 
