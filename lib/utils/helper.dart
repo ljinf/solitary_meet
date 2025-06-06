@@ -37,6 +37,26 @@ String parseDateTime(int timestamp, String format) {
 //   return true;
 // }
 
+String convertMomentDate(int timestamp) {
+  String formatStr = '';
+  if (timestamp == 0) {
+    return formatStr;
+  }
+  DateTime curTime = DateTime.now();
+  DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp).toLocal();
+  if (curTime.year != dateTime.year) {
+    formatStr =
+        DateFormat('yyyy年MM月dd HH:mm').format(dateTime); //yyyy-MM-dd HH:mm:ss
+  } else if (curTime.day == dateTime.day) {
+    formatStr = DateFormat('HH:mm').format(dateTime); //yyyy-MM-dd HH:mm:ss
+  } else if (curTime.day == dateTime.day + 1) {
+    formatStr = '昨天 ${DateFormat('HH:mm').format(dateTime)}';
+  } else {
+    formatStr = DateFormat('MM月dd日 HH:mm').format(dateTime);
+  }
+  return formatStr;
+}
+
 /// 获取文件名（包含扩展名）
 String getFileName(String filePath) {
   return path.basename(filePath);

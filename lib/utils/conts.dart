@@ -65,3 +65,7 @@ const contentTypeVideo = 4; //视频文件
 //关系类型  1好友 2关注
 const relationshipFriend = 1;
 const relationshipFollow = 2;
+
+//点赞状态
+const statusLiked = 1; //是
+const statusUnLike = 2; //否

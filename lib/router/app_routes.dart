@@ -8,6 +8,7 @@ abstract class AppRoutes {
   static const Search = '/search';
   static const Profile = '/profile';
   static const Friends = '/friends';
+  static const MomentDetail = '/momentDetail';
   // notfound
   static const NotFound = '/notfound';
 

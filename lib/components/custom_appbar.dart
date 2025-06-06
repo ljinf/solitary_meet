@@ -5,7 +5,7 @@ import 'package:solitary_meet/common/colors/colors.dart';
 /// appbar 返回按钮类型
 enum AppBarBackType { Back, Close, None }
 
-const double kNavigationBarHeight = 44.0;
+const double kNavigationBarHeight = 56.0;
 
 // 自定义 AppBar
 class CustomAppBar extends AppBar implements PreferredSizeWidget {
@@ -38,7 +38,7 @@ class CustomAppBar extends AppBar implements PreferredSizeWidget {
         );
 
   @override
-  get preferredSize => Size.fromHeight(44);
+  get preferredSize => Size.fromHeight(kNavigationBarHeight);
 }
 
 // 自定义返回按钮

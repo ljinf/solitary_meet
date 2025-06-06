@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:solitary_meet/components/components.dart';
 import 'package:solitary_meet/components/custom_expandable_text.dart';
 import 'package:solitary_meet/components/custom_grid_view.dart';
 import 'package:solitary_meet/model/community.dart';
+import 'package:solitary_meet/router/app_pages.dart';
+import 'package:solitary_meet/services/community.dart';
 import 'package:solitary_meet/utils/screen_device.dart';
 
 import '../../../common/colors/colors.dart';
 import '../../../common/values/font.dart';
 import '../../../common/values/image.dart';
 import '../../../config.dart';
+import '../../../utils/conts.dart';
 import '../../../utils/helper.dart';
+import '../../../utils/moment_view.dart';
 
 class MomentItemView extends StatefulWidget {
   MomentModel moment;
 
   //点赞评论回调
-  Function(int count)? likeCallBack;
+  Function(MomentModel moment)? likeCallBack;
   Function(int count)? commentCallBack;
 
   MomentItemView(this.moment,
@@ -44,7 +49,6 @@ class _MomentItemViewState extends State<MomentItemView>
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('total width ${getDeviceWidth(context)}');
     return Container(
       margin: const EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
       width: getDeviceWidth(context),
@@ -78,7 +82,7 @@ class _MomentItemViewState extends State<MomentItemView>
                   ),
                 ),
                 Text(
-                  convertDate((widget.moment.createdAt ?? 0) * 1000),
+                  convertMomentDate((widget.moment.createdAt ?? 0) * 1000),
                   style: const TextStyle(
                     fontSize: AppFont.FontSize14,
                     color: AppColors.primaryGreyText,
@@ -92,7 +96,7 @@ class _MomentItemViewState extends State<MomentItemView>
                       const SizedBox(
                         height: 10,
                       ),
-                      txtView(widget.moment.content ?? '')
+                      momentTxtView(widget.moment.content ?? '')
                     ],
                   ),
                 if ((widget.moment.attachment ?? []).isNotEmpty)
@@ -102,7 +106,7 @@ class _MomentItemViewState extends State<MomentItemView>
                       const SizedBox(
                         height: 10,
                       ),
-                      imgListView(context, widget.moment.attachment ?? [])
+                      momentImgListView(context, widget.moment.attachment ?? [])
                     ],
                   ),
 
@@ -117,7 +121,36 @@ class _MomentItemViewState extends State<MomentItemView>
                         //点赞
                         Expanded(
                           child: GestureDetector(
-                            onTap: () {},
+                            onTap: () async {
+                              var status =
+                                  widget.moment.likeStatus == statusLiked
+                                      ? statusUnLike
+                                      : statusLiked;
+                              var result = await CommunityAPI.addMomentLiked({
+                                "moment_id": widget.moment.momentId,
+                                "status": status
+                              });
+
+                              if (result == "ok") {
+                                setState(() {
+                                  widget.moment.likeStatus =
+                                      status == statusLiked ? 1 : 0;
+
+                                  switch (status) {
+                                    case statusLiked:
+                                      widget.moment.likeCount =
+                                          (widget.moment.likeCount ?? 0) + 1;
+                                      break;
+                                    case statusUnLike:
+                                      widget.moment.likeCancelCount =
+                                          (widget.moment.likeCancelCount ?? 0) +
+                                              1;
+                                      break;
+                                  }
+                                });
+                                widget.likeCallBack!(widget.moment);
+                              }
+                            },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -128,6 +161,9 @@ class _MomentItemViewState extends State<MomentItemView>
                                       : 'assets/icons/heart_line.webp',
                                   width: AppImage.ImageSize20,
                                   height: AppImage.ImageSize20,
+                                  color: widget.moment.likeStatus == 1
+                                      ? Color(0xFFfc5531)
+                                      : Color(0xFFA7A6A7),
                                 ),
                                 const SizedBox(
                                   width: 2,
@@ -145,16 +181,20 @@ class _MomentItemViewState extends State<MomentItemView>
                         //评论
                         Expanded(
                           child: GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Get.toNamed(AppRoutes.MomentDetail,
+                                  arguments: {"moment": widget.moment});
+                            },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
+                                //#fc5531
                                 Image.asset(
                                   'assets/icons/message_line.webp',
                                   width: AppImage.ImageSize20,
                                   height: AppImage.ImageSize20,
-                                  // color: Colors.black,
+                                  color: Color(0xFFA7A6A7),
                                 ),
                                 const SizedBox(
                                   width: 2,
@@ -179,78 +219,5 @@ class _MomentItemViewState extends State<MomentItemView>
         ],
       ),
     );
-  }
-
-  Widget txtView(String txt) {
-    return CustomExpandableText(
-      linkColor: Color(0xFF00a3af),
-      text: txt,
-      style: const TextStyle(
-          fontSize: AppFont.FontSize16,
-          color: AppColors.defaultFontColor,
-          height: 1.2,
-          letterSpacing: 1.0),
-    );
-  }
-
-  Widget imgListView(BuildContext context, List<String> list) {
-    var num = list.length;
-    if (num < 2) {
-      //默认宽高
-      double width = getDeviceWidth(context) / 3;
-      double height = width + 100;
-      //原始宽高
-      var wh = getWidthHeight(getFileName(list[0]));
-      if (wh.isNotEmpty) {
-        //按比例缩小图片的尺寸
-        var resize = resizeImageProportionally(context, wh[0], wh[1]);
-        if (resize.isNotEmpty) {
-          width = resize[0];
-          height = resize[1];
-        }
-      }
-      return ImageView(
-        "$STATIC_ASSETS_URL${list[0]}",
-        width: width,
-        height: height,
-      );
-    }
-
-    return CustomGridView(
-      crossAxisCount: 3,
-      crossAxisSpacing: 6,
-      mainAxisSpacing: 6,
-      itemCount: list.length,
-      itemBuilder: (BuildContext context, int index) {
-        return LayoutBuilder(builder: (BuildContext ctx, BoxConstraints cs) {
-          return ImageView(
-            width: cs.maxWidth,
-            height: cs.maxWidth,
-            "$STATIC_ASSETS_URL${list[index]}",
-          );
-        });
-      },
-    );
-  }
-
-  String convertDate(int timestamp) {
-    String formatStr = '';
-    if (timestamp == 0) {
-      return formatStr;
-    }
-    DateTime curTime = DateTime.now();
-    DateTime dateTime =
-        DateTime.fromMillisecondsSinceEpoch(timestamp).toLocal();
-    if (curTime.year != dateTime.year) {
-      formatStr =
-          DateFormat('yyyy年MM月dd HH:mm').format(dateTime); //yyyy-MM-dd HH:mm:ss
-    } else if (curTime.day == dateTime.day) {
-      formatStr = DateFormat('HH:mm').format(dateTime); //yyyy-MM-dd HH:mm:ss
-    } else if (curTime.day == dateTime.day + 1) {
-      formatStr = '昨天 ${DateFormat('HH:mm').format(dateTime)}';
-    } else {
-      formatStr = DateFormat('MM月dd日 HH:mm').format(dateTime);
-    }
-    return formatStr;
   }
 }
