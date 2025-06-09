@@ -1,6 +1,9 @@
 import 'package:solitary_meet/pages/Index/Index_view.dart';
 import 'package:solitary_meet/pages/chat/chat_binding.dart';
 import 'package:solitary_meet/pages/chat/chat_view.dart';
+import 'package:solitary_meet/pages/community/moment/add/add_moment_binding.dart';
+import 'package:solitary_meet/pages/community/moment/add/add_moment_controller.dart';
+import 'package:solitary_meet/pages/community/moment/add/add_moment_view.dart';
 import 'package:solitary_meet/pages/community/moment/detail/moment_detail_binding.dart';
 import 'package:solitary_meet/pages/community/moment/detail/moment_detail_view.dart';
 import 'package:solitary_meet/pages/friend/friends_list/friend_list_binding.dart';
@@ -61,6 +64,11 @@ class AppPages {
       name: AppRoutes.MomentDetail,
       page: () => MomentDetailPage(),
       binding: MomentDetailBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.addMoment,
+      page: () => AddMomentPage(),
+      binding: AddMomentBinding(),
     ),
   ];
 

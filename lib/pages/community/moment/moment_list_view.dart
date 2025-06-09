@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:solitary_meet/components/pull_up_header.dart';
 import 'package:solitary_meet/model/community.dart';
 import 'package:solitary_meet/pages/community/moment/moment_item.dart';
+import 'package:solitary_meet/router/app_pages.dart';
 import 'package:solitary_meet/services/community.dart';
 
 import '../../../utils/conts.dart';
@@ -75,6 +77,9 @@ class _MomentPageState extends State<MomentPage>
       backgroundColor: appBarColor,
       appBar: AppBar(
         backgroundColor: Colors.white,
+        actions: [IconButton(onPressed: () {
+          Get.toNamed(AppRoutes.addMoment);
+        }, icon: Icon(Icons.signpost_outlined))],
       ),
       body: SmartRefresher(
         enablePullDown: true,
