@@ -4,8 +4,10 @@ import 'package:solitary_meet/services/services.dart';
 
 class CommunityAPI {
   //发表时刻
-  static Future<String> addMoment(Map<String, dynamic> params) async {
-    var result = await doRequest("/v1/community/moment/add", params: params);
+  static Future<String> addMoment(Map<String, dynamic> params,
+      {bool loading = true}) async {
+    var result = await doRequest("/v1/community/moment/add",
+        params: params, loading: loading);
     if (result != null) {
       return result['message'];
     }

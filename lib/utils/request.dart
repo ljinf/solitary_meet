@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
@@ -152,6 +153,46 @@ class Request {
     var response =
         await dio.post(path, data: FormData.fromMap(params), options: requestOptions, cancelToken: cancelToken);
     return response.data;
+  }
+
+  Future uploadFile(String path, File imageFile) async {
+
+    // 获取图片路径和文件名
+    String imagePath = imageFile.path;
+    String fileName = imagePath.substring(imagePath.lastIndexOf('/') + 1);
+
+    // 创建MultipartFile对象
+    MultipartFile file = await MultipartFile.fromFile(
+      imagePath,
+      filename: fileName,
+    );
+
+    // 创建FormData对象
+    FormData formData = FormData.fromMap({
+      'file': file, // 'file'是后端接收文件的字段名
+    });
+
+    try {
+      // 发送POST请求上传图片
+      Response response = await dio.post(
+        path, // 替换为实际的上传接口地址
+        data: formData,
+        // 可选：监听上传进度
+        onSendProgress: (int sent, int total) {
+          double progress = sent / total;
+          print('上传进度: $progress');
+        },
+      );
+
+      // 处理响应
+      print('上传成功: ${response.data}');
+      return response.data;
+    } on DioError catch (e) {
+      // 处理错误
+      print('上传失败: ${e.message}');
+    }
+
+    return {};
   }
 
   /*

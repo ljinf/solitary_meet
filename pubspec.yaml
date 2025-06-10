@@ -74,6 +74,8 @@ dependencies:
 #  multi_image_picker_view: ^3.0.0
   wechat_assets_picker: ^9.5.1
 
+  uuid: ^4.5.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,18 +1,12 @@
+import 'package:solitary_meet/utils/request.dart';
+
 class UploadAPI {
-  static Future<String> uploadFile() async {
+  static Future<String> uploadFile({required Map<String,dynamic> params}) async {
+    var result = await Request().postForm("/v1/upload", params: params);
 
-    // FilePickerResult? result = await FilePicker.platform.pickFiles(
-    //   allowMultiple: true,
-    //   type: FileType.custom,
-    //   allowedExtensions: ['jpg', 'pdf', 'doc'],
-    // );
-
-    // // 创建 FormData
-    // FormData formData = FormData.fromMap({
-    //   'file': await MultipartFile.fromFile(filePath, filename: fileName),
-    //   // 可以添加其他表单字段
-    //   'description': 'This is a file description',
-    // });
+    if (result != null) {
+      return result['data'];
+    }
 
     return "";
   }

@@ -68,7 +68,7 @@ List<double> getWidthHeight(String str) {
   List<String> wh = str.split("_");
 
   if (wh.isNotEmpty) {
-    List<String> t = wh[0].split("X");
+    List<String> t = (wh[0].toUpperCase()).split("X");
 
     if (t.length > 1) {
       //width

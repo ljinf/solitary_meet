@@ -44,9 +44,12 @@ Widget momentImgListView(BuildContext context, List<String> list) {
       height: height,
     );
   }
-
+  var crossAxisCount = 3;
+  if (list.length == 4) {
+    crossAxisCount = 2;
+  }
   return CustomGridView(
-    crossAxisCount: 3,
+    crossAxisCount: crossAxisCount,
     crossAxisSpacing: 6,
     mainAxisSpacing: 6,
     itemCount: list.length,
