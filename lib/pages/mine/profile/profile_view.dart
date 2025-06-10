@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:solitary_meet/components/components.dart';
-import 'package:solitary_meet/pages/profile/profile_controller.dart';
+import 'package:solitary_meet/pages/mine/profile/profile_controller.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);

@@ -6,6 +6,7 @@ import '../../common/colors/colors.dart';
 import '../../common/values/font.dart';
 import '../../common/values/image.dart';
 import '../conversation/conversation_view.dart';
+import '../mine/mine_view.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -32,9 +33,7 @@ class _HomePageState extends State<HomePage> {
       child: Text("2"),
     ));
     pages.add(ConversationPage());
-    pages.add(const Center(
-      child: Text("3"),
-    ));
+    pages.add(MinePage());
 
     pageController = PageController(
       initialPage: selectedIndex,
@@ -109,6 +108,19 @@ class _HomePageState extends State<HomePage> {
               ),
               label: bottomNavigationTitles[2],
               tooltip: bottomNavigationTitles[2]),
+          BottomNavigationBarItem(
+              icon: Image.asset(
+                "assets/icons/tabbar_me_c.webp",
+                width: AppImage.navImageSize,
+                height: AppImage.navImageSize,
+              ),
+              activeIcon: Image.asset(
+                "assets/icons/tabbar_me_c.webp",
+                width: AppImage.navImageSize,
+                height: AppImage.navImageSize,
+              ),
+              label: bottomNavigationTitles[3],
+              tooltip: bottomNavigationTitles[3]),
         ],
       ),
     );

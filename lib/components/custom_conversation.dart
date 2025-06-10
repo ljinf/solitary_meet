@@ -94,6 +94,8 @@ class _CustomConversationState extends State<CustomConversation>
                     children: <Widget>[
                       Text(
                         widget.title,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1, // 必需设置为1来使用ellipsis
                         style: const TextStyle(
                             fontSize: defaultFontSize,
                             fontWeight: FontWeight.w500,

@@ -2,7 +2,6 @@ import 'package:solitary_meet/pages/Index/Index_view.dart';
 import 'package:solitary_meet/pages/chat/chat_binding.dart';
 import 'package:solitary_meet/pages/chat/chat_view.dart';
 import 'package:solitary_meet/pages/community/moment/add/add_moment_binding.dart';
-import 'package:solitary_meet/pages/community/moment/add/add_moment_controller.dart';
 import 'package:solitary_meet/pages/community/moment/add/add_moment_view.dart';
 import 'package:solitary_meet/pages/community/moment/detail/moment_detail_binding.dart';
 import 'package:solitary_meet/pages/community/moment/detail/moment_detail_view.dart';
@@ -13,12 +12,13 @@ import 'package:solitary_meet/pages/home/home_view.dart';
 import 'package:solitary_meet/pages/login/login_binding.dart';
 import 'package:solitary_meet/pages/login/login_view.dart';
 import 'package:solitary_meet/pages/notfound/notfound_view.dart';
-import 'package:solitary_meet/pages/profile/profile_binding.dart';
-import 'package:solitary_meet/pages/profile/profile_view.dart';
 import 'package:solitary_meet/pages/proxy/proxy_view.dart';
 import 'package:get/get.dart';
 import 'package:solitary_meet/pages/search/search_binding.dart';
 import 'package:solitary_meet/pages/search/search_view.dart';
+
+import '../pages/mine/profile/profile_binding.dart';
+import '../pages/mine/profile/profile_view.dart';
 
 part 'app_routes.dart';
 
