@@ -11,6 +11,8 @@ import '../../../../utils/message.dart';
 class AddMomentController extends GetxController {
   var textController = TextEditingController();
 
+  bool public = false;
+
   @override
   void onInit() {
     // TODO: implement onInit
@@ -44,7 +46,7 @@ class AddMomentController extends GetxController {
       "content": textController.text,
       "attachment": imgList,
       "attachment_type": 1,
-      "public": 1
+      "public": public ? 1 : 2
     };
 
     var result = await CommunityAPI.addMoment(params, loading: false);

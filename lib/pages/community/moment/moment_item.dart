@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -59,9 +60,18 @@ class _MomentItemViewState extends State<MomentItemView>
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          ImageView(
-            widget.moment.userInfo!.avatar ?? '',
-            circular: true,
+          GestureDetector(
+            onTap: () {
+              Get.toNamed(AppRoutes.Profile, arguments: {
+                "userId": widget.moment.userInfo!.userId,
+                "avatar": widget.moment.userInfo!.avatar,
+                "nickName": widget.moment.userInfo!.nickName
+              });
+            },
+            child: ImageView(
+              widget.moment.userInfo!.avatar ?? '',
+              circular: true,
+            ),
           ),
           const SizedBox(
             width: 10,
@@ -96,7 +106,13 @@ class _MomentItemViewState extends State<MomentItemView>
                       const SizedBox(
                         height: 10,
                       ),
-                      momentTxtView(widget.moment.content ?? '')
+                      GestureDetector(
+                        onTap: () {
+                          Get.toNamed(AppRoutes.MomentDetail,
+                              arguments: {"moment": widget.moment});
+                        },
+                        child: momentTxtView(widget.moment.content ?? ''),
+                      )
                     ],
                   ),
                 if ((widget.moment.attachment ?? []).isNotEmpty)

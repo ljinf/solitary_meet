@@ -27,7 +27,11 @@ class _MinePageState extends State<MinePage> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Get.toNamed(AppRoutes.Profile);
+                    Get.toNamed(AppRoutes.Profile, arguments: {
+                      "userId": Global.userProfile!.userId,
+                      "avatar": Global.userProfile!.avatar,
+                      "nickName": Global.userProfile!.nickName
+                    });
                   },
                   child: ImageView(
                     Global.userProfile!.avatar!,

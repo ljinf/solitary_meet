@@ -1,4 +1,6 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:solitary_meet/components/custom_photo_view.dart';
 import 'package:solitary_meet/utils/screen_device.dart';
 
 import '../common/colors/colors.dart';
@@ -38,11 +40,7 @@ Widget momentImgListView(BuildContext context, List<String> list) {
         height = resize[1];
       }
     }
-    return ImageView(
-      "$STATIC_ASSETS_URL${list[0]}",
-      width: width,
-      height: height,
-    );
+    return _openContainerView(list, 0, width, height);
   }
   var crossAxisCount = 3;
   if (list.length == 4) {
@@ -55,12 +53,29 @@ Widget momentImgListView(BuildContext context, List<String> list) {
     itemCount: list.length,
     itemBuilder: (BuildContext context, int index) {
       return LayoutBuilder(builder: (BuildContext ctx, BoxConstraints cs) {
-        return ImageView(
-          width: cs.maxWidth,
-          height: cs.maxWidth,
-          "$STATIC_ASSETS_URL${list[index]}",
-        );
+        return _openContainerView(list, index, cs.maxWidth, cs.maxWidth);
       });
+    },
+  );
+}
+
+Widget _openContainerView(
+    List<String> list, int selected, double width, double height) {
+  return OpenContainer<bool>(
+    transitionType: ContainerTransitionType.fade,
+    openBuilder: (BuildContext context, VoidCallback callback) {
+      return CustomPhotoView(imgList: list, selected: selected);
+    },
+    tappable: false,
+    closedBuilder: (BuildContext context, VoidCallback openContainer) {
+      return GestureDetector(
+        onTap: openContainer,
+        child: ImageView(
+          "$STATIC_ASSETS_URL${list[selected]}",
+          width: width,
+          height: height,
+        ),
+      );
     },
   );
 }

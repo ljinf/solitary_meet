@@ -14,7 +14,6 @@ class AppColors {
   /// 主文本灰色
   static const Color primaryGreyText1 = Color(0xFFE0DDF5);
 
-
   //首页导航栏字体
   static const Color navSelectedColor = Color(0xFF1C212A);
   static const Color navUnselectedColor = Color(0xFFB6C2D0);

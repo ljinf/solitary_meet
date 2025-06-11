@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:solitary_meet/common/colors/colors.dart';
 import 'package:solitary_meet/components/components.dart';
 import 'package:solitary_meet/components/custom_grid_view.dart';
 import 'package:solitary_meet/pages/community/moment/add/add_moment_controller.dart';
@@ -120,6 +121,49 @@ class _AddMomentPageState extends State<AddMomentPage> {
                 },
               ),
             ),
+            SizedBox(
+              height: 6,
+            ),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  controller.public = !controller.public;
+                });
+              },
+              child: Row(
+                children: [
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: controller.public
+                        ? Image.asset(
+                            'assets/icons/checked.webp',
+                            width: 14,
+                            height: 14,
+                          )
+                        : Image.asset(
+                            'assets/icons/uncheck.webp',
+                            width: 14,
+                            height: 14,
+                            color: AppColors.navUnselectedColor,
+                          ),
+                  ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  const Text(
+                    '公开',
+                    style: TextStyle(
+                        fontSize: AppFont.FontSize12,
+                        color: AppColors.defaultFontColor,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(
               height: 16,
             ),
@@ -143,6 +187,7 @@ class _AddMomentPageState extends State<AddMomentPage> {
                           controller.textController.clear();
                           imgList.clear();
                           selectedAssets!.clear();
+                          controller.public = false;
                         });
                       }
                     },
