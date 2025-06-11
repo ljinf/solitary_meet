@@ -86,7 +86,7 @@ class _MomentItemViewState extends State<MomentItemView>
                 Text(
                   widget.moment.userInfo!.nickName ?? '',
                   style: const TextStyle(
-                    fontSize: AppFont.FontSize18,
+                    fontSize: AppFont.FontSize16,
                     color: AppColors.defaultFontColor,
                     fontWeight: FontWeight.w500,
                   ),
@@ -94,7 +94,7 @@ class _MomentItemViewState extends State<MomentItemView>
                 Text(
                   convertMomentDate((widget.moment.createdAt ?? 0) * 1000),
                   style: const TextStyle(
-                    fontSize: AppFont.FontSize14,
+                    fontSize: AppFont.FontSize12,
                     color: AppColors.primaryGreyText,
                   ),
                 ),

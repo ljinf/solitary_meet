@@ -17,7 +17,7 @@ Widget momentTxtView(String txt) {
     linkColor: Color(0xFF00a3af),
     text: txt,
     style: const TextStyle(
-        fontSize: AppFont.FontSize16,
+        fontSize: AppFont.FontSize15,
         color: AppColors.defaultFontColor,
         height: 1.2,
         letterSpacing: 1.0),
