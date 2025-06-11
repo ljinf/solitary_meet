@@ -79,6 +79,9 @@ dependencies:
   #动画
   animations: ^2.0.11
 
+  #时间线
+  flutter_timeline: ^0.3.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
