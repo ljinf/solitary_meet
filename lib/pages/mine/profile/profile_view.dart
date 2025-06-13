@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:solitary_meet/components/components.dart';
+import 'package:solitary_meet/global.dart';
 import 'package:solitary_meet/pages/mine/profile/profile_controller.dart';
+import 'package:solitary_meet/router/app_pages.dart';
+import 'package:solitary_meet/utils/screen_device.dart';
+import 'package:timelines_plus/timelines_plus.dart';
 
 import '../../../common/values/font.dart';
 import '../../../common/values/image.dart';
 import '../../../components/pull_up_header.dart';
 import '../../../model/community.dart';
 import '../../../services/community.dart';
+import '../../../utils/conts.dart';
 import '../../../utils/moment_view.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -76,34 +81,162 @@ class _ProfilePageState extends State<ProfilePage>
     }
   }
 
+  void toChat() {
+    //todo 当前用户要登录
+    var ids = [controller.userInfo.userId, Global.userProfile!.userId];
+    ids.sort();
+
+    Get.toNamed(AppRoutes.Chat, arguments: {
+      "conversation_id": "${ids[0]}-${ids[1]}",
+      'user_id': controller.userInfo.userId,
+      'title': controller.userInfo.nickName,
+      'avatar': controller.userInfo.avatar,
+    });
+  }
+
+  void updateBackground() {}
+
   @override
   Widget build(BuildContext context) {
+    /*TimelineTile(
+      mainAxisExtent: 100,
+      crossAxisExtent: 100,
+      oppositeContents: Container(color: Colors.amber),
+      node: const TimelineNode(
+        startConnector: SolidLineConnector(),
+        endConnector: SolidLineConnector(),
+        indicator: DotIndicator(color: Colors.cyan,),
+      ),
+      contents: Container(color: Colors.teal),
+    )*/
     return SafeArea(
         child: Column(
       children: [
-        ImageView(
-          controller.userInfo.avatar!,
-          width: 100,
-          height: 100,
-        ),
-        Text(controller.userInfo.nickName!),
         Container(
-          height: 10,
-          color: const Color(0x44E5E6EB),
+          height: getDeviceHeight(context) * 0.3,
+          child: Stack(
+            children: [
+              GestureDetector(
+                onTap: () {
+
+                },
+                onLongPress: updateBackground,
+                child: LayoutBuilder(builder: (ctx, sc) {
+                  if ((controller.userInfo.background ?? '') == '') {
+                    return Container(
+                      width: sc.maxWidth,
+                      height: sc.maxHeight - defaultWidth,
+                      color: Colors.white,
+                    );
+                  }
+                  return ImageView(
+                    controller.userInfo.background ?? '',
+                    width: sc.maxWidth,
+                    height: sc.maxHeight - defaultWidth,
+                  );
+                }),
+              ),
+              Positioned(
+                bottom: 10,
+                left: 0,
+                right: 0,
+                child: Column(
+                  children: [
+                    ImageView(
+                      controller.userInfo.avatar!,
+                      width: AppImage.ImageSize56,
+                      height: AppImage.ImageSize56,
+                      circular: true,
+                    ),
+                    Text(controller.userInfo.nickName!),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        ///关注
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Colors.teal,
+                              borderRadius: BorderRadius.circular(16)),
+                          width: 56,
+                          height: 24,
+                          child: Center(
+                            child: Text(
+                              '关注',
+                              style: TextStyle(
+                                  fontSize: AppFont.FontSize12,
+                                  color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 16,
+                        ),
+
+                        ///聊天
+                        if (controller.userInfo.userId !=
+                            Global.userProfile!.userId)
+                          GestureDetector(
+                            onTap: toChat,
+                            child: ImageView(
+                              'assets/icons/message_line.webp',
+                              width: AppImage.ImageSize20,
+                              height: AppImage.ImageSize20,
+                            ),
+                          )
+                      ],
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
         Expanded(
-          child: SmartRefresher(
-            enablePullDown: false,
-            enablePullUp: true,
-            onLoading: loadMore,
-            footer: const PullUpHeader(),
-            controller: _refreshController,
-            child: ListView.builder(
-              physics: const ClampingScrollPhysics(),
-              itemBuilder: (ctx, index) {
-                return momentView(context, index);
-              },
-              itemCount: dataList.length,
+          child: TimelineTheme(
+            data: TimelineThemeData(
+                //指示器位置
+                indicatorPosition: 0),
+            child: SmartRefresher(
+              enablePullDown: false,
+              enablePullUp: true,
+              onLoading: loadMore,
+              footer: const PullUpHeader(),
+              controller: _refreshController,
+              child: ListView.builder(
+                physics: const ClampingScrollPhysics(),
+                itemBuilder: (ctx, index) {
+                  /* return LayoutBuilder(
+                      builder: (BuildContext ctx, BoxConstraints cs) {
+                    return TimelineTile(
+                      direction: Axis.vertical,
+                      mainAxisExtent: cs.maxWidth,
+                      // crossAxisExtent: cs.maxWidth,
+                      nodeAlign: TimelineNodeAlign.start,
+                      // nodePosition: 0.2,
+                      // oppositeContents:  ImageView(
+                      //   controller.userInfo.avatar!,
+                      //   width: defaultWidth,
+                      //   height: defaultWidth,
+                      // ),
+                      node: const TimelineNode(
+                        startConnector: SolidLineConnector(),
+                        endConnector: SolidLineConnector(),
+                        indicator: DotIndicator(
+                          color: Colors.cyan,
+                        ),
+                      ),
+                      contents: momentView(ctx, index),
+                    );
+                  });*/
+                  return Container(
+                    padding:
+                        EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
+                    child: momentView(context, index),
+                  );
+                },
+                itemCount: dataList.length,
+              ),
             ),
           ),
         )

@@ -31,7 +31,7 @@ class WebSocketClient {
         await disconnect();
       }
 
-      _webSocketChannel = IOWebSocketChannel.connect(_url, headers: _headers);
+      _webSocketChannel = IOWebSocketChannel.connect(_url, headers: _headers,pingInterval: Duration(seconds: 5));
       _isConnected = true;
       _notifyConnect();
       _listen();

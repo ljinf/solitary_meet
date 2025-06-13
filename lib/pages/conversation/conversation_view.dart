@@ -58,7 +58,7 @@ class _ConversationPageState extends State<ConversationPage> {
   void checkNetwork() {
     // 每3秒执行一次
     timer = Timer.periodic(const Duration(seconds: 3), (Timer timer) {
-      // debugPrint("retry connect ${ConnManager.connStatus}");
+      debugPrint("retry connect ${ConnManager.connStatus}");
       if (ConnManager.connStatus == ConnStatus.connected) {
         setState(() {
           networkConnected = true;

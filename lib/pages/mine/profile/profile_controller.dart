@@ -21,9 +21,9 @@ class ProfileController extends GetxController {
   }
 
   void getProfile() async {
-    var resp = await UserAPI.searchUserInfo({});
-    if (resp != null) {
-      userInfo = resp;
-    }
+    // var resp = await UserAPI.searchUserInfo({});
+    // if (resp != null) {
+    //   userInfo = resp;
+    // }
   }
 }

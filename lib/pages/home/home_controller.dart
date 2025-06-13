@@ -4,10 +4,17 @@ import 'package:solitary_meet/manager/sync.dart';
 import 'package:solitary_meet/router/app_pages.dart';
 import 'package:solitary_meet/services/socket.dart';
 
+import '../conversation/conversation_controller.dart';
+
 class HomeController extends GetxController {
   @override
   void onInit() {
+    initController();
     super.onInit();
+  }
+
+  void initController() async {
+    Get.put(ConversationController());
   }
 
   @override

@@ -307,14 +307,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_timeline:
-    dependency: "direct main"
-    description:
-      name: flutter_timeline
-      sha256: "4d9ec3e2a8cf072b44e376a9492c1cfc45550e70c0683abcd47f44f92742144c"
-      url: "https://mirrors.cloud.tencent.com/dart-pub/"
-    source: hosted
-    version: "0.3.0"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -861,6 +853,14 @@ packages:
       url: "https://mirrors.cloud.tencent.com/dart-pub/"
     source: hosted
     version: "0.7.2"
+  timelines_plus:
+    dependency: "direct main"
+    description:
+      name: timelines_plus
+      sha256: "335cd832e0aed7035458a5f336bc2c882dc70dcfa4d500d3bcadd764f1ac6553"
+      url: "https://mirrors.cloud.tencent.com/dart-pub/"
+    source: hosted
+    version: "1.0.7"
   typed_data:
     dependency: transitive
     description:
