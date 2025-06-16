@@ -9,15 +9,21 @@ class SyncManager {
     Global.friendManager.loadFriendListFromDB();
   }
 
-  ///从服务器同步会话
-  static Future<bool> syncConversationList() async {
+  ///从服务器同步会话，返回新会话Id list
+  static Future<List<String>> syncConversationList() async {
     var more = await Global.conversationManager.syncConversationFromRemote();
-    if (more) {
+    if (more.isNotEmpty) {
       await Global.conversationManager.loadConversationFromDB();
-      return true;
     }
 
-    return false;
+    return more;
+  }
+
+  ///从服务器同步会话所有用户
+  static Future<void> syncConversationUsers(List<String> cids) async {
+    if (cids.isNotEmpty) {
+      await Global.conversationManager.syncConvUsersFromRemote(cids);
+    }
   }
 
   ///从服务器同步历史消息

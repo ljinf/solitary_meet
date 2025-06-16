@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart';
 import 'package:solitary_meet/model/conversation_model.dart';
+import 'package:solitary_meet/model/login_model.dart';
 import 'package:solitary_meet/model/msg_model.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -47,6 +48,8 @@ class Dbhelper {
     await db.execute(createConversationTableSql);
     await db.execute(createMsgTableSql);
     await db.execute(createUserMsgTableSql);
+    await db.execute(createUserInfoTableSql);
+    await db.execute(createConversationUserTableSql);
 
     ///创建索引
     await db.execute(msgTableIndexSql);
@@ -115,9 +118,11 @@ class Dbhelper {
     debugPrint("update user_conversation_list 影响行数$rows");
   }
 
-  ///保存会话信息
-  void saveConversationToDB(List<ConversationModel> list) async {
+  ///保存会话信息，返回会话ids
+  Future<List<String>> saveConversationToDB(
+      List<ConversationModel> list) async {
     var dbClient = await db;
+    var convIds = <String>[];
     for (var item in list) {
       var data = {
         "conversation_id": item.conversationId,
@@ -134,8 +139,13 @@ class Dbhelper {
         data,
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
+      if (rows > 0) {
+        convIds.add(item.conversationId ?? '');
+      }
       debugPrint("insert into user_conversation_list 影响行数$rows");
     }
+
+    return convIds;
   }
 
   ///加载会话消息
@@ -184,12 +194,61 @@ class Dbhelper {
     return seq;
   }
 
-  /// 所有会话的 max seq
+  ///会话的所有用户
+  Future<List<UserInfoModel>> loadConversationUser(
+      String conversationId) async {
+    List<UserInfoModel> models = [];
+    var dbClient = await db;
+    var result = await dbClient!.rawQuery(
+        "SELECT u.`user_id`,u.`nick_name`,u.`avatar` FROM `user_info_list` u INNER JOIN `conversation_user_list` c ON c.`user_id`=u.`user_id `WHERE c.`conversation_id`=?",
+        [conversationId]);
+    List list = result.toList();
+    models.addAll(list.map((i) => UserInfoModel.fromJson(i)).toList());
+    return models;
+  }
+
+  ///添加会话用户
+  Future<void> saveConversationUser(
+      String conversationId, List<UserInfoModel> users) async {
+    var dbClient = await db;
+
+    await dbClient!.transaction((txn) async {
+      for (var item in users) {
+        var convUsers = {
+          "conversation_id": conversationId,
+          "user_id": item.userId,
+        };
+        var cresult = await txn.insert("conversation_user_list", convUsers,
+            conflictAlgorithm: ConflictAlgorithm.ignore);
+        debugPrint("insert into conversation_user_list 影响行数$cresult");
+
+        var ures = await txn.insert("user_info_list", item.toJson(),
+            conflictAlgorithm: ConflictAlgorithm.ignore);
+        debugPrint("insert into user_info_list 影响行数$ures");
+      }
+    });
+  }
+
+  ///单聊会话头像
+  Future<String> getConversationAvatar(String convId, String userId) async {
+    var avatar = "";
+    var dbClient = await db;
+    var result = await dbClient!.rawQuery(
+        "SELECT `avatar` FROM `user_info_list` u INNER JOIN `conversation_user_list` c on c.`user_id`=u.`user_id` WHERE c.`conversation_id`=? and c.`user_id`=?",
+        [convId, userId]);
+    List list = result.toList();
+    if (list.isNotEmpty) {
+      return list[0]['avatar'];
+    }
+    return avatar;
+  }
+
+  /// 所有会话的消息 max seq
   Future<Map<String, int>> getConversationMaxSeqList() async {
     var list = <String, int>{};
     var dbClient = await db;
     var result = await dbClient!.rawQuery(
-        "SELECT `conversation_id`,MAX(seq) AS `seq` FROM `msg_list` WHERE `conversation_id`=?");
+        "SELECT `conversation_id`,MAX(seq) AS `seq` FROM `msg_list` GROUP BY conversation_id");
     List l = result.toList();
     if (l.isNotEmpty) {
       for (var item in l) {
@@ -334,14 +393,23 @@ var userMsgTableIndexSql = """
 CREATE INDEX user_seq ON `user_msg_list`(`user_id`,`seq`);
 """;
 
-/*/// 会话消息链
-var createConversationMsgTableSql = """
-CREATE TABLE `conversation_msg_list` (
+/// 用户消息
+var createUserInfoTableSql = """
+CREATE TABLE `user_info_list` (
   `id` INTEGER PRIMARY KEY AUTOINCREMENT,
-  `msg_id` varchar(64) NOT NULL,
-  `conversation_id` varchar(64) NOT NULL,
-  `seq` INTEGER(11) NOT NULL,
-  UNIQUE (`conversation_id`,`msg_id`),
-  INDEX(`conversation_id`,`seq`)
+  `user_id` varchar(64) NULL,
+  `nick_name` varchar(128) NULL,
+  `avatar` varchar(128) NULL,
+  UNIQUE (`user_id`)
 )
-""";*/
+""";
+
+/// 会话用户关联
+var createConversationUserTableSql = """
+CREATE TABLE `conversation_user_list` (
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `conversation_id` varchar(64) NOT NULL,
+  `user_id` varchar(64) NOT NULL,
+  UNIQUE (`conversation_id`,`user_id`)
+)
+""";

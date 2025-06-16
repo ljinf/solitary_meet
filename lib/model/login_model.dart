@@ -53,3 +53,23 @@ class UserLoginResponseModel {
         "token": token,
       };
 }
+
+class UserInfoModel {
+  UserInfoModel({this.userId, this.nickName, this.avatar});
+
+  String? userId;
+  String? nickName; //昵称
+  String? avatar; //头像
+
+  factory UserInfoModel.fromJson(Map<String, dynamic> json) => UserInfoModel(
+        userId: json["user_id"],
+        nickName: json["nick_name"],
+        avatar: json["avatar"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "user_id": userId,
+        "nick_name": nickName,
+        "avatar": avatar,
+      };
+}

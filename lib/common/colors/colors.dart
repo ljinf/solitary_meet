@@ -19,4 +19,7 @@ class AppColors {
   static const Color navUnselectedColor = Color(0xFFB6C2D0);
 
   static const Color defaultFontColor = Color(0xFF1C212A);
+
+  ///青绿色
+  static const Color moderateCyan = Color(0xFF47C6A8);
 }

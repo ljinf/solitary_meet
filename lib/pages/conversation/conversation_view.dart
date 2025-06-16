@@ -46,7 +46,14 @@ class _ConversationPageState extends State<ConversationPage> {
       conList.addAll(pageController.getConversationList());
 
       conList.sort((a, b) {
-        if ((a.recentMsg!.sendTime ?? 0) > (b.recentMsg!.sendTime ?? 0)) {
+        var aTime = pageController
+                .conversationManager.recentMsg[a.conversationId]!.sendTime ??
+            0;
+        var bTime = pageController
+                .conversationManager.recentMsg[b.conversationId]!.sendTime ??
+            0;
+
+        if (aTime > bTime) {
           return 1;
         }
         return 0;
@@ -115,8 +122,12 @@ class _ConversationPageState extends State<ConversationPage> {
                       .where((id) => id != Global.userProfile!.userId)
                       .toList()[0];
 
-                  avatar =
-                      Global.friendManager.friendAvatars[friendId] ?? defIcon;
+                  Global.conversationManager
+                      .loadConvAvatar(
+                          conList[index].conversationId ?? '', friendId)
+                      .then((s) {
+                    avatar = s ?? defIcon;
+                  });
                 }
 
                 String title =
