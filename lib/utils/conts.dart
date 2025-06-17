@@ -34,11 +34,11 @@ const itemOnColor = Color.fromRGBO(68, 68, 68, 1.0);
 
 const btTextColor = Color.fromRGBO(112, 113, 135, 1.0);
 
-const defIcon = 'assets/images/def_avatar.png';
+const defIcon = 'assets/images/def_avatar.jpg';
 
 const contactAssets = 'assets/images/contact/';
 
-const defAvatar = 'http://flutterj.com/f.jpeg';
+const defAvatar = 'assets/images/def_avatar.png';
 
 const myCode = 'http://flutterj.com/c.jpg';
 

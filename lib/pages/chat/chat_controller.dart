@@ -31,8 +31,8 @@ class ChatController extends GetxController implements MessageCallBack {
     super.onInit();
     convId = Get.arguments['conversation_id'];
     friendId = Get.arguments['user_id'];
-    title = Get.arguments['title'];
-    avatar = Get.arguments['avatar'];
+    title = Get.arguments['title'] ?? '';
+    avatar = Get.arguments['avatar'] ?? '';
     loadMsgList(true);
   }
 
@@ -126,7 +126,7 @@ class ChatController extends GetxController implements MessageCallBack {
   }
 
   void scrollToBottom() {
-    Future.delayed(const Duration(milliseconds: 300)).then((_) {
+    Future.delayed(const Duration(milliseconds: 50)).then((_) {
       scrollController.animateTo(
         scrollController.position.maxScrollExtent,
         duration: const Duration(milliseconds: 300),

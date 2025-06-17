@@ -243,6 +243,20 @@ class Dbhelper {
     return avatar;
   }
 
+  ///单聊会话对象信息
+  Future<UserInfoModel?> getConversationUserInfo(
+      String convId, String userId) async {
+    var dbClient = await db;
+    var result = await dbClient!.rawQuery(
+        "SELECT u.`user_id`,u.`nick_name`,u.`avatar` FROM `user_info_list` u INNER JOIN `conversation_user_list` c on c.`user_id`=u.`user_id` WHERE c.`conversation_id`=? and c.`user_id`=?",
+        [convId, userId]);
+    List list = result.toList();
+    if (list.isNotEmpty) {
+      return UserInfoModel.fromJson(list[0]);
+    }
+    return null;
+  }
+
   /// 所有会话的消息 max seq
   Future<Map<String, int>> getConversationMaxSeqList() async {
     var list = <String, int>{};

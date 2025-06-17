@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:solitary_meet/common/colors/colors.dart';
 import 'package:solitary_meet/common/values/font.dart';
 import 'package:solitary_meet/common/values/image.dart';
 import '../model/msg_model.dart';
@@ -10,6 +9,9 @@ import 'custom_image.dart';
 class CustomConversation extends StatefulWidget {
   //会话id
   String convId;
+
+  //聊天对象ID
+  String friendId;
   String imageUrl;
   String title;
   MsgModel? recentMsg; //最新消息
@@ -18,6 +20,7 @@ class CustomConversation extends StatefulWidget {
 
   CustomConversation(
       {required this.convId,
+      required this.friendId,
       required this.imageUrl,
       required this.title,
       this.recentMsg,

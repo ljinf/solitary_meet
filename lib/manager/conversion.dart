@@ -2,22 +2,23 @@ import 'package:flutter/cupertino.dart';
 import 'package:solitary_meet/db/db_helper.dart';
 import 'package:solitary_meet/global.dart';
 import 'package:solitary_meet/model/conversation_model.dart';
+import 'package:solitary_meet/model/login_model.dart';
 import 'package:solitary_meet/model/msg_model.dart';
 import 'package:solitary_meet/services/conversation.dart';
 
 class ConversationManager {
   var maxVersion = 0; //会话版本号
-  //会话列表
+  ///会话列表
   var conList = <String, ConversationModel>{};
 
-  //会话最新一条消息
+  ///会话最新一条消息
   var recentMsg = <String, MsgModel>{};
 
-  //会话最新的消息序列号
+  ///会话最新的消息序列号
   var _convSeq = <String, int>{};
 
-  //会话头像
-  var _convAvatars = <String, String>{};
+  ///会话聊天对象信息
+  var _convUserInfos = <String, UserInfoModel>{};
 
   void init() {
     loadConversationFromDB();
@@ -142,8 +143,8 @@ class ConversationManager {
     }
   }
 
-  ///加载会话avatar
-  Future<String> loadConvAvatar(String convId, String userId) async {
-    return await dbHelp.getConversationAvatar(convId, userId);
+  ///加载会话对象信息
+  Future<UserInfoModel?> loadConvUserInfo(String convId, String userId) async {
+    return await dbHelp.getConversationUserInfo(convId, userId);
   }
 }

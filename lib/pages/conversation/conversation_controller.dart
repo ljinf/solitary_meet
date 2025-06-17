@@ -55,7 +55,7 @@ class ConversationController extends GetxController implements MessageCallBack {
         Global.conversationManager
             .setConvSeq(msg.conversationId ?? '', msg.seq ?? 0);
 
-        EasyEventBus.fire('updateConversation', '');
+        EasyEventBus.fire('updateConversation', msg);
       }
     });
   }
