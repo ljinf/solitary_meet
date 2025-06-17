@@ -34,7 +34,7 @@ class SyncManager {
       await Global.conversationManager.loadRecentMsg();
 
       //有新的消息更新会话列表
-      EasyEventBus.fire('updateConversation', '');
+      EasyEventBus.fire('updateConversation', null);
     }
 
     return hasmore;

@@ -2,7 +2,7 @@ import 'package:solitary_meet/env.dart';
 
 // 开发环境
 
-const BASE_IP_DEV = "192.168.1.245:8000";
+const BASE_IP_DEV = "192.168.31.251:8000";
 
 const SERVER_HOST_DEV = 'http://$BASE_IP_DEV';
 

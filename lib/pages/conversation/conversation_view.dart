@@ -36,7 +36,9 @@ class _ConversationPageState extends State<ConversationPage>
   void initState() {
     getList();
     EasyEventBus.on('updateConversation', (event) {
-      updateList(event);
+      if(event!=null){
+        // updateList(event);
+      }
     });
     checkNetwork();
     super.initState();
@@ -257,7 +259,6 @@ class _ConversationItemState extends State<ConversationItem> {
             .toChatPage(widget.conversationId, widget.friendId, avatar, title)
             .then((b) {
           updateMsg();
-          EasyEventBus.fire('updateConversation', null);
         });
       },
       child: CustomConversation(
