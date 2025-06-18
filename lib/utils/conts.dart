@@ -34,7 +34,7 @@ const itemOnColor = Color.fromRGBO(68, 68, 68, 1.0);
 
 const btTextColor = Color.fromRGBO(112, 113, 135, 1.0);
 
-const defIcon = 'assets/images/def_avatar.jpg';
+const defIcon = 'assets/images/placeholder.png';
 
 const contactAssets = 'assets/images/contact/';
 
@@ -69,3 +69,9 @@ const relationshipFollow = 2;
 //点赞状态
 const statusLiked = 1; //是
 const statusUnLike = 2; //否
+
+//监听前缀
+///更新会话
+const updateConversationPrefix = 'updateConversation';
+///更新最近消息
+const updateConversationRecentMsgPrefix = 'updateConversationRecentMsg_';

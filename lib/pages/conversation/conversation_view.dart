@@ -11,6 +11,8 @@ import 'package:solitary_meet/services/socket.dart';
 import 'package:solitary_meet/utils/conts.dart';
 
 import '../../components/custom_conversation.dart';
+import '../../components/observable_List.dart';
+import '../../manager/sync.dart';
 import '../../model/conversation_model.dart';
 import '../../model/msg_model.dart';
 
@@ -35,52 +37,73 @@ class _ConversationPageState extends State<ConversationPage>
   @override
   void initState() {
     getList();
-    EasyEventBus.on('updateConversation', (event) {
-      if(event!=null){
-        // updateList(event);
+    EasyEventBus.on(updateConversationPrefix, (event) async {
+      if (event != null) {
+        updateList(event);
       }
+      reorder(event.conversationId ?? '');
     });
     checkNetwork();
     super.initState();
   }
 
   void getList() {
-    if (conList.isNotEmpty) {
-      conList.replaceRange(
-          0, conList.length, pageController.getConversationList());
-    } else {
-      conList.addAll(pageController.getConversationList());
-    }
-    setState(() {
-      conList.sort((a, b) {
-        var aTime = pageController
-                .conversationManager.recentMsg[a.conversationId]!.sendTime ??
-            0;
-        var bTime = pageController
-                .conversationManager.recentMsg[b.conversationId]!.sendTime ??
-            0;
-
-        if (aTime > bTime) {
-          return 0;
-        }
-        return 1;
-      });
-    });
+    conList.clear();
+    conList.addAll(pageController.getConversationList());
+    initConversation();
   }
 
-  void updateList(MsgModel msg) {
-    debugPrint("---------------recev do updateConversation ${msg.toJson()}");
-    var index = 0;
-    for (var item in conList) {
-      if (item.conversationId == msg.conversationId) {
-        index = conList
-            .indexWhere((item) => item.conversationId == msg.conversationId);
-        break;
-      }
+  void updateList(MsgModel msg) async {
+    ///消息会话是否存在
+    var exist = pageController.conversationManager
+        .isExistConv(msg.conversationId ?? '');
+    if (exist) {
+      debugPrint("---------------有新的消息......");
+      EasyEventBus.fire(
+          '$updateConversationRecentMsgPrefix${msg.conversationId ?? ''}',
+          null);
+    } else {
+      ///从服务器同步
+      debugPrint("---------------有新的会话......");
+      //同步会话
+      SyncManager.syncConversationList().then((res) {
+        //同步会话的所有用户
+        if (res.isNotEmpty) {
+          SyncManager.syncConversationUsers(res).then((v) {
+            getList();
+          });
+        }
+      });
     }
+  }
+
+  ///排序
+  void initConversation() {
+    conList.sort((a, b) {
+      var aTime = pageController
+              .conversationManager.recentMsg[a.conversationId]!.sendTime ??
+          0;
+      var bTime = pageController
+              .conversationManager.recentMsg[b.conversationId]!.sendTime ??
+          0;
+
+      if (aTime > bTime) {
+        return 0;
+      }
+      return 1;
+    });
+    setState(() {});
+  }
+
+  ///重排
+  void reorder(String convid) {
+    debugPrint("---------------reorder---------------");
     setState(() {
-      var item = conList.removeAt(index);
-      conList.insert(0, item);
+      var index = conList.indexWhere((v) => v.conversationId == convid);
+      if (index > -1) {
+        var element = conList.removeAt(index);
+        conList.insert(0, element);
+      }
     });
   }
 
@@ -153,11 +176,12 @@ class _ConversationPageState extends State<ConversationPage>
                 return ConversationItem(
                   conversationId: conList[index].conversationId ?? '',
                   friendId: friendId,
+                  key: Key(conList[index].conversationId ?? ''),
                 );
               },
               itemCount: conList.length,
             ),
-          )
+          ),
         ],
       ),
     );
@@ -210,6 +234,7 @@ class ConversationItem extends StatefulWidget {
 
 class _ConversationItemState extends State<ConversationItem> {
   final pageController = Get.find<ConversationController>();
+  var listenerKey = "";
 
   String avatar = defAvatar;
   String title = "";
@@ -219,18 +244,32 @@ class _ConversationItemState extends State<ConversationItem> {
 
   @override
   void initState() {
+    listenerKey = '$updateConversationRecentMsgPrefix${widget.conversationId}';
+    listener();
     initInfo();
     updateMsg();
     super.initState();
   }
 
+  void listener() {
+    EasyEventBus.on(listenerKey, (event) {
+      updateMsg();
+    });
+  }
+
+  @override
+  void dispose() {
+    EasyEventBus.cancel(listenerKey);
+    super.dispose();
+  }
+
   void initInfo() async {
-    Global.conversationManager
+    pageController.conversationManager
         .loadConvUserInfo(widget.conversationId ?? '', widget.friendId)
         .then((info) {
       if (info != null) {
         setState(() {
-          avatar = info.avatar ?? defAvatar;
+          avatar = info.avatar == '' ? defAvatar : info.avatar ?? defAvatar;
           title = info.nickName ?? '';
         });
       }
@@ -239,11 +278,20 @@ class _ConversationItemState extends State<ConversationItem> {
 
   void updateMsg() {
     setState(() {
-      recentMsg = Global.conversationManager.recentMsg[widget.conversationId];
-      readSeq = Global.conversationManager.conList[widget.conversationId]!
-              .lastReadSeq ??
-          0;
+      updateRecent();
+      updateSeq();
     });
+  }
+
+  void updateRecent() {
+    recentMsg =
+        pageController.conversationManager.recentMsg[widget.conversationId];
+  }
+
+  void updateSeq() {
+    readSeq = pageController
+            .conversationManager.conList[widget.conversationId]!.lastReadSeq ??
+        0;
   }
 
   @override
@@ -254,12 +302,10 @@ class _ConversationItemState extends State<ConversationItem> {
             widget.conversationId,
             pageController.conversationManager
                 .getRecentMsgSeq(widget.conversationId));
+        updateSeq();
 
-        pageController
-            .toChatPage(widget.conversationId, widget.friendId, avatar, title)
-            .then((b) {
-          updateMsg();
-        });
+        pageController.toChatPage(
+            widget.conversationId, widget.friendId, avatar, title);
       },
       child: CustomConversation(
         convId: widget.conversationId,

@@ -9,6 +9,7 @@ class ImageView extends StatelessWidget {
   double? width;
   double? height;
   BoxFit? fit;
+  Color? color;
 
   ///是否圆角
   bool isRadius;
@@ -21,23 +22,18 @@ class ImageView extends StatelessWidget {
     super.key,
     this.height = defaultWidth,
     this.width = defaultHeight,
+    this.color,
     this.fit = BoxFit.cover,
     this.isRadius = true,
     this.circular = false,
   });
 
   bool isNetWorkImg(String img) {
-    if (img.startsWith("http")) {
-      return true;
-    }
-    return false;
+    return img.startsWith("http");
   }
 
   bool isAssetsImg(String img) {
-    if (img.startsWith("assets")) {
-      return true;
-    }
-    return false;
+    return img.startsWith("assets") || img.startsWith("/assets");
   }
 
   @override
@@ -48,6 +44,7 @@ class ImageView extends StatelessWidget {
         imageUrl: img,
         width: width,
         height: height,
+        color: color,
         fit: fit,
         cacheManager: LocalStorage.getCacheManager(),
       );
@@ -57,12 +54,14 @@ class ImageView extends StatelessWidget {
         width: width,
         height: height,
         fit: fit,
+        color: color,
       );
     } else if (isAssetsImg(img)) {
       image = Image.asset(
         img,
         width: width,
         height: height,
+        color: color,
         fit: width != null && height != null ? BoxFit.fill : fit,
       );
     } else {
@@ -75,6 +74,7 @@ class ImageView extends StatelessWidget {
           defIcon,
           width: width! - 1,
           height: height! - 1,
+          color: color,
           fit: width != null && height != null ? BoxFit.fill : fit,
         ),
       );

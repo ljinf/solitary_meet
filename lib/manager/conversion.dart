@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 import 'package:solitary_meet/db/db_helper.dart';
 import 'package:solitary_meet/global.dart';
 import 'package:solitary_meet/model/conversation_model.dart';
@@ -22,6 +23,11 @@ class ConversationManager {
 
   void init() {
     loadConversationFromDB();
+  }
+
+  ///检查会话是否存在
+  bool isExistConv(String convId) {
+    return conList.containsKey(convId);
   }
 
   Future<void> loadConversationFromDB() async {
@@ -66,18 +72,26 @@ class ConversationManager {
 
   ///更新会话最近消息
   void setConvRecentMsg(String conversationId, MsgModel msg) {
-    recentMsg[conversationId] = msg;
+    recentMsg.update(conversationId, (v) => msg, ifAbsent: () => msg);
   }
 
   ///更新会话的消息序列号
   void setConvSeq(String conversationId, int seq) {
-    _convSeq[conversationId] = seq;
+    _convSeq.update(conversationId, (v) => seq, ifAbsent: () => seq);
   }
 
   ///更新会话已读消息序列号
   void setConvReadSeq(String conversationId, int seq) {
     if ((conList[conversationId]!.lastReadSeq ?? 0) < seq) {
-      conList[conversationId]!.lastReadSeq = seq;
+      conList.update(
+        conversationId,
+        (v) {
+          v.lastReadSeq = seq;
+          return v;
+        },
+        ifAbsent: () =>
+            ConversationModel(conversationId: conversationId, lastReadSeq: seq),
+      );
     }
 
     dbHelp.setConversationReadSeq(
