@@ -123,27 +123,29 @@ class Dbhelper {
       List<ConversationModel> list) async {
     var dbClient = await db;
     var convIds = <String>[];
-    for (var item in list) {
-      var data = {
-        "conversation_id": item.conversationId,
-        "type": item.type,
-        "user_id": item.userId,
-        "last_read_seq": item.lastReadSeq,
-        "notify_type": item.notifyType,
-        "is_top": item.isTop,
-        "version": item.version,
-      };
+    await dbClient!.transaction((txn) async {
+      for (var item in list) {
+        var data = {
+          "conversation_id": item.conversationId,
+          "type": item.type,
+          "user_id": item.userId,
+          "last_read_seq": item.lastReadSeq,
+          "notify_type": item.notifyType,
+          "is_top": item.isTop,
+          "version": item.version,
+        };
 
-      var rows = await dbClient!.insert(
-        "user_conversation_list",
-        data,
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-      if (rows > 0) {
-        convIds.add(item.conversationId ?? '');
+        var rows = await txn.insert(
+          "user_conversation_list",
+          data,
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+        if (rows > 0) {
+          convIds.add(item.conversationId ?? '');
+        }
+        debugPrint("insert into user_conversation_list 影响行数$rows");
       }
-      debugPrint("insert into user_conversation_list 影响行数$rows");
-    }
+    });
 
     return convIds;
   }
@@ -275,7 +277,8 @@ class Dbhelper {
   ///保存消息
   Future<bool> saveMsgToDB(List<MsgModel> list, String curUserId) async {
     var dbClient = await db;
-    var msgRows = 0;
+    Batch? batch = dbClient?.batch();
+    // var msgRows = 0;
     for (var item in list) {
       var data = {
         "conversation_id": item.conversationId,
@@ -289,16 +292,16 @@ class Dbhelper {
         "is_del": item.isDel
       };
 
-      msgRows = await dbClient!.insert(
+      batch?.insert(
         "msg_list",
         data,
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      debugPrint("insert into msg_list 影响行数$msgRows");
+      // debugPrint("insert into msg_list 影响行数$msgRows");
 
       //用户消息链
       if (curUserId != '') {
-        var userMsgRows = await dbClient!.insert(
+        batch?.insert(
           "user_msg_list",
           {
             "conversation_id": item.conversationId,
@@ -308,11 +311,15 @@ class Dbhelper {
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
-        debugPrint("insert into user_msg_list 影响行数$userMsgRows");
+        // debugPrint("insert into user_msg_list 影响行数$userMsgRows");
       }
     }
 
-    return msgRows > 0;
+    // 执行批处理
+    await batch?.commit();
+
+    // return msgRows > 0;
+    return true;
   }
 
   ///用户链max seq

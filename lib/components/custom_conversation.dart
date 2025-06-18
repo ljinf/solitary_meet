@@ -72,8 +72,8 @@ class _CustomConversationState extends State<CustomConversation>
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(6),
-      padding: const EdgeInsets.all(8),
+      margin: const EdgeInsets.only(left: 8,right: 8,top: 2,bottom: 2),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(5),
@@ -104,7 +104,7 @@ class _CustomConversationState extends State<CustomConversation>
                             fontWeight: FontWeight.w500,
                             color: Colors.black),
                       ),
-                      const SizedBox(height: 4.0),
+                      // const SizedBox(height: 2.0),
                       if (widget.recentMsg != null)
                         Text(
                           widget.recentMsg!.content ?? '',
@@ -136,8 +136,8 @@ class _CustomConversationState extends State<CustomConversation>
                       ),
                       if ((widget.recentMsg!.seq ?? 0) > widget.readSeq)
                         Container(
-                          width: AppImage.ImageSize20,
-                          height: AppImage.ImageSize20,
+                          width: AppImage.ImageSize19,
+                          height: AppImage.ImageSize19,
                           decoration: BoxDecoration(
                             color: Colors.red[400],
                             borderRadius: BorderRadius.circular(50),
@@ -149,7 +149,7 @@ class _CustomConversationState extends State<CustomConversation>
                               '${(widget.recentMsg!.seq ?? 0) - widget.readSeq}',
                               style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: AppFont.FontSize12),
+                                  fontSize: AppFont.FontSize11),
                             ),
                           ),
                         )

@@ -37,8 +37,9 @@ class _ConversationPageState extends State<ConversationPage>
 
   @override
   void initState() {
-    getList();
+    checkCollected();
     EasyEventBus.on(updateConversationPrefix, (event) async {
+      debugPrint("---------------更新会话EventBus......");
       if (event != null) {
         updateList(event);
         reorder(event.conversationId ?? '');
@@ -57,6 +58,7 @@ class _ConversationPageState extends State<ConversationPage>
     }
     conList.clear();
     conList.addAll(pageController.getConversationList());
+    debugPrint('---------------conList:${conList.length}');
     initConversation();
   }
 
@@ -135,6 +137,23 @@ class _ConversationPageState extends State<ConversationPage>
         ConnManager.retryConnect();
       }
     });
+  }
+
+  ///检查消息收取情况
+  void checkCollected() {
+    if (pageController.collecting.value) {
+      // 每1秒执行一次
+      Timer.periodic(const Duration(seconds: 1), (Timer timer) {
+        debugPrint('---------------checkCollected');
+        if (!pageController.collecting.value) {
+          debugPrint('---------------checkCollected collecting=false');
+          timer.cancel();
+          getList();
+        }
+      });
+    } else {
+      getList();
+    }
   }
 
   @override

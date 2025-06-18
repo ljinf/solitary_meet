@@ -1,6 +1,5 @@
 import 'package:easy_event_bus/easy_event_bus.dart';
 import 'package:get/get.dart';
-import 'package:path/path.dart';
 import 'package:solitary_meet/global.dart';
 import 'package:solitary_meet/model/msg_model.dart';
 import 'package:solitary_meet/router/app_pages.dart';
@@ -24,20 +23,16 @@ class ConversationController extends GetxController implements MessageCallBack {
 
   @override
   void onReady() {
-    //同步会话
-    SyncManager.syncConversationList().then((res) async {
-      //同步会话的所有用户
-      if (res.isNotEmpty) {
-        await SyncManager.syncConversationUsers(res);
-      }
-      //历史消息
-      var has = await SyncManager.syncMsgList();
-      if (has) {
-        //有新的消息更新会话列表
-        EasyEventBus.fire(updateConversationPrefix, null);
-      }
-      collecting.value = false;
-      update([collecting]);
+    //历史消息
+    SyncManager.syncMsgList().then((has) {
+      //同步会话
+      SyncManager.syncConversationList().then((res) async {
+        //同步会话的所有用户
+        if (res.isNotEmpty) {
+          await SyncManager.syncConversationUsers(res);
+        }
+        collecting.value = false;
+      });
     });
   }
 
