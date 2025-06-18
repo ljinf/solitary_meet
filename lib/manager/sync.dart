@@ -1,6 +1,7 @@
 import 'package:easy_event_bus/easy_event_bus.dart';
 
 import '../global.dart';
+import '../utils/conts.dart';
 
 class SyncManager {
   ///从服务器同步好友信息
@@ -32,8 +33,6 @@ class SyncManager {
     if (hasmore) {
       //更新会话最近消息
       await Global.conversationManager.loadRecentMsg();
-
-      //todo 有新的消息更新会话列表
     }
 
     return hasmore;

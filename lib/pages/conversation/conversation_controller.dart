@@ -6,6 +6,7 @@ import 'package:solitary_meet/model/msg_model.dart';
 import 'package:solitary_meet/router/app_pages.dart';
 import 'package:solitary_meet/services/socket.dart';
 
+import '../../manager/sync.dart';
 import '../../model/conversation_model.dart';
 import '../../utils/conts.dart';
 
@@ -13,12 +14,31 @@ class ConversationController extends GetxController implements MessageCallBack {
   var conversationManager = Global.conversationManager;
 
   //收取中
-  bool collecting = false;
+  var collecting = true.obs;
 
   @override
   void onInit() {
     ConnManager.addListener(conversationPage, this);
     super.onInit();
+  }
+
+  @override
+  void onReady() {
+    //同步会话
+    SyncManager.syncConversationList().then((res) async {
+      //同步会话的所有用户
+      if (res.isNotEmpty) {
+        await SyncManager.syncConversationUsers(res);
+      }
+      //历史消息
+      var has = await SyncManager.syncMsgList();
+      if (has) {
+        //有新的消息更新会话列表
+        EasyEventBus.fire(updateConversationPrefix, null);
+      }
+      collecting.value = false;
+      update([collecting]);
+    });
   }
 
   List<ConversationModel> getConversationList() {

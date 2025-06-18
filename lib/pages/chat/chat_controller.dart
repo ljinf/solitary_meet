@@ -15,7 +15,7 @@ class ChatController extends GetxController implements MessageCallBack {
   String curUid = Global.userProfile?.userId ?? "";
   late String convId, friendId; //对方的id
   late String title, avatar;
-  int seq = 0, limit = 20;
+  int seq = 0, limit = 10;
 
   //是否首次加载，第一次加载信息不要太多，30条，方便滚动到底部
   bool isFirstLoad = true;

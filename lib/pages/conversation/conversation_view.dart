@@ -4,6 +4,7 @@ import 'package:easy_event_bus/easy_event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:solitary_meet/common/values/font.dart';
+import 'package:solitary_meet/components/components.dart';
 import 'package:solitary_meet/global.dart';
 import 'package:solitary_meet/pages/conversation/conversation_controller.dart';
 import 'package:solitary_meet/router/app_pages.dart';
@@ -40,14 +41,20 @@ class _ConversationPageState extends State<ConversationPage>
     EasyEventBus.on(updateConversationPrefix, (event) async {
       if (event != null) {
         updateList(event);
+        reorder(event.conversationId ?? '');
+        return;
       }
-      reorder(event.conversationId ?? '');
+
+      getList();
     });
     checkNetwork();
     super.initState();
   }
 
   void getList() {
+    if (pageController.collecting.value) {
+      return;
+    }
     conList.clear();
     conList.addAll(pageController.getConversationList());
     initConversation();
@@ -79,12 +86,15 @@ class _ConversationPageState extends State<ConversationPage>
 
   ///排序
   void initConversation() {
+    if (conList.isEmpty) {
+      return;
+    }
     conList.sort((a, b) {
       var aTime = pageController
-              .conversationManager.recentMsg[a.conversationId]!.sendTime ??
+              .conversationManager.recentMsg[a.conversationId]?.sendTime ??
           0;
       var bTime = pageController
-              .conversationManager.recentMsg[b.conversationId]!.sendTime ??
+              .conversationManager.recentMsg[b.conversationId]?.sendTime ??
           0;
 
       if (aTime > bTime) {
@@ -162,26 +172,10 @@ class _ConversationPageState extends State<ConversationPage>
       body: Column(
         children: [
           getNetworkStatusView(),
-          Expanded(
-            child: ListView.builder(
-              itemBuilder: (ctx, index) {
-                var friendId = '';
-                if (conList[index].type == 0) {
-                  var ids = conList[index].conversationId!.split("-");
-                  friendId = ids
-                      .where((id) => id != Global.userProfile!.userId)
-                      .toList()[0];
-                }
-
-                return ConversationItem(
-                  conversationId: conList[index].conversationId ?? '',
-                  friendId: friendId,
-                  key: Key(conList[index].conversationId ?? ''),
-                );
-              },
-              itemCount: conList.length,
-            ),
-          ),
+          Obx(
+            () =>
+                pageController.collecting.value ? collectView() : contentView(),
+          )
         ],
       ),
     );
@@ -218,6 +212,65 @@ class _ConversationPageState extends State<ConversationPage>
       );
     }
     return Container();
+  }
+
+  Widget collectView() {
+    return const Expanded(
+        child: Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 25.0,
+            height: 25.0,
+            child: CircularProgressIndicator(
+              color: Colors.blue,
+              strokeWidth: 2,
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Text(
+            "收取中...",
+            style:
+                TextStyle(color: Colors.black54, fontSize: AppFont.FontSize14),
+          ),
+        ],
+      ),
+    ));
+  }
+
+  Widget contentView() {
+    return Expanded(
+      child: conList.isEmpty
+          ? Center(
+              child: Image.asset(
+                "assets/images/empty.png",
+                width: 128,
+                height: 128,
+              ),
+            )
+          : ListView.builder(
+              itemBuilder: (ctx, index) {
+                var friendId = '';
+                if (conList[index].type == 0) {
+                  var ids = conList[index].conversationId!.split("-");
+                  friendId = ids
+                      .where((id) => id != Global.userProfile!.userId)
+                      .toList()[0];
+                }
+
+                return ConversationItem(
+                  conversationId: conList[index].conversationId ?? '',
+                  friendId: friendId,
+                  key: Key(conList[index].conversationId ?? ''),
+                );
+              },
+              itemCount: conList.length,
+            ),
+    );
   }
 }
 
@@ -290,7 +343,7 @@ class _ConversationItemState extends State<ConversationItem> {
 
   void updateSeq() {
     readSeq = pageController
-            .conversationManager.conList[widget.conversationId]!.lastReadSeq ??
+            .conversationManager.conList[widget.conversationId]?.lastReadSeq ??
         0;
   }
 

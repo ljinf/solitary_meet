@@ -82,7 +82,8 @@ class ConversationManager {
 
   ///更新会话已读消息序列号
   void setConvReadSeq(String conversationId, int seq) {
-    if ((conList[conversationId]!.lastReadSeq ?? 0) < seq) {
+    var conv = conList[conversationId];
+    if (conv != null && (conv.lastReadSeq ?? 0) < seq) {
       conList.update(
         conversationId,
         (v) {
