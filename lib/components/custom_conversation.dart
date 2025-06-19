@@ -139,7 +139,7 @@ class _CustomConversationState extends State<CustomConversation>
                           width: AppImage.ImageSize19,
                           height: AppImage.ImageSize19,
                           decoration: BoxDecoration(
-                            color: Colors.red[400],
+                            color: Color(0xFFfc5531),
                             borderRadius: BorderRadius.circular(50),
                             shape: BoxShape.rectangle,
                           ),

@@ -51,7 +51,7 @@ class _MomentItemViewState extends State<MomentItemView>
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
+      margin: const EdgeInsets.only(left: 10, right: 10, top: 2, bottom: 2),
       width: getDeviceWidth(context),
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(10)),

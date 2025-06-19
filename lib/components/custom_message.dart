@@ -61,7 +61,7 @@ class _CustomMessageState extends State<CustomMessage>
               child: Text(
                 convertDate(widget.sendTime! * 1000),
                 style: const TextStyle(
-                    fontSize: AppFont.FontSize13, color: Colors.black45),
+                    fontSize: AppFont.FontSize12, color: Colors.black45),
               ),
             ),
           Container(
@@ -92,7 +92,7 @@ class _CustomMessageState extends State<CustomMessage>
                             color: Colors.black,
                             fontSize: fontSize,
                             height: 1.5,
-                            letterSpacing: 1.0)),
+                            letterSpacing: 0.5)),
                   ),
                   ImageView(widget.avatar,
                       circular: true,
@@ -118,7 +118,7 @@ class _CustomMessageState extends State<CustomMessage>
             child: Text(
               convertDate(widget.sendTime! * 1000),
               style: const TextStyle(
-                  fontSize: AppFont.FontSize13, color: Colors.black45),
+                  fontSize: AppFont.FontSize12, color: Colors.black45),
             ),
           ),
         Container(
@@ -153,7 +153,7 @@ class _CustomMessageState extends State<CustomMessage>
                           color: Colors.black,
                           fontSize: fontSize,
                           height: 1.5,
-                          letterSpacing: 1.0)),
+                          letterSpacing: 0.5)),
                 ),
               ],
             ),

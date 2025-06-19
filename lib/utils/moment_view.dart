@@ -20,7 +20,7 @@ Widget momentTxtView(String txt) {
         fontSize: AppFont.FontSize15,
         color: AppColors.defaultFontColor,
         height: 1.2,
-        letterSpacing: 1.0),
+        letterSpacing: 0.5),
   );
 }
 
