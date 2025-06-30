@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   /// 主背景
-  static const Color primaryBackground = Color(0xFFF4F6FA);
+  static const Color primaryBackground = Color(0xFFF2F2F2);
 
   /// 主文本
   static const Color primaryText = Color(0xFF2D3142);
