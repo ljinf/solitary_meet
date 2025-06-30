@@ -33,6 +33,7 @@ class ConnManager {
 
   static void retryConnect() async {
     if (connStatus == ConnStatus.closed) {
+      debugPrint("retry to connect...");
       _connectToWebSocket();
     }
   }

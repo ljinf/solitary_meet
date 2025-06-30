@@ -46,4 +46,17 @@ class UserAPI {
     }
     return UserLoginResponseModel.fromJson(response['data']);
   }
+
+  /// 更新用户信息
+  static Future<UserLoginResponseModel?> updateProfile({required Map params}) async {
+    showLoading();
+    var response = await Request().put(
+      '/v1/user',
+    );
+    dismissLoading();
+    if (!responseCheck(response)) {
+      return null;
+    }
+    return UserLoginResponseModel.fromJson(response['data']);
+  }
 }

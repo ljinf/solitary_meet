@@ -63,7 +63,7 @@ class AppBarBack extends StatelessWidget {
             )
           : Container(
               padding: const EdgeInsets.only(right: 15),
-              child: const Icon(Icons.arrow_back_ios_new, size: 24.0, color: Color(0xFF222222)),
+              child: const Icon(Icons.arrow_back_ios_new_rounded, size: 24.0, color: Color(0xFF222222)),
             ),
     );
   }

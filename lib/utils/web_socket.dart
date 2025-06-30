@@ -31,10 +31,11 @@ class WebSocketClient {
         await disconnect();
       }
 
-      _webSocketChannel = IOWebSocketChannel.connect(_url, headers: _headers,pingInterval: Duration(seconds: 5));
+      _webSocketChannel = IOWebSocketChannel.connect(_url,
+          headers: _headers, connectTimeout: Duration(seconds: 5));
+      _listen();
       _isConnected = true;
       _notifyConnect();
-      _listen();
     } catch (e) {
       _handleError('Connection failed: $e');
       rethrow;

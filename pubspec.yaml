@@ -82,6 +82,10 @@ dependencies:
   #时间线
   timelines_plus: ^1.0.7
 
+  image_cropper: ^9.1.0
+
+  visibility_detector: ^0.4.0+2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

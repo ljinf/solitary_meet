@@ -7,6 +7,7 @@ import 'package:solitary_meet/pages/mine/profile/profile_controller.dart';
 import 'package:solitary_meet/router/app_pages.dart';
 import 'package:solitary_meet/utils/screen_device.dart';
 import 'package:timelines_plus/timelines_plus.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../../../common/values/font.dart';
 import '../../../common/values/image.dart';
@@ -112,13 +113,26 @@ class _ProfilePageState extends State<ProfilePage>
     return SafeArea(
         child: Column(
       children: [
-        Container(
+        SizedBox(
           height: getDeviceHeight(context) * 0.3,
           child: Stack(
             children: [
               GestureDetector(
-                onTap: () {
-
+                onTap: () async {
+                  if (controller.userInfo.userId ==
+                      Global.userProfile?.userId) {
+                    List<AssetEntity>? fileList = await AssetPicker.pickAssets(
+                      context,
+                      pickerConfig: const AssetPickerConfig(
+                          selectedAssets: [],
+                          maxAssets: 1,
+                          themeColor: Color(0xff478384),
+                          textDelegate: AssetPickerTextDelegate()),
+                    );
+                    if (fileList != null && fileList.isNotEmpty) {
+                      controller.pickPic(fileList[0]);
+                    }
+                  }
                 },
                 onLongPress: updateBackground,
                 child: LayoutBuilder(builder: (ctx, sc) {
@@ -135,6 +149,23 @@ class _ProfilePageState extends State<ProfilePage>
                     height: sc.maxHeight - defaultWidth,
                   );
                 }),
+              ),
+              Positioned(
+                child: IconButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                      size: 24.0, color: Color(0xFF222222)),
+                ),
+              ),
+              Positioned(
+                right: 2,
+                child: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.more_vert_rounded,
+                      size: 24.0, color: Color(0xFF222222)),
+                ),
               ),
               Positioned(
                 bottom: 10,

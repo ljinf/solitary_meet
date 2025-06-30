@@ -10,6 +10,7 @@ import 'package:solitary_meet/pages/conversation/conversation_controller.dart';
 import 'package:solitary_meet/router/app_pages.dart';
 import 'package:solitary_meet/services/socket.dart';
 import 'package:solitary_meet/utils/conts.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../components/custom_conversation.dart';
 import '../../components/observable_List.dart';
@@ -33,11 +34,12 @@ class _ConversationPageState extends State<ConversationPage>
   String curLoginUid = Global.userProfile?.userId ?? "";
 
   late Timer timer;
-  var networkConnected = true;
+  var networkConnected = false;
 
   @override
   void initState() {
-    checkCollected();
+    checkNetwork();
+    checkMsgCollected();
     EasyEventBus.on(updateConversationPrefix, (event) async {
       debugPrint("---------------更新会话EventBus......");
       if (event != null) {
@@ -48,7 +50,6 @@ class _ConversationPageState extends State<ConversationPage>
 
       getList();
     });
-    checkNetwork();
     super.initState();
   }
 
@@ -120,27 +121,34 @@ class _ConversationPageState extends State<ConversationPage>
   }
 
   ///检查网络
-  void checkNetwork() {
-    // 每3秒执行一次
-    timer = Timer.periodic(const Duration(seconds: 3), (Timer timer) {
-      debugPrint("retry connect ${ConnManager.connStatus}");
-      if (ConnManager.connStatus == ConnStatus.connected) {
-        setState(() {
-          networkConnected = true;
-        });
-      } else if (ConnManager.connStatus == ConnStatus.closed) {
-        setState(() {
-          networkConnected = false;
-        });
+  void checkNetwork() async {
+    EasyEventBus.on('network', (connected) {
+      if (!connected) {
+        setNetworkStatusView();
       }
+    });
+
+    // 间隔执行
+    timer = Timer.periodic(const Duration(seconds: 6), (Timer timer) {
+      setNetworkStatusView();
       if (ConnManager.connStatus == ConnStatus.closed) {
         ConnManager.retryConnect();
       }
     });
   }
 
+  void setNetworkStatusView() {
+    setState(() {
+      if (ConnManager.connStatus == ConnStatus.connected) {
+        networkConnected = true;
+      } else if (ConnManager.connStatus == ConnStatus.closed) {
+        networkConnected = false;
+      }
+    });
+  }
+
   ///检查消息收取情况
-  void checkCollected() {
+  void checkMsgCollected() {
     if (pageController.collecting.value) {
       // 每1秒执行一次
       Timer.periodic(const Duration(seconds: 1), (Timer timer) {
@@ -169,33 +177,40 @@ class _ConversationPageState extends State<ConversationPage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: defaultBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: appBarColor,
-        surfaceTintColor: appBarColor,
-        centerTitle: true,
-        title: const Text("消息"),
-        actions: [
-          GestureDetector(
-            onTap: () {
-              Get.toNamed(AppRoutes.Friends);
-            },
-            child: Container(
-              margin: const EdgeInsets.only(left: 10, right: 20),
-              child: const Icon(Icons.people_alt_sharp),
+    return VisibilityDetector(
+      key: const Key('conversationPage-key'),
+      onVisibilityChanged: (visibilityInfo) {
+        setNetworkStatusView();
+      },
+      child: Scaffold(
+        backgroundColor: defaultBackgroundColor,
+        appBar: AppBar(
+          backgroundColor: appBarColor,
+          surfaceTintColor: appBarColor,
+          centerTitle: true,
+          title: const Text("消息"),
+          actions: [
+            GestureDetector(
+              onTap: () {
+                Get.toNamed(AppRoutes.Friends);
+              },
+              child: Container(
+                margin: const EdgeInsets.only(left: 10, right: 20),
+                child: const Icon(Icons.people_alt_sharp),
+              ),
             ),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          getNetworkStatusView(),
-          Obx(
-            () =>
-                pageController.collecting.value ? collectView() : contentView(),
-          )
-        ],
+          ],
+        ),
+        body: Column(
+          children: [
+            getNetworkStatusView(),
+            Obx(
+              () => pageController.collecting.value
+                  ? collectView()
+                  : contentView(),
+            )
+          ],
+        ),
       ),
     );
   }
