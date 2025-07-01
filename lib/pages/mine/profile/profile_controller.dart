@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:solitary_meet/global.dart';
 import 'package:solitary_meet/model/login_model.dart';
 import 'package:solitary_meet/services/services.dart';
 import 'package:solitary_meet/utils/message.dart';
@@ -25,7 +26,7 @@ class ProfileController extends GetxController {
     super.onReady();
   }
 
-  void pickPic(AssetEntity assets) async {
+  Future<void> pickPic(AssetEntity assets) async {
     var source = await assets.file;
     if (source != null) {
       var filePath = await imageCrop(source.path);
@@ -45,7 +46,7 @@ class ProfileController extends GetxController {
             'size': "${assets.width}X${assets.height}"
           },
         );
-        await updateProfile({
+        await updateUserBackground({
           "background": result,
         });
         Message.closeLoading();
@@ -53,10 +54,13 @@ class ProfileController extends GetxController {
     }
   }
 
-  Future<void> updateProfile(Map params) async {
-    var resp = await UserAPI.updateProfile(params: {});
+  Future<void> updateUserBackground(Map params) async {
+    var resp = await UserAPI.updateProfile(params: params);
     if (resp != null) {
       userInfo.background = resp.background;
+
+      Global.userProfile?.background = resp.background;
+      Global.saveProfile(Global.userProfile!);
     }
   }
 }

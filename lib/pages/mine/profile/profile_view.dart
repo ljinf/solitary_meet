@@ -12,6 +12,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import '../../../common/values/font.dart';
 import '../../../common/values/image.dart';
 import '../../../components/pull_up_header.dart';
+import '../../../config.dart';
 import '../../../model/community.dart';
 import '../../../services/community.dart';
 import '../../../utils/conts.dart';
@@ -130,7 +131,8 @@ class _ProfilePageState extends State<ProfilePage>
                           textDelegate: AssetPickerTextDelegate()),
                     );
                     if (fileList != null && fileList.isNotEmpty) {
-                      controller.pickPic(fileList[0]);
+                      await controller.pickPic(fileList[0]);
+                      setState(() {});
                     }
                   }
                 },
@@ -144,8 +146,9 @@ class _ProfilePageState extends State<ProfilePage>
                     );
                   }
                   return ImageView(
-                    controller.userInfo.background ?? '',
+                    "$STATIC_ASSETS_URL${controller.userInfo.background ?? ''}",
                     width: sc.maxWidth,
+                    isRadius: false,
                     height: sc.maxHeight - defaultWidth,
                   );
                 }),
@@ -162,7 +165,9 @@ class _ProfilePageState extends State<ProfilePage>
               Positioned(
                 right: 2,
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+
+                  },
                   icon: const Icon(Icons.more_vert_rounded,
                       size: 24.0, color: Color(0xFF222222)),
                 ),

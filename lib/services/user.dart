@@ -52,6 +52,7 @@ class UserAPI {
     showLoading();
     var response = await Request().put(
       '/v1/user',
+      params: params,
     );
     dismissLoading();
     if (!responseCheck(response)) {
