@@ -69,7 +69,7 @@ class _MomentItemViewState extends State<MomentItemView>
               });
             },
             child: ImageView(
-              widget.moment.userInfo!.avatar ?? '',
+              '$STATIC_ASSETS_URL${widget.moment.userInfo!.avatar ?? ''}',
               circular: true,
             ),
           ),

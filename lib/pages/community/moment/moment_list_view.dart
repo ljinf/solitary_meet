@@ -78,7 +78,7 @@ class _MomentPageState extends State<MomentPage>
       appBar: AppBar(
         backgroundColor: Colors.white,
         actions: [IconButton(onPressed: () {
-          Get.toNamed(AppRoutes.addMoment);
+          Get.toNamed(AppRoutes.AddMoment);
         }, icon: Icon(Icons.signpost_outlined))],
       ),
       body: SmartRefresher(

@@ -33,22 +33,18 @@ class UserAPI {
     return UserLoginResponseModel.fromJson(response['data']);
   }
 
-  /// 仅支持email查询信息
+  /// 查询信息
   static Future<UserLoginResponseModel?> searchUserInfo(Map params) async {
-    showLoading();
-    var response = await Request().post(
-      '/v1/search',
-      params: params,
-    );
-    dismissLoading();
-    if (!responseCheck(response)) {
-      return null;
+    var response = await doRequest('/v1/search', params: params, loading: true);
+    if (response != null) {
+      return UserLoginResponseModel.fromJson(response['data']);
     }
-    return UserLoginResponseModel.fromJson(response['data']);
+    return null;
   }
 
   /// 更新用户信息
-  static Future<UserLoginResponseModel?> updateProfile({required Map params}) async {
+  static Future<UserLoginResponseModel?> updateProfile(
+      {required Map params}) async {
     showLoading();
     var response = await Request().put(
       '/v1/user',

@@ -50,9 +50,9 @@ const helpUrl =
 const defContentImg =
     'https://www.runoob.com/wp-content/uploads/2015/06/image_1c58e950q14da167k1nqpu2hn5e9.png';
 
-const defaultWidth = 42.0;
+const defaultWidth = 40.0;
 
-const defaultHeight = 42.0;
+const defaultHeight = 40.0;
 
 const defaultFontSize = 16.0;
 

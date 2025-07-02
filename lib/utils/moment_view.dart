@@ -66,7 +66,7 @@ Widget _openContainerView(
     openBuilder: (BuildContext context, VoidCallback callback) {
       return CustomPhotoView(imgList: list, selected: selected);
     },
-    tappable: false,
+    // tappable: false,
     closedBuilder: (BuildContext context, VoidCallback openContainer) {
       return GestureDetector(
         onTap: openContainer,

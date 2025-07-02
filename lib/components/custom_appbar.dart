@@ -24,8 +24,10 @@ class CustomAppBar extends AppBar implements PreferredSizeWidget {
           key: key,
           title: title,
           centerTitle: centerTitle,
-          systemOverlayStyle: SystemUiOverlayStyle(statusBarBrightness: brightness ?? Brightness.light),
+          systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarBrightness: brightness ?? Brightness.light),
           backgroundColor: backgroundColor ?? AppColors.primaryBackground,
+          surfaceTintColor: backgroundColor ?? AppColors.primaryBackground,
           leading: leading ??
               (leadingType == AppBarBackType.None
                   ? Container()
@@ -59,11 +61,13 @@ class AppBarBack extends StatelessWidget {
       },
       child: _backType == AppBarBackType.Close
           ? Container(
-              child: Icon(Icons.close, color: color ?? const Color(0xFF222222), size: 24.0),
+              child: Icon(Icons.close,
+                  color: color ?? const Color(0xFF222222), size: 24.0),
             )
           : Container(
               padding: const EdgeInsets.only(right: 15),
-              child: const Icon(Icons.arrow_back_ios_new_rounded, size: 24.0, color: Color(0xFF222222)),
+              child: const Icon(Icons.arrow_back_ios_new_rounded,
+                  size: 24.0, color: Color(0xFF222222)),
             ),
     );
   }
@@ -77,6 +81,10 @@ class CustomTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(_title, style: TextStyle(color: color ?? Color(0xFF222222), fontSize: 18, fontWeight: FontWeight.w500));
+    return Text(_title,
+        style: TextStyle(
+            color: color ?? Color(0xFF222222),
+            fontSize: 18,
+            fontWeight: FontWeight.w500));
   }
 }

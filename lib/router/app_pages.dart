@@ -11,14 +11,16 @@ import 'package:solitary_meet/pages/home/home_binding.dart';
 import 'package:solitary_meet/pages/home/home_view.dart';
 import 'package:solitary_meet/pages/login/login_binding.dart';
 import 'package:solitary_meet/pages/login/login_view.dart';
+import 'package:solitary_meet/pages/mine/user_info/user_info_binding.dart';
+import 'package:solitary_meet/pages/mine/user_info/user_info_view.dart';
 import 'package:solitary_meet/pages/notfound/notfound_view.dart';
 import 'package:solitary_meet/pages/proxy/proxy_view.dart';
 import 'package:get/get.dart';
 import 'package:solitary_meet/pages/search/search_binding.dart';
 import 'package:solitary_meet/pages/search/search_view.dart';
 
-import '../pages/mine/profile/profile_binding.dart';
-import '../pages/mine/profile/profile_view.dart';
+import '../pages/profile/profile_binding.dart';
+import '../pages/profile/profile_view.dart';
 
 part 'app_routes.dart';
 
@@ -66,9 +68,14 @@ class AppPages {
       binding: MomentDetailBinding(),
     ),
     GetPage(
-      name: AppRoutes.addMoment,
+      name: AppRoutes.AddMoment,
       page: () => AddMomentPage(),
       binding: AddMomentBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.UserInfo,
+      page: () => UserInfoPage(),
+      binding: UserInfoBinding(),
     ),
   ];
 

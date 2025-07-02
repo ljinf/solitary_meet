@@ -34,9 +34,9 @@ class UserLoginResponseModel {
         email: json["email"],
         phone: json["phone"],
         nickName: json["nick_name"],
-        avatar: json["avatar"],
-        background: json["background"],
-        selfSignature: json["self_signature"],
+        avatar: json["avatar"] ?? '',
+        background: json["background"] ?? '',
+        selfSignature: json["self_signature"] ?? '',
         gender: json["gender"],
         token: json["accessToken"] ?? json["token"],
       );

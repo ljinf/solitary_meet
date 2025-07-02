@@ -1,0 +1,72 @@
+import 'package:get/get.dart';
+import 'package:solitary_meet/global.dart';
+import 'package:solitary_meet/model/login_model.dart';
+import 'package:solitary_meet/services/services.dart';
+import 'package:solitary_meet/utils/message.dart';
+import 'package:uuid/uuid.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+import 'package:dio/dio.dart' as dio;
+import '../../../services/upload.dart';
+import '../../../utils/img_cropper.dart';
+
+class ProfileController extends GetxController {
+  late UserLoginResponseModel userInfo;
+
+  @override
+  void onInit() {
+    super.onInit();
+    userInfo = UserLoginResponseModel();
+    userInfo.userId = Get.arguments['userId'];
+    userInfo.avatar = Get.arguments['avatar'];
+    userInfo.nickName = Get.arguments['nickName'];
+  }
+
+  Future<void> searchProfile() async {
+    if (userInfo.userId == Global.userProfile?.userId) {
+      userInfo = Global.userProfile!;
+    } else {
+      var resp = await UserAPI.searchUserInfo({"user_id": userInfo.userId});
+      if (resp != null) {
+        userInfo = resp;
+      }
+    }
+  }
+
+  Future<void> pickPic(AssetEntity assets) async {
+    var source = await assets.file;
+    if (source != null) {
+      var filePath = await imageCrop(source.path);
+      //debugPrint(filePath);
+      if (filePath != null && filePath != "") {
+        Message.showLoading();
+        // 创建MultipartFile对象
+        dio.MultipartFile fileData = await dio.MultipartFile.fromFile(
+          filePath,
+          filename:
+              "${const Uuid().v4()}${filePath.substring(filePath.lastIndexOf('.'))}",
+        );
+
+        var result = await UploadAPI.uploadFile(
+          params: {
+            'file': fileData, // 'file'是后端接收文件的字段名
+            'size': "${assets.width}X${assets.height}"
+          },
+        );
+        await updateUserBackground({
+          "background": result,
+        });
+        Message.closeLoading();
+      }
+    }
+  }
+
+  Future<void> updateUserBackground(Map params) async {
+    var resp = await UserAPI.updateProfile(params: params);
+    if (resp != null) {
+      userInfo.background = resp.background;
+
+      Global.userProfile?.background = resp.background;
+      Global.saveProfile(Global.userProfile!);
+    }
+  }
+}

@@ -47,6 +47,11 @@ class ImageView extends StatelessWidget {
         color: color,
         fit: fit,
         cacheManager: LocalStorage.getCacheManager(),
+        errorWidget: (context, url, error) => Image.asset(
+          'assets/images/placeholder.png',
+          width: width,
+          height: height,
+        ),
       );
     } else if (File(img).existsSync()) {
       image = Image.file(
@@ -55,6 +60,11 @@ class ImageView extends StatelessWidget {
         height: height,
         fit: fit,
         color: color,
+        errorBuilder: (context, url, error) => Image.asset(
+          'assets/images/placeholder.png',
+          width: width,
+          height: height,
+        ),
       );
     } else if (isAssetsImg(img)) {
       image = Image.asset(
@@ -63,6 +73,11 @@ class ImageView extends StatelessWidget {
         height: height,
         color: color,
         fit: width != null && height != null ? BoxFit.fill : fit,
+        errorBuilder: (context, url, error) => Image.asset(
+          'assets/images/placeholder.png',
+          width: width,
+          height: height,
+        ),
       );
     } else {
       image = Container(
@@ -76,6 +91,11 @@ class ImageView extends StatelessWidget {
           height: height! - 1,
           color: color,
           fit: width != null && height != null ? BoxFit.fill : fit,
+          errorBuilder: (context, url, error) => Image.asset(
+            'assets/images/placeholder.png',
+            width: width,
+            height: height,
+          ),
         ),
       );
     }
