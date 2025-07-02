@@ -22,7 +22,7 @@ class MinePage extends StatefulWidget {
 }
 
 class _MinePageState extends State<MinePage> {
-  double avatarSize = 50.0;
+  double avatarSize = 56.0;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +67,7 @@ class _MinePageState extends State<MinePage> {
                           Global.userProfile!.nickName ?? '',
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1, // 必需设置为1来使用ellipsis
-                          style: const TextStyle(fontSize: AppFont.FontSize14),
+                          style: const TextStyle(fontSize: AppFont.defaultFontSize),
                         ),
                         const SizedBox(
                           height: 2,
@@ -79,7 +79,7 @@ class _MinePageState extends State<MinePage> {
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                           style: const TextStyle(
-                            fontSize: AppFont.FontSize11,
+                            fontSize: AppFont.FontSize13,
                             color: AppColors.primaryGreyText,
                           ),
                         ),
@@ -109,7 +109,7 @@ class _MinePageState extends State<MinePage> {
                       Text('12'),
                       Text(
                         '关注',
-                        style: TextStyle(fontSize: AppFont.FontSize12),
+                        style: TextStyle(fontSize: AppFont.FontSize13),
                       ),
                     ],
                   ),
@@ -119,7 +119,7 @@ class _MinePageState extends State<MinePage> {
                       Text('12'),
                       Text(
                         '粉丝',
-                        style: TextStyle(fontSize: AppFont.FontSize12),
+                        style: TextStyle(fontSize: AppFont.FontSize13),
                       ),
                     ],
                   ),
@@ -129,7 +129,7 @@ class _MinePageState extends State<MinePage> {
                       Text('408'),
                       Text(
                         '被赞',
-                        style: TextStyle(fontSize: AppFont.FontSize12),
+                        style: TextStyle(fontSize: AppFont.FontSize13),
                       ),
                     ],
                   )

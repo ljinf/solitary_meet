@@ -28,7 +28,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
       appBar: CustomAppBar(
         title: const Text(
           '个人资料',
-          style: TextStyle(fontSize: AppFont.FontSize14),
+          style: TextStyle(fontSize: AppFont.defaultFontSize),
         ),
         leadingType: AppBarBackType.Back,
       ),
@@ -48,7 +48,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   '头像',
                   style: TextStyle(
                       color: AppColors.defaultFontColor,
-                      fontSize: AppFont.FontSize15),
+                      fontSize: AppFont.defaultFontSize),
                 )),
                 OpenContainer<bool>(
                   transitionType: ContainerTransitionType.fade,
@@ -59,7 +59,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   closedBuilder:
                       (BuildContext context, VoidCallback openContainer) {
                     return getAvatarView(
-                        '$STATIC_ASSETS_URL${controller.avatar.value}', 30);
+                        '$STATIC_ASSETS_URL${controller.avatar.value}', 36);
                   },
                   closedShape: const RoundedRectangleBorder(),
                   closedColor: Colors.white,
@@ -95,7 +95,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   '昵称',
                   style: TextStyle(
                       color: AppColors.defaultFontColor,
-                      fontSize: AppFont.FontSize15),
+                      fontSize: AppFont.defaultFontSize),
                 ),
                 const SizedBox(
                   width: 10,
@@ -108,7 +108,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                           color: AppColors.primaryGreyText,
-                          fontSize: AppFont.FontSize12),
+                          fontSize: AppFont.FontSize14),
                     ))),
                 IconButton(
                     onPressed: () async {
@@ -128,7 +128,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   '签名',
                   style: TextStyle(
                       color: AppColors.defaultFontColor,
-                      fontSize: AppFont.FontSize14),
+                      fontSize: AppFont.defaultFontSize),
                 ),
                 const SizedBox(
                   width: 10,
@@ -141,7 +141,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                           color: AppColors.primaryGreyText,
-                          fontSize: AppFont.FontSize12),
+                          fontSize: AppFont.FontSize14),
                     ))),
                 IconButton(
                     onPressed: () async {
