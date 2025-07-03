@@ -94,7 +94,10 @@ class _MomentDetailPageState extends State<MomentDetailPage>
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(
-        title: const Text('详情'),
+        title: const Text(
+          '详情',
+          style: TextStyle(fontSize: AppFont.defaultFontSize),
+        ),
       ),
       body: SmartRefresher(
         controller: refreshController,
@@ -111,7 +114,7 @@ class _MomentDetailPageState extends State<MomentDetailPage>
             ///时刻内容
             Container(
               width: getDeviceWidth(context),
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -123,7 +126,7 @@ class _MomentDetailPageState extends State<MomentDetailPage>
                         circular: true,
                       ),
                       const SizedBox(
-                        width: 10,
+                        width: 8,
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,7 +147,7 @@ class _MomentDetailPageState extends State<MomentDetailPage>
                             convertMomentDate(
                                 (controller.moment.createdAt ?? 0) * 1000),
                             style: const TextStyle(
-                              fontSize: AppFont.FontSize14,
+                              fontSize: AppFont.FontSize13,
                               color: AppColors.primaryGreyText,
                             ),
                           ),
@@ -158,7 +161,7 @@ class _MomentDetailPageState extends State<MomentDetailPage>
                     Column(
                       children: [
                         const SizedBox(
-                          height: 10,
+                          height: 8,
                         ),
                         momentTxtView(controller.moment.content ?? '')
                       ],
@@ -248,6 +251,11 @@ class _MomentDetailPageState extends State<MomentDetailPage>
               ),
             ),
 
+            Container(
+              height: 6,
+              color: const Color(0x44E5E6EB),
+            ),
+
             ///评论内容
             commentListView(),
           ],
@@ -271,7 +279,7 @@ class _MomentDetailPageState extends State<MomentDetailPage>
 
   Widget commentItem(CommentModel comment) {
     return Container(
-      padding: EdgeInsets.only(right: 10, bottom: 10),
+      padding: const EdgeInsets.only(left: 10, top: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -285,47 +293,63 @@ class _MomentDetailPageState extends State<MomentDetailPage>
             width: 6,
           ),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  comment.userInfo!.nickName ?? '孤舟一横',
-                  style: const TextStyle(
-                    fontSize: AppFont.FontSize14,
-                    color: AppColors.defaultFontColor,
-                    fontWeight: FontWeight.w500,
+            child: Container(
+              padding: EdgeInsets.only(bottom: 10),
+              decoration: const BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(color: AppColors.primaryGrey2))),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          comment.userInfo!.nickName ?? '孤舟一横',
+                          style: const TextStyle(
+                            fontSize: AppFont.FontSize12,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Text(
+                          convertMomentDate((comment.createdAt ?? 0) * 1000),
+                          style: const TextStyle(
+                            fontSize: AppFont.FontSize10,
+                            color: AppColors.primaryGreyText,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 4,
+                        ),
+                        Text(
+                          comment.content ?? '',
+                          style: const TextStyle(
+                            fontSize: AppFont.FontSize14,
+                            color: AppColors.defaultFontColor,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                Text(
-                  convertMomentDate((comment.createdAt ?? 0) * 1000),
-                  style: const TextStyle(
-                    fontSize: AppFont.FontSize10,
-                    color: AppColors.primaryGreyText,
+                  Text(
+                    '10',
+                    style: TextStyle(fontSize: AppFont.FontSize12),
                   ),
-                ),
-                const SizedBox(
-                  height: 4,
-                ),
-                Text(
-                  comment.content ?? '',
-                  style: TextStyle(fontSize: AppFont.FontSize14),
-                )
-              ],
+                  SizedBox(
+                    width: 2,
+                  ),
+                  Image.asset(
+                    'assets/icons/icon_like_unselected.webp',
+                    width: AppImage.ImageSize13,
+                    height: AppImage.ImageSize13,
+                  ),
+                ],
+              ),
             ),
-          ),
-          Text(
-            '10',
-            style: TextStyle(fontSize: AppFont.FontSize12),
-          ),
-          SizedBox(
-            width: 2,
-          ),
-          Image.asset(
-            'assets/icons/icon_like_unselected.webp',
-            width: AppImage.ImageSize14,
-            height: AppImage.ImageSize14,
-          ),
+          )
         ],
       ),
     );
