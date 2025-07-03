@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   var controller = Get.find<HomeController>();
 
   // var bottomNavigationTitles = ['广场', '心愿', '消息', '我的'];
-  var bottomNavigationTitles = ['xx', 'xx', '消息', 'xx'];
+  var bottomNavigationTitles = ['广场', '消息', '我的'];
   late PageController pageController;
 
   var pages = <Widget>[];
@@ -29,9 +29,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     pages.add(MomentPage());
-    pages.add(const Center(
-      child: Text("2"),
-    ));
     pages.add(ConversationPage());
     pages.add(MinePage());
 
@@ -65,33 +62,37 @@ class _HomePageState extends State<HomePage> {
           });
         },
         unselectedItemColor: AppColors.navUnselectedColor,
-        selectedItemColor: AppColors.navSelectedColor,
+        selectedItemColor: AppColors.moderateCyan,
         unselectedFontSize: AppFont.navFontSize,
         selectedFontSize: AppFont.navFontSize,
         items: [
           BottomNavigationBarItem(
               icon: Image.asset(
-                "assets/icons/tabbar_me_c.webp",
+                "assets/icons/tabbar_discover_c.webp",
                 width: AppImage.navImageSize,
                 height: AppImage.navImageSize,
+                color: AppColors.navUnselectedColor,
               ),
               activeIcon: Image.asset(
-                "assets/icons/tabbar_me_c.webp",
+                "assets/icons/tabbar_discover_s.webp",
                 width: AppImage.navImageSize,
                 height: AppImage.navImageSize,
+                color: AppColors.moderateCyan,
               ),
               label: bottomNavigationTitles[0],
               tooltip: bottomNavigationTitles[0]),
           BottomNavigationBarItem(
               icon: Image.asset(
-                "assets/icons/tabbar_me_c.webp",
+                "assets/icons/tabbar_message_c.webp",
                 width: AppImage.navImageSize,
                 height: AppImage.navImageSize,
+                color: AppColors.navUnselectedColor,
               ),
               activeIcon: Image.asset(
-                "assets/icons/tabbar_me_c.webp",
+                "assets/icons/tabbar_message_s.webp",
                 width: AppImage.navImageSize,
                 height: AppImage.navImageSize,
+                color: AppColors.moderateCyan,
               ),
               label: bottomNavigationTitles[1],
               tooltip: bottomNavigationTitles[1]),
@@ -100,27 +101,16 @@ class _HomePageState extends State<HomePage> {
                 "assets/icons/tabbar_me_c.webp",
                 width: AppImage.navImageSize,
                 height: AppImage.navImageSize,
+                color: AppColors.navUnselectedColor,
               ),
               activeIcon: Image.asset(
                 "assets/icons/tabbar_me_c.webp",
                 width: AppImage.navImageSize,
                 height: AppImage.navImageSize,
+                color: AppColors.moderateCyan,
               ),
               label: bottomNavigationTitles[2],
               tooltip: bottomNavigationTitles[2]),
-          BottomNavigationBarItem(
-              icon: Image.asset(
-                "assets/icons/tabbar_me_c.webp",
-                width: AppImage.navImageSize,
-                height: AppImage.navImageSize,
-              ),
-              activeIcon: Image.asset(
-                "assets/icons/tabbar_me_c.webp",
-                width: AppImage.navImageSize,
-                height: AppImage.navImageSize,
-              ),
-              label: bottomNavigationTitles[3],
-              tooltip: bottomNavigationTitles[3]),
         ],
       ),
     );

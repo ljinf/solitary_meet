@@ -30,8 +30,8 @@ class _LoginPageState extends State<LoginPage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Column(
+    return SafeArea(
+        child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         const Padding(

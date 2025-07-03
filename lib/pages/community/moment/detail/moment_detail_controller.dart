@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../../../../model/community.dart';
+import '../../../../services/community.dart';
 
 class MomentDetailController extends GetxController {
   late MomentModel moment;
@@ -9,5 +10,13 @@ class MomentDetailController extends GetxController {
   void onInit() {
     moment = Get.arguments['moment'];
     super.onInit();
+  }
+
+  Future<List<CommentModel>> getCommentList(Map<String, dynamic> params) async {
+    return await CommunityAPI.getCommentList(params);
+  }
+
+  Future<CommentModel?> addComment(Map<String, dynamic> params) async {
+    return await CommunityAPI.addComment(params);
   }
 }

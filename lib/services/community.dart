@@ -40,9 +40,9 @@ class CommunityAPI {
   }
 
   //评论列表
-  static Future<List<MomentModel>> getCommentList(Map<String, dynamic> params,
+  static Future<List<CommentModel>> getCommentList(Map<String, dynamic> params,
       {bool loading = true}) async {
-    var resp = <MomentModel>[];
+    var resp = <CommentModel>[];
     var result = await doRequest("/v1/community/comment/list",
         params: params, loading: loading);
 
@@ -52,7 +52,7 @@ class CommunityAPI {
 
     if (result != null && result['data'] != null) {
       for (var item in result['data']) {
-        resp.add(MomentModel.fromJson(item));
+        resp.add(CommentModel.fromJson(item));
       }
     }
 
@@ -86,8 +86,15 @@ class CommunityAPI {
   }
 
   //发表评论
-  static Future<String> addComment(Map<String, dynamic> params,
+  static Future<CommentModel?> addComment(Map<String, dynamic> params,
       {bool loading = true}) async {
-    return "";
+    var result = await doRequest("/v1/community/comment/add",
+        params: params, loading: loading);
+
+    if (result != null && result['data'] != null) {
+      return CommentModel.fromJson(result['data']);
+    }
+
+    return null;
   }
 }

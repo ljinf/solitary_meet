@@ -17,6 +17,7 @@ import '../../../model/community.dart';
 import '../../../services/community.dart';
 import '../../../utils/conts.dart';
 import '../../../utils/moment_view.dart';
+import '../../common/colors/colors.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -121,7 +122,7 @@ class _ProfilePageState extends State<ProfilePage>
                       pickerConfig: const AssetPickerConfig(
                           selectedAssets: [],
                           maxAssets: 1,
-                          themeColor: Color(0xff478384),
+                          themeColor: AppColors.moderateCyan,
                           textDelegate: AssetPickerTextDelegate()),
                     );
                     if (fileList != null && fileList.isNotEmpty) {
@@ -171,7 +172,7 @@ class _ProfilePageState extends State<ProfilePage>
                 child: Column(
                   children: [
                     ImageView(
-                      controller.userInfo.avatar!,
+                      "$STATIC_ASSETS_URL${controller.userInfo.avatar ?? ''}",
                       width: AppImage.ImageSize56,
                       height: AppImage.ImageSize56,
                       circular: true,
@@ -184,7 +185,7 @@ class _ProfilePageState extends State<ProfilePage>
                         ///关注
                         Container(
                           decoration: BoxDecoration(
-                              color: Colors.teal,
+                              color: AppColors.moderateCyan,
                               borderRadius: BorderRadius.circular(16)),
                           width: 56,
                           height: 24,
