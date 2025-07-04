@@ -19,4 +19,8 @@ class MomentDetailController extends GetxController {
   Future<CommentModel?> addComment(Map<String, dynamic> params) async {
     return await CommunityAPI.addComment(params);
   }
+
+  Future<String?> likeComment(Map<String, dynamic> params) async {
+    return await CommunityAPI.addCommentLiked(params);
+  }
 }

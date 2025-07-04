@@ -60,7 +60,7 @@ class _MomentDetailPageState extends State<MomentDetailPage>
     pageNum = 1;
     var resp = await controller.getCommentList({
       "moment_id": controller.moment.momentId,
-      "created_at": 0,
+      "index": 0,
     });
     if (resp.isNotEmpty) {
       setState(() {
@@ -74,7 +74,7 @@ class _MomentDetailPageState extends State<MomentDetailPage>
   void loadCommentList() async {
     var resp = await controller.getCommentList({
       "moment_id": controller.moment.momentId,
-      "created_at": commentList[commentList.length - 1].createdAt,
+      "index": commentList[commentList.length - 1].id,
       "page_num": pageNum,
       "page_size": pageSize,
     });
@@ -266,8 +266,8 @@ class _MomentDetailPageState extends State<MomentDetailPage>
 
   Widget commentListView() {
     List<Widget> views = [];
-    for (var v in commentList) {
-      views.add(commentItem(v));
+    for (int index = 0; index < commentList.length; index++) {
+      views.add(commentItem(index, commentList[index]));
     }
     return Container(
       padding: const EdgeInsets.all(16),
@@ -277,14 +277,14 @@ class _MomentDetailPageState extends State<MomentDetailPage>
     );
   }
 
-  Widget commentItem(CommentModel comment) {
+  Widget commentItem(int index, CommentModel comment) {
     return Container(
       padding: const EdgeInsets.only(left: 10, top: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ImageView(
-            '$STATIC_ASSETS_URL${comment.userInfo!.avatar ?? ''}',
+            '$STATIC_ASSETS_URL${comment.avatar ?? ''}',
             circular: true,
             width: AppImage.ImageSize28,
             height: AppImage.ImageSize28,
@@ -307,7 +307,7 @@ class _MomentDetailPageState extends State<MomentDetailPage>
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          comment.userInfo!.nickName ?? '孤舟一横',
+                          comment.nickName ?? '',
                           style: const TextStyle(
                             fontSize: AppFont.FontSize12,
                             color: Colors.grey,
@@ -335,16 +335,46 @@ class _MomentDetailPageState extends State<MomentDetailPage>
                     ),
                   ),
                   Text(
-                    '10',
+                    '${comment.likeCount ?? 0}',
                     style: TextStyle(fontSize: AppFont.FontSize12),
                   ),
                   SizedBox(
                     width: 2,
                   ),
-                  Image.asset(
-                    'assets/icons/icon_like_unselected.webp',
-                    width: AppImage.ImageSize13,
-                    height: AppImage.ImageSize13,
+                  GestureDetector(
+                    onTap: () {
+                      var likeStatus = comment.likeStatus == 0 ? 1 : 0;
+                      controller.likeComment({
+                        "comment_id": comment.commentId,
+                        "status": likeStatus,
+                      }).then((v) {
+                        if (v == "ok") {
+                          setState(() {
+                            commentList[index].likeStatus = likeStatus;
+                            if (likeStatus == 0) {
+                              commentList[index].likeCancelCount =
+                                  commentList[index].likeCancelCount! + 1;
+                            } else {
+                              commentList[index].likeCount =
+                                  commentList[index].likeCount! + 1;
+                            }
+                          });
+                        }
+                      });
+                    },
+                    child: Image.asset(
+                      comment.likeStatus == 0
+                          ? 'assets/icons/icon_like_unselected.webp'
+                          : 'assets/icons/icon_like_selected.webp',
+                      width: AppImage.ImageSize13,
+                      height: AppImage.ImageSize13,
+                      color: comment.likeStatus == 0
+                          ? AppColors.primaryGreyText
+                          : AppColors.moderateCyan,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 2,
                   ),
                 ],
               ),

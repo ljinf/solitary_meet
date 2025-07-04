@@ -69,15 +69,19 @@ class MomentModel {
 }
 
 class CommentModel {
+  int? id;
   String? userId;
-  UserLoginResponseModel? userInfo;
+  String? nickName;
+  String? avatar;
+  int? userStatus;
 
   String? momentId;
   String? parentId;
   String? commentId;
 
   String? replyId;
-  UserLoginResponseModel? replyInfo;
+  String? replyName;
+  int? replyStatus;
 
   String? content;
   int? status;
@@ -88,13 +92,17 @@ class CommentModel {
   int? commentCount;
 
   CommentModel(
-      {this.userId,
-      this.userInfo,
+      {this.id,
+      this.userId,
+      this.nickName,
+      this.avatar,
+      this.userStatus,
       this.momentId,
       this.parentId,
       this.commentId,
       this.replyId,
-      this.replyInfo,
+      this.replyName,
+      this.replyStatus,
       this.content,
       this.status,
       this.createdAt,
@@ -104,13 +112,17 @@ class CommentModel {
       this.commentCount});
 
   factory CommentModel.fromJson(Map<String, dynamic> data) => CommentModel(
+        id: data['id'] ?? 0,
         commentId: data['comment_id'] ?? '',
         parentId: data['parent_id'] ?? '',
         userId: data['user_id'] ?? '',
-        userInfo: UserLoginResponseModel.fromJson(data['user_info'] ?? {}),
+        nickName: data['nick_name'] ?? '',
+        avatar: data['avatar'] ?? '',
+        userStatus: data['user_status'],
         momentId: data['moment_id'] ?? '',
-        replyId: data['reply_id'] ?? '',
-        replyInfo: UserLoginResponseModel.fromJson(data['reply_info'] ?? {}),
+        replyId: data['reply_id'] ?? 0,
+        replyName: data['reply_name'] ?? '',
+        replyStatus: data['reply_status'],
         content: data['content'] ?? '',
         status: data['status'] ?? 2,
         createdAt: data['created_at'] ?? 0,
@@ -121,13 +133,17 @@ class CommentModel {
       );
 
   Map<String, dynamic> toJson() => {
+        "id": id,
         "comment_id": commentId,
         "parent_id": parentId,
         "moment_id": momentId,
         "user_id": userId,
-        "user_info": userInfo,
+        "nick_name": nickName,
+        "avatar": avatar,
+        "user_status": userStatus,
         "reply_id": replyId,
-        "reply_info": replyInfo,
+        "reply_name": replyName,
+        "reply_status": replyStatus,
         "content": content,
         "like_count": likeCount,
         "like_cancel_count": likeCancelCount,
