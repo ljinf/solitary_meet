@@ -91,6 +91,8 @@ class CommentModel {
   int? likeStatus;
   int? commentCount;
 
+  List<CommentModel> children = [];
+
   CommentModel(
       {this.id,
       this.userId,

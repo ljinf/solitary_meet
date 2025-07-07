@@ -6,6 +6,7 @@ import 'package:solitary_meet/pages/chat/chat_controller.dart';
 
 import '../../components/custom_appbar.dart';
 import '../../components/custom_message.dart';
+import '../../config.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({Key? key}) : super(key: key);
@@ -96,7 +97,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                         }
                       }
                       return CustomMessage(
-                        avatar,
+                        '$STATIC_HOST_DEV$avatar',
                         controller.msgList[index].content!,
                         controller.msgList[index].contentType!,
                         isSelf,

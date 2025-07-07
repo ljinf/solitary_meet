@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:solitary_meet/global.dart';
 import 'package:solitary_meet/pages/community/moment/detail/moment_detail_controller.dart';
 
 import '../../../../common/colors/colors.dart';
 import '../../../../common/values/font.dart';
 import '../../../../common/values/image.dart';
 import '../../../../components/custom_appbar.dart';
+import '../../../../components/custom_expandable_text.dart';
 import '../../../../components/custom_image.dart';
 import '../../../../components/pull_up_header.dart';
 import '../../../../config.dart';
@@ -15,6 +17,7 @@ import '../../../../model/community.dart';
 import '../../../../utils/helper.dart';
 import '../../../../utils/moment_view.dart';
 import '../../../../utils/screen_device.dart';
+import '../comment/comment_view.dart';
 import '../comment/input_view.dart';
 
 class MomentDetailPage extends StatefulWidget {
@@ -34,6 +37,7 @@ class _MomentDetailPageState extends State<MomentDetailPage>
   int pageNum = 1;
   int pageSize = 30;
   List<CommentModel> commentList = [];
+  String inputHint = '有何高见~';
   String inputContent = '';
 
   @override
@@ -278,7 +282,11 @@ class _MomentDetailPageState extends State<MomentDetailPage>
   }
 
   Widget commentItem(int index, CommentModel comment) {
-    return Container(
+    return CommentView(
+      comment: comment,
+    );
+
+    /*return Container(
       padding: const EdgeInsets.only(left: 10, top: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -324,23 +332,28 @@ class _MomentDetailPageState extends State<MomentDetailPage>
                         const SizedBox(
                           height: 4,
                         ),
-                        Text(
-                          comment.content ?? '',
-                          style: const TextStyle(
-                            fontSize: AppFont.FontSize14,
-                            color: AppColors.defaultFontColor,
+                        GestureDetector(
+                          onTap: () {
+                            inputHint = '';
+                            inputView(comment.commentId, '0', '0');
+                          },
+                          child: CustomExpandableText(
+                            maxLine: 2,
+                            linkColor: AppColors.moderateCyan,
+                            text: comment.content ?? '',
+                            style: const TextStyle(
+                              fontSize: AppFont.FontSize14,
+                              color: AppColors.defaultFontColor,
+                            ),
                           ),
-                        )
+                        ),
+                        if ((comment.commentCount ?? 0) > 0)
+                          moreSubComment(comment.commentCount ?? 0)
                       ],
                     ),
                   ),
-                  Text(
-                    '${comment.likeCount ?? 0}',
-                    style: TextStyle(fontSize: AppFont.FontSize12),
-                  ),
-                  SizedBox(
-                    width: 2,
-                  ),
+
+                  ///点赞
                   GestureDetector(
                     onTap: () {
                       var likeStatus = comment.likeStatus == 0 ? 1 : 0;
@@ -374,7 +387,11 @@ class _MomentDetailPageState extends State<MomentDetailPage>
                     ),
                   ),
                   SizedBox(
-                    width: 2,
+                    width: 4,
+                  ),
+                  Text(
+                    '${comment.likeCount ?? 0}',
+                    style: TextStyle(fontSize: AppFont.FontSize12),
                   ),
                 ],
               ),
@@ -382,13 +399,13 @@ class _MomentDetailPageState extends State<MomentDetailPage>
           )
         ],
       ),
-    );
+    );*/
   }
 
   void inputView(String? parentId, String? commentId, String? replyId) {
     Get.dialog(
       InputView(
-        '有何高见~',
+        inputHint,
         callback: (content) {
           inputContent = content;
         },
@@ -402,8 +419,33 @@ class _MomentDetailPageState extends State<MomentDetailPage>
           "reply_comment_id": commentId,
           "content": inputContent
         });
-        debugPrint(resp.toString());
+        resp?.nickName = Global.userProfile?.nickName;
+        resp?.avatar = Global.userProfile?.avatar;
+        reset();
       }
     });
+  }
+
+  Widget moreSubComment(int num) {
+    return GestureDetector(
+      onTap: () {},
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            '还有$num条回复',
+            style: TextStyle(fontSize: AppFont.FontSize11),
+          ),
+          Icon(
+            Icons.keyboard_arrow_down_rounded,
+            size: AppImage.ImageSize15,
+          )
+        ],
+      ),
+    );
+  }
+
+  void reset() {
+    inputHint = '有何高见~';
   }
 }

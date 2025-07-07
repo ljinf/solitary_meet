@@ -14,7 +14,7 @@ import 'helper.dart';
 
 Widget momentTxtView(String txt) {
   return CustomExpandableText(
-    linkColor: Color(0xFF00a3af),
+    linkColor: AppColors.moderateCyan,
     text: txt,
     style: const TextStyle(
         fontSize: AppFont.FontSize15,

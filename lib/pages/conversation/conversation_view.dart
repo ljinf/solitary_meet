@@ -14,6 +14,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../components/custom_conversation.dart';
 import '../../components/observable_List.dart';
+import '../../config.dart';
 import '../../manager/sync.dart';
 import '../../model/conversation_model.dart';
 import '../../model/msg_model.dart';
@@ -356,7 +357,7 @@ class _ConversationItemState extends State<ConversationItem> {
         .then((info) {
       if (info != null) {
         setState(() {
-          avatar = info.avatar == '' ? defAvatar : info.avatar ?? defAvatar;
+          avatar = info.avatar == '' ? defAvatar : '$STATIC_HOST_DEV${info.avatar}' ?? defAvatar;
           title = info.nickName ?? '';
         });
       }
