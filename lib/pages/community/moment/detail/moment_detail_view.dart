@@ -274,7 +274,7 @@ class _MomentDetailPageState extends State<MomentDetailPage>
       views.add(commentItem(index, commentList[index]));
     }
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
       child: Column(
         children: views,
       ),
@@ -282,8 +282,11 @@ class _MomentDetailPageState extends State<MomentDetailPage>
   }
 
   Widget commentItem(int index, CommentModel comment) {
+    ///一级评论
     return CommentView(
+      parentId: comment.commentId,
       comment: comment,
+      isChild: false,
     );
 
     /*return Container(
