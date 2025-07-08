@@ -357,7 +357,7 @@ class _ConversationItemState extends State<ConversationItem> {
         .then((info) {
       if (info != null) {
         setState(() {
-          avatar = info.avatar == '' ? defAvatar : '$STATIC_HOST_DEV${info.avatar}' ?? defAvatar;
+          avatar = info.avatar == '' ? defAvatar : '${info.avatar}' ?? defAvatar;
           title = info.nickName ?? '';
         });
       }
@@ -398,7 +398,7 @@ class _ConversationItemState extends State<ConversationItem> {
       child: CustomConversation(
         convId: widget.conversationId,
         friendId: widget.friendId,
-        imageUrl: avatar,
+        imageUrl: '$STATIC_HOST_DEV$avatar',
         title: title,
         recentMsg: recentMsg,
         readSeq: readSeq,

@@ -9,7 +9,7 @@ class SplashPage extends StatelessWidget {
     return Scaffold(
         body: Container(
       decoration:
-          const BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/bg.jpg'), fit: BoxFit.cover)),
+          const BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/bg_1.png'), fit: BoxFit.cover)),
     ));
   }
 }
