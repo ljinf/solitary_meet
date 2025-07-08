@@ -80,8 +80,8 @@ class _CommentViewState extends State<CommentView> {
                     children: [
                       ///发表人信息
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
@@ -90,10 +90,11 @@ class _CommentViewState extends State<CommentView> {
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontSize: AppFont.FontSize13,
-                                color: Colors.grey,
+                                color: Colors.black87,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
+                            const SizedBox(width: 6,),
                             Text(
                               convertMomentDate(
                                   (widget.comment.createdAt ?? 0) * 1000),
@@ -163,7 +164,8 @@ class _CommentViewState extends State<CommentView> {
                         replyId = widget.comment.userId;
                         inputHint = '回复 ${widget.comment.nickName}';
                       }
-                      inputView(widget.parentId, replyCommentId, replyId);
+                      inputView(widget.parentId, replyCommentId, replyId,
+                          replyName: widget.comment.nickName);
                     },
                     child: LayoutBuilder(
                         builder: (BuildContext ctx, BoxConstraints bs) {
@@ -174,7 +176,7 @@ class _CommentViewState extends State<CommentView> {
                           linkColor: AppColors.moderateCyan,
                           text: widget.comment.replyId == '0'
                               ? widget.comment.content ?? ''
-                              : '回复${widget.comment.replyName} ${widget.comment.content}',
+                              : '回复[${widget.comment.replyName}] ${widget.comment.content}',
                           style: const TextStyle(
                             fontSize: AppFont.FontSize14,
                             color: AppColors.defaultFontColor,
@@ -196,7 +198,8 @@ class _CommentViewState extends State<CommentView> {
   }
 
   void inputView(
-      String? parentCommentId, String? replyCommentId, String? replyId) {
+      String? parentCommentId, String? replyCommentId, String? replyId,
+      {String? replyName}) {
     Get.dialog(
       InputView(
         inputHint,
@@ -213,8 +216,16 @@ class _CommentViewState extends State<CommentView> {
           "reply_comment_id": replyCommentId,
           "content": inputContent
         });
-        resp?.nickName = Global.userProfile?.nickName;
-        resp?.avatar = Global.userProfile?.avatar;
+        if (resp != null) {
+          resp.replyName = replyName;
+          resp.nickName = Global.userProfile?.nickName;
+          resp.avatar = Global.userProfile?.avatar;
+          widget.comment.children.add(resp);
+          widget.comment.commentCount = (widget.comment.commentCount ?? 0) + 1;
+          ///评论+1
+          widget.onComment!(widget.comment.momentId ?? '', replyCommentId ?? '',
+              replyId ?? '');
+        }
         reset();
       }
     });
@@ -234,6 +245,11 @@ class _CommentViewState extends State<CommentView> {
           comment: item,
           divide: false,
           isChild: true,
+          onComment: (String momentId, String commentId, String replyId) {
+            setState(() {});
+            ///评论+1
+            widget.onComment!('', '', '');
+          },
         ));
       }
       return Column(

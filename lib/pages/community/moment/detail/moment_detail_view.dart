@@ -14,6 +14,7 @@ import '../../../../components/custom_image.dart';
 import '../../../../components/pull_up_header.dart';
 import '../../../../config.dart';
 import '../../../../model/community.dart';
+import '../../../../utils/conts.dart';
 import '../../../../utils/helper.dart';
 import '../../../../utils/moment_view.dart';
 import '../../../../utils/screen_device.dart';
@@ -28,40 +29,77 @@ class MomentDetailPage extends StatefulWidget {
 }
 
 class _MomentDetailPageState extends State<MomentDetailPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   var controller = Get.find<MomentDetailController>();
   late AnimationController _animationController;
 
   ///评论相关
-  late RefreshController refreshController;
   int pageNum = 1;
   int pageSize = 30;
   List<CommentModel> commentList = [];
   String inputHint = '有何高见~';
   String inputContent = '';
 
+  late ScrollController scrollController;
+
+  // 设置一个小的阈值来判断是否接近底部
+  final double bottomThreshold = 5;
+
+  //是否向下
+  bool scrollDown = false;
+
+  //是否组件自动滚动
+  bool autoScroll = false;
+  double _previousScrollOffset = 0.0;
+
   @override
   void initState() {
     super.initState();
-    refreshController = RefreshController();
+    WidgetsBinding.instance.addObserver(this);
+    scrollController = ScrollController();
     _animationController = AnimationController(vsync: this);
+    refreshCommentList();
+    scrollController.addListener(() {
+      final double currentScrollOffset = scrollController.offset;
+      if (_previousScrollOffset > 0) {
+        if (currentScrollOffset > _previousScrollOffset) {
+          // 向下滑动
+          scrollDown = true;
+        } else if (currentScrollOffset < _previousScrollOffset) {
+          // 向上滑动
+          scrollDown = false;
+        }
+      }
+      // 更新为当前滚动位置，以便下次比较
+      // 注意：首次滚动时，_previousScrollOffset 为 0，因此不会触发方向判断
+      _previousScrollOffset = currentScrollOffset;
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      // UI渲染完成，调用requestRefresh()
-      refreshController.requestRefresh();
+      if (scrollDown) {
+        // 检查是否接近底部
+        final double maxScroll = scrollController.position.maxScrollExtent;
+        final double currentScroll = scrollController.offset;
+        if (maxScroll - currentScroll < bottomThreshold) {
+          print('已经接近底部');
+          // 在这里执行滚动到底部的逻辑
+          if (!autoScroll) {
+            autoScroll = false; //还原
+            print('请求下一页');
+            loadCommentList();
+          }
+        }
+      }
     });
   }
 
   @override
   void dispose() {
     _animationController.dispose();
-    refreshController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
   void refreshCommentList() async {
     commentList.clear();
-    pageNum = 1;
     var resp = await controller.getCommentList({
       "moment_id": controller.moment.momentId,
       "index": 0,
@@ -69,27 +107,20 @@ class _MomentDetailPageState extends State<MomentDetailPage>
     if (resp.isNotEmpty) {
       setState(() {
         commentList.addAll(resp);
-        pageNum++;
       });
     }
-    refreshController.refreshCompleted();
   }
 
   void loadCommentList() async {
     var resp = await controller.getCommentList({
       "moment_id": controller.moment.momentId,
       "index": commentList[commentList.length - 1].id,
-      "page_num": pageNum,
       "page_size": pageSize,
     });
     if (resp.isNotEmpty) {
       setState(() {
         commentList.addAll(resp);
-        pageNum++;
       });
-      refreshController.loadComplete();
-    } else {
-      refreshController.loadNoData();
     }
   }
 
@@ -103,7 +134,195 @@ class _MomentDetailPageState extends State<MomentDetailPage>
           style: TextStyle(fontSize: AppFont.defaultFontSize),
         ),
       ),
-      body: SmartRefresher(
+      body: SingleChildScrollView(
+        controller: scrollController,
+        child: Column(
+          children: [
+            ///时刻内容
+            Container(
+              width: getDeviceWidth(context),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    children: [
+                      ImageView(
+                        '$STATIC_ASSETS_URL${controller.moment.userInfo!.avatar ?? ''}',
+                        circular: true,
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 2,
+                          ),
+                          Text(
+                            controller.moment.userInfo!.nickName ?? '',
+                            style: const TextStyle(
+                              fontSize: AppFont.FontSize18,
+                              color: AppColors.defaultFontColor,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Text(
+                            convertMomentDate(
+                                (controller.moment.createdAt ?? 0) * 1000),
+                            style: const TextStyle(
+                              fontSize: AppFont.FontSize13,
+                              color: AppColors.primaryGreyText,
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+
+                  /// 时刻内容
+                  if ((controller.moment.content ?? '') != '')
+                    Column(
+                      children: [
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        momentTxtView(controller.moment.content ?? '')
+                      ],
+                    ),
+                  if ((controller.moment.attachment ?? []).isNotEmpty)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        momentImgListView(
+                            context, controller.moment.attachment ?? [])
+                      ],
+                    ),
+
+                  ///评论点赞
+                  Column(
+                    children: [
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          //点赞
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () async {
+                                var status =
+                                    controller.moment.likeStatus == statusLiked
+                                        ? statusUnLike
+                                        : statusLiked;
+                                var result = await controller.likeMoment({
+                                  "moment_id": controller.moment.momentId,
+                                  "status": status
+                                });
+
+                                if (result == "ok") {
+                                  setState(() {
+                                    controller.moment.likeStatus =
+                                        status == statusLiked ? 1 : 0;
+
+                                    switch (status) {
+                                      case statusLiked:
+                                        controller.moment.likeCount =
+                                            (controller.moment.likeCount ?? 0) +
+                                                1;
+                                        break;
+                                      case statusUnLike:
+                                        controller.moment.likeCancelCount =
+                                            (controller.moment
+                                                        .likeCancelCount ??
+                                                    0) +
+                                                1;
+                                        break;
+                                    }
+                                  });
+                                }
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    controller.moment.likeStatus == 1
+                                        ? 'assets/icons/heart_fill.webp'
+                                        : 'assets/icons/heart_line.webp',
+                                    width: AppImage.ImageSize20,
+                                    height: AppImage.ImageSize20,
+                                    color: controller.moment.likeStatus == 1
+                                        ? Color(0xFFfc5531)
+                                        : Color(0xFFA7A6A7),
+                                  ),
+                                  const SizedBox(
+                                    width: 2,
+                                  ),
+                                  Text(
+                                    '${(controller.moment.likeCount ?? 0) - (controller.moment.likeCancelCount ?? 0)}',
+                                    style: const TextStyle(
+                                        fontSize: AppFont.FontSize12,
+                                        color: Colors.black),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          //评论
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                inputView('0', '0', '0');
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/icons/message_line.webp',
+                                    width: AppImage.ImageSize20,
+                                    height: AppImage.ImageSize20,
+                                    // color: Colors.black,
+                                  ),
+                                  const SizedBox(
+                                    width: 2,
+                                  ),
+                                  Text(
+                                    '${controller.moment.commentCount}',
+                                    style: const TextStyle(
+                                        fontSize: AppFont.FontSize12,
+                                        color: Colors.black),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            Container(
+              height: 6,
+              color: const Color(0x44E5E6EB),
+            ),
+
+            ///评论内容
+            commentListView(),
+          ],
+        ),
+      ),
+      /*body: SmartRefresher(
         controller: refreshController,
         enablePullDown: true,
         enablePullUp: true,
@@ -264,7 +483,7 @@ class _MomentDetailPageState extends State<MomentDetailPage>
             commentListView(),
           ],
         ),
-      ),
+      ),*/
     );
   }
 
@@ -287,122 +506,12 @@ class _MomentDetailPageState extends State<MomentDetailPage>
       parentId: comment.commentId,
       comment: comment,
       isChild: false,
+      onComment: (String momentId, String commentId, String replyId) {
+        setState(() {
+          controller.incrCommentCount();
+        });
+      },
     );
-
-    /*return Container(
-      padding: const EdgeInsets.only(left: 10, top: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ImageView(
-            '$STATIC_ASSETS_URL${comment.avatar ?? ''}',
-            circular: true,
-            width: AppImage.ImageSize28,
-            height: AppImage.ImageSize28,
-          ),
-          const SizedBox(
-            width: 6,
-          ),
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.only(bottom: 10),
-              decoration: const BoxDecoration(
-                  border: Border(
-                      bottom: BorderSide(color: AppColors.primaryGrey2))),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          comment.nickName ?? '',
-                          style: const TextStyle(
-                            fontSize: AppFont.FontSize12,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        Text(
-                          convertMomentDate((comment.createdAt ?? 0) * 1000),
-                          style: const TextStyle(
-                            fontSize: AppFont.FontSize10,
-                            color: AppColors.primaryGreyText,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 4,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            inputHint = '';
-                            inputView(comment.commentId, '0', '0');
-                          },
-                          child: CustomExpandableText(
-                            maxLine: 2,
-                            linkColor: AppColors.moderateCyan,
-                            text: comment.content ?? '',
-                            style: const TextStyle(
-                              fontSize: AppFont.FontSize14,
-                              color: AppColors.defaultFontColor,
-                            ),
-                          ),
-                        ),
-                        if ((comment.commentCount ?? 0) > 0)
-                          moreSubComment(comment.commentCount ?? 0)
-                      ],
-                    ),
-                  ),
-
-                  ///点赞
-                  GestureDetector(
-                    onTap: () {
-                      var likeStatus = comment.likeStatus == 0 ? 1 : 0;
-                      controller.likeComment({
-                        "comment_id": comment.commentId,
-                        "status": likeStatus,
-                      }).then((v) {
-                        if (v == "ok") {
-                          setState(() {
-                            commentList[index].likeStatus = likeStatus;
-                            if (likeStatus == 0) {
-                              commentList[index].likeCancelCount =
-                                  commentList[index].likeCancelCount! + 1;
-                            } else {
-                              commentList[index].likeCount =
-                                  commentList[index].likeCount! + 1;
-                            }
-                          });
-                        }
-                      });
-                    },
-                    child: Image.asset(
-                      comment.likeStatus == 0
-                          ? 'assets/icons/icon_like_unselected.webp'
-                          : 'assets/icons/icon_like_selected.webp',
-                      width: AppImage.ImageSize13,
-                      height: AppImage.ImageSize13,
-                      color: comment.likeStatus == 0
-                          ? AppColors.primaryGreyText
-                          : AppColors.moderateCyan,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 4,
-                  ),
-                  Text(
-                    '${comment.likeCount ?? 0}',
-                    style: TextStyle(fontSize: AppFont.FontSize12),
-                  ),
-                ],
-              ),
-            ),
-          )
-        ],
-      ),
-    );*/
   }
 
   void inputView(String? parentId, String? commentId, String? replyId) {
@@ -422,33 +531,15 @@ class _MomentDetailPageState extends State<MomentDetailPage>
           "reply_comment_id": commentId,
           "content": inputContent
         });
-        resp?.nickName = Global.userProfile?.nickName;
-        resp?.avatar = Global.userProfile?.avatar;
-        reset();
+        if (resp != null) {
+          setState(() {
+            resp.nickName = Global.userProfile?.nickName;
+            resp.avatar = Global.userProfile?.avatar;
+            commentList.add(resp);
+            controller.incrCommentCount();
+          });
+        }
       }
     });
-  }
-
-  Widget moreSubComment(int num) {
-    return GestureDetector(
-      onTap: () {},
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            '还有$num条回复',
-            style: TextStyle(fontSize: AppFont.FontSize11),
-          ),
-          Icon(
-            Icons.keyboard_arrow_down_rounded,
-            size: AppImage.ImageSize15,
-          )
-        ],
-      ),
-    );
-  }
-
-  void reset() {
-    inputHint = '有何高见~';
   }
 }
