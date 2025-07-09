@@ -13,6 +13,8 @@ abstract class AppRoutes {
 
   static const UserInfo = '/userInfo';
 
+  static const InitInfo = '/initInfo';
+
   // notfound
   static const NotFound = '/notfound';
 

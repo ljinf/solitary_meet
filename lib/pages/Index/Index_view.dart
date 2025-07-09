@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:solitary_meet/pages/Index/Index_controller.dart';
 import 'package:solitary_meet/pages/splash/spalsh_view.dart';
 import 'package:get/get.dart';
+import 'package:solitary_meet/router/app_pages.dart';
 
 import '../../common/colors/colors.dart';
 import '../../common/values/font.dart';
@@ -122,10 +123,12 @@ class _IndexPageState extends State<IndexPage> {
                                   AppColors.moderateCyan),
                             ),
                             onPressed: () {
-                              if (!agreePolicy) {
-                                Message.showError('请阅读并同意用户协议');
-                                return;
-                              }
+                              Get.toNamed(AppRoutes.InitInfo);
+
+                              // if (!agreePolicy) {
+                              //   Message.showError('请阅读并同意用户协议');
+                              //   return;
+                              // }
                               // controller.loginHandler('phone');
                             },
                             child: const Text(

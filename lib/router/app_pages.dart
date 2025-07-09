@@ -9,6 +9,8 @@ import 'package:solitary_meet/pages/friend/friends_list/friend_list_binding.dart
 import 'package:solitary_meet/pages/friend/friends_list/friend_list_view.dart';
 import 'package:solitary_meet/pages/home/home_binding.dart';
 import 'package:solitary_meet/pages/home/home_view.dart';
+import 'package:solitary_meet/pages/login/init_info/init_info_binding.dart';
+import 'package:solitary_meet/pages/login/init_info/init_info_view.dart';
 import 'package:solitary_meet/pages/login/login_binding.dart';
 import 'package:solitary_meet/pages/login/login_view.dart';
 import 'package:solitary_meet/pages/mine/user_info/user_info_binding.dart';
@@ -76,6 +78,11 @@ class AppPages {
       name: AppRoutes.UserInfo,
       page: () => UserInfoPage(),
       binding: UserInfoBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.InitInfo,
+      page: () => InitInfoPage(),
+      binding: InitInfoBinding(),
     ),
   ];
 
