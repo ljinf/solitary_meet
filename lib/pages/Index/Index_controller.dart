@@ -14,7 +14,7 @@ class IndexController extends GetxController {
 
   @override
   void onReady() {
-    startCountdownTimer();
+    // startCountdownTimer();
   }
 
   @override

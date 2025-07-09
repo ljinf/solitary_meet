@@ -6,10 +6,10 @@ class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 欢迎页
-    return Scaffold(
-        body: Container(
-      decoration:
-          const BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/bg_1.png'), fit: BoxFit.cover)),
-    ));
+    return Container(
+      decoration: const BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage('assets/images/bg_1.png'), fit: BoxFit.cover)),
+    );
   }
 }
