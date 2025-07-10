@@ -23,6 +23,10 @@ class InitInfoController extends GetxController {
     super.onInit();
   }
 
+  void setGender(int g) {
+    gender = g;
+  }
+
   Future<void> updateAvatar(AssetEntity assets) async {
     var source = await assets.file;
     if (source != null) {

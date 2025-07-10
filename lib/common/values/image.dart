@@ -16,4 +16,6 @@ class AppImage {
   static const double ImageSize36 = 36;
   static const double ImageSize48 = 48;
   static const double ImageSize56 = 56;
+  static const double ImageSize60 = 60;
+  static const double ImageSize66 = 66;
 }

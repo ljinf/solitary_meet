@@ -16,7 +16,8 @@ class AppColors {
 
   static const Color primaryGrey1 = Color(0xFFe0e0e0);
   static const Color primaryGrey2 = Color(0xFFf0f0f0);
-  static const Color primaryGrey3 = Color(0xFFA7A6A7);
+  static const Color primaryGrey3 = Color(0xFFF7F8FA);
+  static const Color primaryGrey4 = Color(0xFFA7A6A7);
 
   //首页导航栏字体
   static const Color navSelectedColor = Color(0xFF1C212A);

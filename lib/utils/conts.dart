@@ -70,8 +70,13 @@ const relationshipFollow = 2;
 const statusLiked = 1; //是
 const statusUnLike = 2; //否
 
+//性别
+const man = 1; //男
+const women = 2; //女
+
 //监听前缀
 ///更新会话
 const updateConversationPrefix = 'updateConversation';
+
 ///更新最近消息
 const updateConversationRecentMsgPrefix = 'updateConversationRecentMsg_';
