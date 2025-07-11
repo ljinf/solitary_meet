@@ -102,44 +102,43 @@ class _IndexPageState extends State<IndexPage> {
                           ),
                         ),
                       ),
-                      if (ENV_IS_DEV)
-                        Container(
-                          margin: const EdgeInsets.only(
-                              left: 16, right: 16, top: 8, bottom: 8),
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              shape: WidgetStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      50.0), // 这里设置圆角半径为按钮宽度的一半，以实现椭圆形效果
-                                ),
+                      Container(
+                        margin: const EdgeInsets.only(
+                            left: 16, right: 16, top: 8, bottom: 8),
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            shape:
+                                WidgetStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    50.0), // 这里设置圆角半径为按钮宽度的一半，以实现椭圆形效果
                               ),
-                              maximumSize: WidgetStateProperty.all(
-                                  Size(getDeviceWidth(context), 45)),
-                              minimumSize:
-                                  WidgetStateProperty.all(const Size(343, 45)),
-                              backgroundColor: WidgetStateProperty.all(
-                                  AppColors.moderateCyan),
                             ),
-                            onPressed: () {
-                              Get.toNamed(AppRoutes.InitInfo);
+                            maximumSize: WidgetStateProperty.all(
+                                Size(getDeviceWidth(context), 45)),
+                            minimumSize:
+                                WidgetStateProperty.all(const Size(343, 45)),
+                            backgroundColor:
+                                WidgetStateProperty.all(AppColors.moderateCyan),
+                          ),
+                          onPressed: () {
+                            controller.toPhoneLogin();
 
-                              // if (!agreePolicy) {
-                              //   Message.showError('请阅读并同意用户协议');
-                              //   return;
-                              // }
-                              // controller.loginHandler('phone');
-                            },
-                            child: const Text(
-                              '手机号码登录',
-                              style: TextStyle(
-                                  fontSize: AppFont.FontSize15,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500),
-                            ),
+                            // if (!agreePolicy) {
+                            //   Message.showError('请阅读并同意用户协议');
+                            //   return;
+                            // }
+                            // controller.loginHandler('phone');
+                          },
+                          child: const Text(
+                            '手机号码登录',
+                            style: TextStyle(
+                                fontSize: AppFont.FontSize15,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500),
                           ),
                         ),
+                      ),
                     ],
                   ),
                 ),

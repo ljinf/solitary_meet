@@ -74,6 +74,11 @@ const statusUnLike = 2; //否
 const man = 1; //男
 const women = 2; //女
 
+//账号类型
+const accountTypeEmail = 1; //邮箱
+const accountTypePhone = 2; //手机号
+const accountTypeWechat = 3; //微信
+
 //监听前缀
 ///更新会话
 const updateConversationPrefix = 'updateConversation';

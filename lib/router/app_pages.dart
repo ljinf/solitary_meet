@@ -13,6 +13,8 @@ import 'package:solitary_meet/pages/login/init_info/init_info_binding.dart';
 import 'package:solitary_meet/pages/login/init_info/init_info_view.dart';
 import 'package:solitary_meet/pages/login/login_binding.dart';
 import 'package:solitary_meet/pages/login/login_view.dart';
+import 'package:solitary_meet/pages/login/phone/phone_binding.dart';
+import 'package:solitary_meet/pages/login/phone/phone_view.dart';
 import 'package:solitary_meet/pages/mine/user_info/user_info_binding.dart';
 import 'package:solitary_meet/pages/mine/user_info/user_info_view.dart';
 import 'package:solitary_meet/pages/notfound/notfound_view.dart';
@@ -83,6 +85,11 @@ class AppPages {
       name: AppRoutes.InitInfo,
       page: () => InitInfoPage(),
       binding: InitInfoBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.PhoneLogin,
+      page: () => PhonePage(),
+      binding: PhoneBinding(),
     ),
   ];
 

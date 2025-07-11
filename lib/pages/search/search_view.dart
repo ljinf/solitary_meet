@@ -59,7 +59,7 @@ class _SearchPageState extends State<SearchPage> {
                         ImageView(pageController.list[index].avatar!),
                         Container(
                           margin: const EdgeInsets.only(left: 10),
-                          child: Text(pageController.list[index].email!),
+                          child: Text(pageController.list[index].account!),
                         ),
                       ],
                     ),

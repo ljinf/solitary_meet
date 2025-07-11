@@ -20,6 +20,10 @@ class IndexController extends GetxController {
   @override
   void onClose() {}
 
+  void toPhoneLogin() {
+    Get.toNamed(AppRoutes.PhoneLogin);
+  }
+
   // 展示欢迎页，倒计时1.5秒之后进入应用
   Future startCountdownTimer() async {
     var respUserInfo = await UserAPI.userInfo();

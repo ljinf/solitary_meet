@@ -10,6 +10,7 @@ import 'package:dio/dio.dart' as dio;
 
 class InitInfoController extends GetxController {
   String avatar = '';
+  AssetEntity? avatarAssets;
   String nickName = '';
   String selfSignature = '';
   int gender = 1; //性别 1男 2女
@@ -27,13 +28,23 @@ class InitInfoController extends GetxController {
     gender = g;
   }
 
-  Future<void> updateAvatar(AssetEntity assets) async {
+  Future<String> updateAvatar(AssetEntity assets) async {
+    avatarAssets = assets;
     var source = await assets.file;
     if (source != null) {
       var filePath = await imageCrop(source.path);
       avatar = filePath ?? '';
-      //debugPrint(filePath);
-      /*if (filePath != null && filePath != "") {
+      debugPrint(filePath);
+    }
+    return "";
+  }
+
+  Future<String> upload() async {
+    var source = await avatarAssets?.file;
+    if (source != null) {
+      var filePath = await imageCrop(source.path);
+      debugPrint(filePath);
+      if (filePath != null && filePath != "") {
         Message.showLoading();
         // 创建MultipartFile对象
         dio.MultipartFile fileData = await dio.MultipartFile.fromFile(
@@ -45,14 +56,17 @@ class InitInfoController extends GetxController {
         var result = await UploadAPI.uploadFile(
           params: {
             'file': fileData, // 'file'是后端接收文件的字段名
-            'size': "${assets.width}X${assets.height}"
+            'size': "${avatarAssets?.width}X${avatarAssets?.height}"
           },
         );
-        await updateUserBackground({
-          "background": result,
-        });
         Message.closeLoading();
-      }*/
+        return result;
+      }
     }
+    return "";
+  }
+
+  Future<void> submitInfo(AssetEntity assets) async {
+    // uploadAvatar(assets);
   }
 }

@@ -9,47 +9,51 @@ String userLoginResponseModelToJson(UserLoginResponseModel data) =>
 class UserLoginResponseModel {
   UserLoginResponseModel(
       {this.userId,
-      this.email,
-      this.phone,
+      this.account,
+      this.accountType,
       this.nickName,
       this.avatar,
       this.background,
       this.selfSignature,
       this.gender,
+      this.initInfo,
       this.token});
 
   String? userId;
-  String? email;
-  String? phone;
+  String? account;
+  int? accountType;
   String? nickName; //昵称
   String? avatar; //头像
   String? background; //个人背景图
   String? selfSignature; //个性签名
   int? gender; //性别
   String? token;
+  bool? initInfo; //是否已初始化基本信息
 
   factory UserLoginResponseModel.fromJson(Map<String, dynamic> json) =>
       UserLoginResponseModel(
         userId: json["user_id"],
-        email: json["email"],
-        phone: json["phone"],
+        account: json["account"],
+        accountType: json["account_type"],
         nickName: json["nick_name"],
         avatar: json["avatar"] ?? '',
         background: json["background"] ?? '',
         selfSignature: json["self_signature"] ?? '',
         gender: json["gender"],
-        token: json["accessToken"] ?? json["token"],
+        initInfo: json["init_info"],
+        token: json["access_token"] ?? json["token"],
       );
 
   Map<String, dynamic> toJson() => {
         "user_id": userId,
-        "email": email,
-        "phone": phone,
+        "account": account,
+        "account_type": accountType,
         "nick_name": nickName,
         "avatar": avatar,
         "background": background,
         "self_signature": selfSignature,
         "gender": gender,
+        "init_info": initInfo,
         "token": token,
       };
 }
