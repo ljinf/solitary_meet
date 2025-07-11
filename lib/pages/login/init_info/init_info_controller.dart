@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:solitary_meet/global.dart';
+import 'package:solitary_meet/router/app_pages.dart';
+import 'package:solitary_meet/services/services.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
@@ -39,12 +42,11 @@ class InitInfoController extends GetxController {
     return "";
   }
 
-  Future<String> upload() async {
+  Future<String> uploadAvatar() async {
     var source = await avatarAssets?.file;
     if (source != null) {
-      var filePath = await imageCrop(source.path);
-      debugPrint(filePath);
-      if (filePath != null && filePath != "") {
+      var filePath = source.path;
+      if (filePath != "") {
         Message.showLoading();
         // 创建MultipartFile对象
         dio.MultipartFile fileData = await dio.MultipartFile.fromFile(
@@ -66,7 +68,23 @@ class InitInfoController extends GetxController {
     return "";
   }
 
-  Future<void> submitInfo(AssetEntity assets) async {
-    // uploadAvatar(assets);
+  Future<void> submitInfo() async {
+    String avatar = await uploadAvatar();
+    var resp = await UserAPI.updateProfile(params: {
+      "avatar": avatar,
+      "nick_name": nickName,
+      "self_signature": selfSignature,
+      "gender": gender,
+    });
+
+    if (resp != null) {
+      Global.userProfile?.avatar = resp.avatar;
+      Global.userProfile?.nickName = resp.nickName;
+      Global.userProfile?.selfSignature = resp.selfSignature;
+      Global.userProfile?.gender = resp.gender;
+      Global.saveProfile(Global.userProfile!);
+
+      Get.offAllNamed(AppRoutes.Home);
+    }
   }
 }

@@ -233,7 +233,9 @@ class _InitInfoPageState extends State<InitInfoPage> {
                       backgroundColor:
                           WidgetStateProperty.all(AppColors.moderateCyan),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      controller.submitInfo();
+                    },
                     child: const Text(
                       '提交',
                       style: TextStyle(
