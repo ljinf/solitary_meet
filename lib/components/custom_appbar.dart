@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:solitary_meet/common/colors/colors.dart';
+import 'package:solitary_meet/common/values/image.dart';
 
 /// appbar 返回按钮类型
 enum AppBarBackType { Back, Close, None }
@@ -62,12 +63,12 @@ class AppBarBack extends StatelessWidget {
       child: _backType == AppBarBackType.Close
           ? Container(
               child: Icon(Icons.close,
-                  color: color ?? const Color(0xFF222222), size: 24.0),
+                  color: color ?? const Color(0xFF222222), size: AppImage.ImageSize20),
             )
           : Container(
               padding: const EdgeInsets.only(right: 15),
               child: const Icon(Icons.arrow_back_ios_new_rounded,
-                  size: 24.0, color: Color(0xFF222222)),
+                  size: AppImage.ImageSize20, color: Color(0xFF222222)),
             ),
     );
   }

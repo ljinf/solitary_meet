@@ -1,5 +1,3 @@
-import 'package:get/get_common/get_reset.dart';
-
 import 'login_model.dart';
 
 class MomentModel {

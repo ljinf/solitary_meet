@@ -87,4 +87,10 @@ class Global {
     return LocalStorage()
         .setJSON(STORAGE_USER_PROFILE_KEY, userResponse.toJson());
   }
+
+  // 删除用户信息
+  static Future<bool> removeProfile() {
+    return LocalStorage()
+        .remove(STORAGE_USER_PROFILE_KEY);
+  }
 }

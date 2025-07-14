@@ -22,6 +22,8 @@ import 'package:solitary_meet/pages/proxy/proxy_view.dart';
 import 'package:get/get.dart';
 import 'package:solitary_meet/pages/search/search_binding.dart';
 import 'package:solitary_meet/pages/search/search_view.dart';
+import 'package:solitary_meet/pages/setting/setting_binding.dart';
+import 'package:solitary_meet/pages/setting/setting_view.dart';
 
 import '../pages/profile/profile_binding.dart';
 import '../pages/profile/profile_view.dart';
@@ -90,6 +92,11 @@ class AppPages {
       name: AppRoutes.PhoneLogin,
       page: () => PhonePage(),
       binding: PhoneBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.Setting,
+      page: () => SettingPage(),
+      binding: SettingBinding(),
     ),
   ];
 

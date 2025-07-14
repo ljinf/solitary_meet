@@ -6,6 +6,7 @@ import 'package:solitary_meet/services/services.dart';
 class IndexController extends GetxController {
   /// 是否离线登录
   bool isOfflineLogin = false;
+  var opacity = 0.0.obs; // 初始完全透明
 
   @override
   void onInit() {
@@ -14,7 +15,7 @@ class IndexController extends GetxController {
 
   @override
   void onReady() {
-    // startCountdownTimer();
+    startCountdownTimer();
   }
 
   @override
@@ -26,19 +27,22 @@ class IndexController extends GetxController {
 
   // 展示欢迎页，倒计时1.5秒之后进入应用
   Future startCountdownTimer() async {
-    var respUserInfo = await UserAPI.userInfo();
-    if (respUserInfo != null) {
-      respUserInfo.token = Global.userProfile?.token;
-      Global.saveProfile(respUserInfo);
-      isOfflineLogin = true;
+    if (Global.userProfile?.token != null) {
+      var respUserInfo = await UserAPI.userInfo();
+      if (respUserInfo != null) {
+        respUserInfo.token = Global.userProfile?.token;
+        Global.saveProfile(respUserInfo);
+        isOfflineLogin = true;
+      }
     }
 
     await Future.delayed(const Duration(milliseconds: 1500), () async {
       if (isOfflineLogin) {
         Get.offAllNamed(AppRoutes.Home);
-      } else {
-        Get.offAndToNamed(AppRoutes.Login);
+        return;
       }
+      opacity.value = 1.0;
+      update();
     });
   }
 }

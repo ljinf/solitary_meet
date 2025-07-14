@@ -70,6 +70,8 @@ class InitInfoController extends GetxController {
 
   Future<void> submitInfo() async {
     String avatar = await uploadAvatar();
+    nickName = nickNameController.text;
+    selfSignature = selfSignatureController.text;
     var resp = await UserAPI.updateProfile(params: {
       "avatar": avatar,
       "nick_name": nickName,

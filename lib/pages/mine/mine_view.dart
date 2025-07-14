@@ -67,7 +67,8 @@ class _MinePageState extends State<MinePage> {
                           Global.userProfile!.nickName ?? '',
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1, // 必需设置为1来使用ellipsis
-                          style: const TextStyle(fontSize: AppFont.defaultFontSize),
+                          style: const TextStyle(
+                              fontSize: AppFont.defaultFontSize),
                         ),
                         const SizedBox(
                           height: 2,
@@ -217,6 +218,33 @@ class _MinePageState extends State<MinePage> {
               thickness: 1, // 线条粗细
               // indent: 16,         // 左边距
               // endIndent: 16,      // 右边距
+            ),
+            GestureDetector(
+              onTap: () {},
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    "assets/icons/icon_setting.webp",
+                    width: AppImage.ImageSize20,
+                    height: AppImage.ImageSize20,
+                    color: Colors.black,
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text('设置'),
+                  Expanded(child: Container()),
+                  IconButton(
+                      onPressed: () {
+                        Get.toNamed(AppRoutes.Setting);
+                      },
+                      icon: const Icon(
+                        Icons.chevron_right_rounded,
+                        size: AppImage.ImageSize24,
+                      ))
+                ],
+              ),
             ),
           ],
         ),

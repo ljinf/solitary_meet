@@ -64,83 +64,88 @@ class _IndexPageState extends State<IndexPage> {
                       letterSpacing: 3),
                 ),
                 Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(
-                            left: 16, right: 16, top: 8, bottom: 8),
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            shape:
-                                WidgetStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                    50.0), // 这里设置圆角半径为按钮宽度的一半，以实现椭圆形效果
+                  child: Obx(() => AnimatedOpacity(
+                        opacity: controller.opacity.value, // 控制透明度
+                        duration: const Duration(seconds: 1), // 动画持续时间
+                        curve: Curves.easeInOut, // 动画曲线
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(
+                                  left: 16, right: 16, top: 8, bottom: 8),
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  shape: WidgetStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          50.0), // 这里设置圆角半径为按钮宽度的一半，以实现椭圆形效果
+                                    ),
+                                  ),
+                                  maximumSize: WidgetStateProperty.all(
+                                      Size(getDeviceWidth(context), 45)),
+                                  minimumSize: WidgetStateProperty.all(
+                                      const Size(343, 45)),
+                                  backgroundColor:
+                                      WidgetStateProperty.all(Colors.white),
+                                ),
+                                onPressed: () {
+                                  if (!agreePolicy) {
+                                    Message.showError('请阅读并同意用户协议');
+                                    return;
+                                  }
+                                  // controller.loginHandler('wechat');
+                                },
+                                child: const Text(
+                                  '微信一键登录',
+                                  style: TextStyle(
+                                      fontSize: AppFont.FontSize15,
+                                      color: AppColors.defaultFontColor,
+                                      fontWeight: FontWeight.w500),
+                                ),
                               ),
                             ),
-                            maximumSize: WidgetStateProperty.all(
-                                Size(getDeviceWidth(context), 45)),
-                            minimumSize:
-                                WidgetStateProperty.all(const Size(343, 45)),
-                            backgroundColor:
-                                WidgetStateProperty.all(Colors.white),
-                          ),
-                          onPressed: () {
-                            if (!agreePolicy) {
-                              Message.showError('请阅读并同意用户协议');
-                              return;
-                            }
-                            // controller.loginHandler('wechat');
-                          },
-                          child: const Text(
-                            '微信一键登录',
-                            style: TextStyle(
-                                fontSize: AppFont.FontSize15,
-                                color: AppColors.defaultFontColor,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(
-                            left: 16, right: 16, top: 8, bottom: 8),
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            shape:
-                                WidgetStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                    50.0), // 这里设置圆角半径为按钮宽度的一半，以实现椭圆形效果
-                              ),
-                            ),
-                            maximumSize: WidgetStateProperty.all(
-                                Size(getDeviceWidth(context), 45)),
-                            minimumSize:
-                                WidgetStateProperty.all(const Size(343, 45)),
-                            backgroundColor:
-                                WidgetStateProperty.all(AppColors.moderateCyan),
-                          ),
-                          onPressed: () {
-                            controller.toPhoneLogin();
+                            Container(
+                              margin: const EdgeInsets.only(
+                                  left: 16, right: 16, top: 8, bottom: 8),
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  shape: WidgetStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          50.0), // 这里设置圆角半径为按钮宽度的一半，以实现椭圆形效果
+                                    ),
+                                  ),
+                                  maximumSize: WidgetStateProperty.all(
+                                      Size(getDeviceWidth(context), 45)),
+                                  minimumSize: WidgetStateProperty.all(
+                                      const Size(343, 45)),
+                                  backgroundColor: WidgetStateProperty.all(
+                                      AppColors.moderateCyan),
+                                ),
+                                onPressed: () {
+                                  controller.toPhoneLogin();
 
-                            // if (!agreePolicy) {
-                            //   Message.showError('请阅读并同意用户协议');
-                            //   return;
-                            // }
-                            // controller.loginHandler('phone');
-                          },
-                          child: const Text(
-                            '手机号码登录',
-                            style: TextStyle(
-                                fontSize: AppFont.FontSize15,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500),
-                          ),
+                                  // if (!agreePolicy) {
+                                  //   Message.showError('请阅读并同意用户协议');
+                                  //   return;
+                                  // }
+                                  // controller.loginHandler('phone');
+                                },
+                                child: const Text(
+                                  '手机号码登录',
+                                  style: TextStyle(
+                                      fontSize: AppFont.FontSize15,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
+                      )),
                 ),
                 Container(
                   margin: const EdgeInsets.only(bottom: 50),

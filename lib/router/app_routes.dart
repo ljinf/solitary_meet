@@ -16,6 +16,8 @@ abstract class AppRoutes {
   static const InitInfo = '/initInfo';
   static const PhoneLogin = '/phoneLogin';
 
+  static const Setting = '/setting';
+
   // notfound
   static const NotFound = '/notfound';
 

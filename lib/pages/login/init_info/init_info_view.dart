@@ -10,6 +10,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import '../../../common/colors/colors.dart';
 import '../../../common/values/font.dart';
 import '../../../utils/conts.dart';
+import '../../../utils/message.dart';
 
 class InitInfoPage extends StatefulWidget {
   const InitInfoPage({super.key});
@@ -234,6 +235,14 @@ class _InitInfoPageState extends State<InitInfoPage> {
                           WidgetStateProperty.all(AppColors.moderateCyan),
                     ),
                     onPressed: () {
+                      if (controller.nickNameController.text == '') {
+                        Message.showInfo('请输入昵称');
+                        return;
+                      }
+                      if (controller.avatar == '') {
+                        Message.showInfo('请选择头像');
+                        return;
+                      }
                       controller.submitInfo();
                     },
                     child: const Text(

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:solitary_meet/common/values/values.dart';
 import 'package:solitary_meet/global.dart';
+import 'package:solitary_meet/router/app_pages.dart';
 import 'package:solitary_meet/utils/utils.dart';
 import 'package:get/get.dart';
 
@@ -21,5 +22,5 @@ Future deleteAuthentication() async {
 /// 重新登录
 void deleteTokenAndReLogin() async {
   await deleteAuthentication();
-  Get.offAndToNamed('/login');
+  Get.offAllNamed(AppRoutes.Index);
 }
