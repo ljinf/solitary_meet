@@ -981,6 +981,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.4.5"
+  web_socket_client:
+    dependency: "direct main"
+    description:
+      name: web_socket_client
+      sha256: "394789177aa3bc1b7b071622a1dbf52a4631d7ce23c555c39bb2523e92316b07"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.2.1"
   webview_flutter:
     dependency: "direct main"
     description:
